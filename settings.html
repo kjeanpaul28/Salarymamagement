@@ -1143,13 +1143,13 @@
         
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
-                window.location.href = 'auth.html';
+                window.location.href = 'index.html';
                 return;
             }
             
             if (!user.emailVerified) {
                 await auth.signOut();
-                window.location.href = 'auth.html?verify=true';
+                window.location.href = 'index.html?verify=true';
                 return;
             }
             
@@ -1504,7 +1504,7 @@
                 await db.collection('users').doc(currentUser.uid).delete();
                 await currentUser.delete();
                 showToast('Account deleted successfully', 'success');
-                setTimeout(() => { window.location.href = 'auth.html'; }, 1500);
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
             } catch (error) {
                 showToast('Error deleting account. Please re-authenticate.', 'error');
             } finally {
@@ -1708,7 +1708,7 @@
                 if (confirm('This will log you out from all devices. Continue?')) {
                     localStorage.clear();
                     await auth.signOut();
-                    window.location.href = 'auth.html';
+                    window.location.href = 'index.html';
                 }
             });
             
@@ -1728,7 +1728,7 @@
                 if (confirm('Are you sure you want to deactivate your account? You can reactivate later.')) {
                     await saveUserSettings({ accountActive: false });
                     await auth.signOut();
-                    window.location.href = 'auth.html';
+                    window.location.href = 'index.html';
                 }
             });
             document.getElementById('confirmDeleteAccountBtn')?.addEventListener('click', deleteAccount);
@@ -1745,7 +1745,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'auth.html';
+                        window.location.href = 'index.html';
                     });
                 }
             });
