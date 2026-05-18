@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MAYE Procurement | Purchase & Requisition Management</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- html2pdf for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+        
+        /* Sidebar Premium */
+        .sidebar-premium {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: 4px 0 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .sidebar-premium {
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+        }
+        
+        .sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar-collapsed { width: 88px; }
+        .sidebar-expanded { width: 290px; }
+        
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin: 6px 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        
+        body.light-mode .sidebar-nav-item { color: #475569; }
+        
+        .sidebar-nav-item i { width: 24px; font-size: 1.2rem; }
+        
+        .sidebar-nav-item:hover {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.05));
+            color: #e2e8f0;
+            transform: translateX(5px);
+        }
+        
+        .sidebar-nav-item.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(79, 70, 229, 0.1));
+            color: #818cf8;
+            border-left: 3px solid #4F46E5;
+        }
+        
+        /* Topbar */
+        .topbar-premium {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .topbar-premium {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        .user-btn {
+            background: rgba(51, 65, 85, 0.6);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 60px;
+            transition: all 0.25s ease;
+        }
+        
+        body.light-mode .user-btn {
+            background: rgba(226, 232, 240, 0.6);
+        }
+        
+        .user-btn:hover {
+            border-color: #4F46E5;
+            background: rgba(79, 70, 229, 0.15);
+        }
+        
+        /* Glass Card */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(79, 70, 229, 0.15);
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(79, 70, 229, 0.5);
+        }
+        
+        /* Stat Card */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(79, 70, 229, 0.25);
+            border-radius: 28px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: #4F46E5;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-approved { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-ordered { background: rgba(59, 130, 246, 0.2); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .status-received { background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .status-delivered { background: rgba(6, 182, 212, 0.2); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
+        .status-paid { background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        
+        /* Modal */
+        .modal-premium {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 32px;
+        }
+        
+        body.light-mode .modal-premium {
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(79, 70, 229, 0.4);
+            padding: 0.9rem 1.5rem;
+            border-radius: 60px;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .toast.success { background: rgba(34, 197, 94, 0.9); }
+        .toast.error { background: rgba(239, 68, 68, 0.9); }
+        .toast.info { background: rgba(59, 130, 246, 0.9); }
+        .toast.warning { background: rgba(245, 158, 11, 0.9); }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .spinner-premium {
+            width: 55px;
+            height: 55px;
+            border: 3px solid rgba(79, 70, 229, 0.2);
+            border-top-color: #4F46E5;
+            border-right-color: #818cf8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Floating button */
+        .floating-btn {
+            background: linear-gradient(135deg, #4F46E5, #6366f1);
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
+            transition: all 0.25s ease;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Mobile menu */
+        .mobile-menu-premium {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        body.light-mode .mobile-menu-premium {
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #4F46E5; border-radius: 10px; }
+        
+        body.light-mode ::-webkit-scrollbar-track { background: #e2e8f0; }
+        
+        /* Page animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-animation {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+        }
+        
+        body.light-mode .data-table th {
+            background: rgba(241, 245, 249, 0.8);
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.1);
+            font-weight: 500;
+        }
+        
+        .data-table tr:hover td {
+            background: rgba(79, 70, 229, 0.05);
+        }
+        
+        /* Pagination */
+        .pagination-btn {
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: rgba(51, 65, 85, 0.5);
+        }
+        
+        .pagination-btn:hover {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818cf8;
+        }
+        
+        .pagination-btn.active {
+            background: #4F46E5;
+            color: white;
+        }
+        
+        /* Checkbox for multiple select */
+        .select-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #4F46E5;
+        }
+        
+        /* Audit trail text */
+        .audit-text {
+            font-size: 0.65rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* ============================================
+           PREMIUM PRINT STYLESHEET - Corporate Report
+        ============================================ */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; margin: 0; padding: 0; }
+            .print-container { padding: 20px; }
+            
+            /* Hide all interactive elements */
+            .sidebar-premium, .topbar-premium, .floating-btn, .selection-toolbar,
+            .procurement-tab, .glass-card .grid button, .glass-card .grid select,
+            .glass-card .grid input, .no-print, .theme-toggle, .user-btn,
+            #addPurchaseBtn, #exportPurchasesPDFBtn, #exportPurchasesCSVBtn,
+            #poFilterStatus, #poSearch, #selectAllPOs, .pagination-btn,
+            .floating-btn, .mobile-menu-premium, .breadcrumb {
+                display: none !important;
+            }
+            
+            /* Reset main content */
+            .main-content, #mainContent, .flex-1 {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+            }
+            
+            /* Force clean white backgrounds */
+            .glass-card, .stat-card, .chart-container {
+                background: white !important;
+                border: 1px solid #e2e8f0 !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            /* KPI cards */
+            .stat-value {
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                background-clip: unset !important;
+                color: #1e293b !important;
+            }
+            
+            /* Text colors */
+            .text-slate-200, .text-slate-300, .text-slate-400 {
+                color: #1e293b !important;
+            }
+            
+            /* Table styles */
+            .data-table th {
+                background: #f1f5f9 !important;
+                color: #1e293b !important;
+                border: 1px solid #e2e8f0 !important;
+            }
+            
+            .data-table td {
+                border: 1px solid #e2e8f0 !important;
+            }
+            
+            /* Page breaks */
+            .stat-card, .chart-container, .data-table tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Corporate Metadata Block */
+        .corporate-metadata {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        body.light-mode .corporate-metadata {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+        
+        /* Light mode text colors */
+        body.light-mode .text-slate-200 { color: #1e293b; }
+        body.light-mode .text-slate-300 { color: #334155; }
+        body.light-mode .text-slate-400 { color: #64748b; }
+        body.light-mode .border-slate-700 { border-color: #e2e8f0; }
+        body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
+        body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
+        body.light-mode .bg-slate-900 { background-color: #ffffff; }
+        
+        /* Responsive table */
+        @media (max-width: 768px) {
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
+            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
+            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
+        }
+        
+        /* Selection toolbar */
+        .selection-toolbar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            border: 1px solid #4F46E5;
+            border-radius: 60px;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        }
+        
+        body.light-mode .selection-toolbar {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-premium"></div>
+    </div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/60 z-35 hidden backdrop-blur-sm" onclick="closeMobileMenu()"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div id="mobileSidebar" class="mobile-menu-premium fixed top-0 left-0 h-full w-72 z-40 transform -translate-x-full transition-transform duration-300 ease-out">
+        <div class="p-6 border-b border-indigo-500/20">
+            <div class="flex items-center gap-3">
+                <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-11 w-auto">
+                <div>
+                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">MAYE</span>
+                    <span class="font-semibold text-xs text-slate-400">Procurement</span>
+                </div>
+            </div>
+        </div>
+        <div id="mobileSidebarNav" class="p-4 space-y-1.5"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-indigo-500/20">
+            <button id="logoutBtnMobile" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Selection Toolbar -->
+    <div id="selectionToolbar" class="selection-toolbar no-print hidden">
+        <span id="selectedCount" class="text-white font-bold">0 selected</span>
+        <button id="bulkDeleteBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl text-white font-bold text-sm">
+            <i class="fas fa-trash-alt mr-1"></i> Delete Selected
+        </button>
+        <button id="bulkExportBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl text-white font-bold text-sm">
+            <i class="fas fa-download mr-1"></i> Export Selected
+        </button>
+        <button id="bulkCancelBtn" class="bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-xl text-white font-bold text-sm">
+            Cancel
+        </button>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Desktop Sidebar -->
+        <aside id="desktopSidebar" class="sidebar sidebar-expanded sidebar-premium flex flex-col h-screen fixed left-0 top-0 z-30 hidden md:flex">
+            <div class="px-5 pt-6 pb-5 border-b border-indigo-500/20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                        <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-7 w-auto">
+                    </div>
+                    <div id="sidebarLogoArea">
+                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">MAYE</span>
+                        <span class="font-bold text-xs text-slate-400 block">Procurement</span>
+                    </div>
+                </div>
+                <button id="toggleSidebarBtn" class="text-slate-400 hover:text-indigo-400 transition-all p-1.5 rounded-lg hover:bg-indigo-500/10">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                </button>
+            </div>
+            <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
+            <div class="p-4 border-t border-indigo-500/20 mt-auto">
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text font-semibold">Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden md:ml-[290px] transition-all duration-300 ease-out" id="mainContent">
+            <!-- Topbar -->
+            <header class="topbar-premium sticky top-0 z-20">
+                <div class="px-5 sm:px-7 py-3.5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white text-2xl p-1.5 rounded-xl hover:bg-indigo-500/10 transition">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-shopping-cart text-indigo-400 text-xl"></i>
+                            <h1 class="text-lg font-bold hidden sm:block">MAYE Procurement</h1>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button id="themeToggle" class="user-btn !rounded-full !w-10 !h-10 flex items-center justify-center text-slate-300 hover:text-indigo-400 transition">
+                            <i class="fas fa-moon text-lg"></i>
+                        </button>
+                        
+                        <div class="relative">
+                            <button id="userMenuBtn" class="user-btn flex items-center gap-2 px-3 py-2">
+                                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <img id="userAvatar" src="" class="w-8 h-8 rounded-full object-cover hidden">
+                                    <i id="userAvatarFallback" class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <div class="hidden lg:block text-left">
+                                    <p id="userName" class="text-sm font-bold text-slate-200">Loading...</p>
+                                    <p class="text-xs text-slate-400">User</p>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
+                            </button>
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                                <div class="p-4 border-b border-indigo-500/20">
+                                    <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
+                                </div>
+                                <div class="py-2">
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='dashboard.html'">
+                                        <i class="fas fa-chart-line w-5 text-indigo-400"></i> Dashboard
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='income.html'">
+                                        <i class="fas fa-money-bill-wave w-5 text-emerald-400"></i> Income
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
+                                        <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
+                                        <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
+                                    </div>
+                                    <hr class="border-indigo-500/20 my-1">
+                                    <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
+                                        <i class="fas fa-sign-out-alt w-5"></i> Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Breadcrumb -->
+            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30">
+                <div class="flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-home text-indigo-400 text-xs"></i>
+                    <span class="text-slate-400">Procurement</span>
+                    <i class="fas fa-chevron-right text-xs text-slate-600"></i>
+                    <i class="fas fa-shopping-cart text-indigo-400 text-xs"></i>
+                    <span class="text-slate-200 font-semibold">Management</span>
+                </div>
+            </div>
+            
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-5 sm:p-7 page-animation">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase">Total Requisitions</span>
+                            <i class="fas fa-clipboard-list text-indigo-400 text-lg"></i>
+                        </div>
+                        <div class="text-2xl font-bold" id="totalRequisitions">0</div>
+                        <div class="text-xs text-slate-500 mt-1">All time</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase">Total Purchases</span>
+                            <i class="fas fa-boxes text-green-400 text-lg"></i>
+                        </div>
+                        <div class="text-2xl font-bold" id="totalPurchases">0</div>
+                        <div class="text-xs text-slate-500 mt-1">Orders placed</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase">Total Spend</span>
+                            <i class="fas fa-coins text-emerald-400 text-lg"></i>
+                        </div>
+                        <div class="text-2xl font-bold" id="totalSpend">D 0</div>
+                        <div class="text-xs text-slate-500 mt-1">All purchases</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase">Pending</span>
+                            <i class="fas fa-clock text-yellow-400 text-lg"></i>
+                        </div>
+                        <div class="text-2xl font-bold" id="pendingApprovals">0</div>
+                        <div class="text-xs text-slate-500 mt-1">Awaiting approval</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase">Total Amount</span>
+                            <i class="fas fa-dollar-sign text-emerald-400 text-lg"></i>
+                        </div>
+                        <div class="text-2xl font-bold" id="totalAmount">D 0</div>
+                        <div class="text-xs text-slate-500 mt-1">All requisitions</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase">Suppliers</span>
+                            <i class="fas fa-truck text-amber-400 text-lg"></i>
+                        </div>
+                        <div class="text-2xl font-bold" id="totalSuppliers">0</div>
+                        <div class="text-xs text-slate-500 mt-1">Active vendors</div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="flex flex-wrap gap-2 mb-6 no-print">
+                    <button class="procurement-tab active px-5 py-2.5 rounded-xl font-bold transition bg-indigo-600 text-white" data-tab="requisitions">
+                        <i class="fas fa-clipboard-list mr-2"></i> Requisitions
+                    </button>
+                    <button class="procurement-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="purchases">
+                        <i class="fas fa-shopping-cart mr-2"></i> Purchase Orders
+                    </button>
+                    <button class="procurement-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="suppliers">
+                        <i class="fas fa-truck mr-2"></i> Suppliers
+                    </button>
+                    <button class="procurement-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="reports">
+                        <i class="fas fa-chart-line mr-2"></i> Reports
+                    </button>
+                </div>
+                
+                <!-- ==================== REQUISITIONS TAB ==================== -->
+                <div id="requisitionsTab" class="procurement-tab-content">
+                    <div class="glass-card p-6 mb-6">
+                        <h2 class="text-xl font-extrabold mb-5 flex items-center gap-2">
+                            <i class="fas fa-pen-alt text-indigo-400"></i> New Requisition
+                        </h2>
+                        <form id="requisitionForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Requisition ID</label>
+                                <input type="text" id="reqId" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 font-mono text-sm" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Item Name *</label>
+                                <input type="text" id="reqItemName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="e.g., Laptop, Rice" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
+                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="1" min="1" value="1" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
+                                <input type="text" id="reqUnit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="kg, pcs, box">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price *</label>
+                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.00" step="0.01" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                                <select id="reqCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
+                                    <option value="IT Equipment">💻 IT Equipment</option>
+                                    <option value="Office Supplies">📎 Office Supplies</option>
+                                    <option value="Furniture">🪑 Furniture</option>
+                                    <option value="Software">📀 Software</option>
+                                    <option value="Services">🔧 Services</option>
+                                    <option value="Food">🍔 Food</option>
+                                    <option value="Healthcare">🏥 Healthcare</option>
+                                    <option value="Other">📌 Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Supplier</label>
+                                <input type="text" id="reqSupplier" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Supplier name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Requested By</label>
+                                <input type="text" id="reqRequestedBy" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Department/Person">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Priority</label>
+                                <select id="reqPriority" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
+                                    <option value="low">🟢 Low</option>
+                                    <option value="medium">🟡 Medium</option>
+                                    <option value="high">🔴 High</option>
+                                    <option value="urgent">⚠️ Urgent</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold text-slate-300 mb-2">Justification / Reason</label>
+                                <textarea id="reqJustification" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 resize-none" placeholder="Why is this item needed?"></textarea>
+                            </div>
+                            <div class="flex items-end">
+                                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20">
+                                    <i class="fas fa-paper-plane mr-2"></i> Submit Requisition
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="glass-card p-6">
+                        <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
+                            <h2 class="text-xl font-extrabold flex items-center gap-2">
+                                <i class="fas fa-list text-indigo-400"></i> Requisitions List
+                            </h2>
+                            <div class="flex gap-2">
+                                <select id="reqFilterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
+                                    <option value="all">All Status</option>
+                                    <option value="pending">⏳ Pending</option>
+                                    <option value="approved">✅ Approved</option>
+                                    <option value="rejected">❌ Rejected</option>
+                                    <option value="ordered">📦 Ordered</option>
+                                    <option value="received">📬 Received</option>
+                                </select>
+                                <input type="text" id="reqSearch" placeholder="Search items..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm w-40">
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Req ID</th>
+                                        <th>Item</th>
+                                        <th>Qty</th>
+                                        <th>Unit</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requisitionsTableBody">
+                                    <tr><td colspan="10" class="text-center text-slate-400 py-8">Loading requisitions...</td</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="reqPagination" class="flex justify-center gap-2 mt-4"></div>
+                    </div>
+                </div>
+                
+                <!-- ==================== PURCHASE ORDERS TAB ==================== -->
+                <div id="purchasesTab" class="procurement-tab-content hidden">
+                    <div class="glass-card p-6">
+                        <!-- Corporate Metadata Block for Print -->
+                        <div class="corporate-metadata no-print" id="printMetadata" style="margin-bottom: 1rem;">
+                            <div class="flex flex-wrap justify-between items-start gap-4">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="MAYE Logo" style="height: 60px; width: auto;">
+                                    <div>
+                                        <div class="text-xs text-slate-500 uppercase tracking-wider">MAYE System</div>
+                                        <div class="text-xs text-slate-400">Incungamutungo ry'Urugo</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-bold text-indigo-600">Procurement Report</div>
+                                    <div class="text-xs text-slate-500 mt-1">
+                                        <span id="printDate"></span> | 
+                                        Ref: <span id="printRefId">MAYE-PROC-XXXX</span>
+                                    </div>
+                                    <div class="text-xs text-slate-400">Generated by: <span id="printGeneratedBy">User</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
+                            <h2 class="text-xl font-extrabold flex items-center gap-2">
+                                <i class="fas fa-shopping-cart text-indigo-400"></i> Purchase Orders
+                            </h2>
+                            <div class="flex gap-2">
+                                <button id="addPurchaseBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold text-sm">
+                                    <i class="fas fa-plus mr-1"></i> Add Purchase
+                                </button>
+                                <button id="exportPurchasesPDFBtn" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 px-4 py-2 rounded-xl font-bold transition">
+                                    <i class="fas fa-file-pdf mr-1"></i> PDF
+                                </button>
+                                <button id="exportPurchasesCSVBtn" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 px-4 py-2 rounded-xl font-bold transition">
+                                    <i class="fas fa-file-csv mr-1"></i> CSV
+                                </button>
+                                <select id="poFilterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
+                                    <option value="all">All Orders</option>
+                                    <option value="approved">✅ Approved</option>
+                                    <option value="pending">⏳ Pending</option>
+                                    <option value="paid">💰 Paid</option>
+                                    <option value="received">📋 Received</option>
+                                </select>
+                                <input type="text" id="poSearch" placeholder="Search..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm w-40">
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="w-10"><input type="checkbox" id="selectAllPOs" class="select-checkbox"></th>
+                                        <th>PO #</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                        <th>Category</th>
+                                        <th>Supplier</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchasesTableBody">
+                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="purchasePagination" class="flex justify-center gap-2 mt-4"></div>
+                    </div>
+                </div>
+                
+                <!-- ==================== SUPPLIERS TAB ==================== -->
+                <div id="suppliersTab" class="procurement-tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="glass-card p-6">
+                            <h2 class="text-xl font-extrabold mb-4 flex items-center gap-2">
+                                <i class="fas fa-plus-circle text-indigo-400"></i> Add Supplier
+                            </h2>
+                            <form id="supplierForm">
+                                <div class="mb-3">
+                                    <input type="text" id="supplierCode" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 font-mono text-sm" placeholder="Auto-generated" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" id="supplierName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Company Name *" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" id="supplierContact" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Contact Person">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="email" id="supplierEmail" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Email">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="tel" id="supplierPhone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Phone">
+                                </div>
+                                <div class="mb-3">
+                                    <textarea id="supplierAddress" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 resize-none" placeholder="Address"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-2.5 rounded-xl font-bold transition">
+                                    <i class="fas fa-save mr-2"></i> Add Supplier
+                                </button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 glass-card p-6">
+                            <h2 class="text-xl font-extrabold mb-4 flex items-center gap-2">
+                                <i class="fas fa-truck text-indigo-400"></i> Suppliers List
+                            </h2>
+                            <div id="suppliersList" class="space-y-3 max-h-[450px] overflow-y-auto">
+                                <div class="text-center text-slate-400 py-8">No suppliers added yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ==================== REPORTS TAB ==================== -->
+                <div id="reportsTab" class="procurement-tab-content hidden">
+                    <div class="glass-card p-6 mb-6">
+                        <h2 class="text-xl font-extrabold mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-indigo-400"></i> Procurement Analytics
+                        </h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="chart-container">
+                                <h3 class="font-bold mb-3">Spending by Category</h3>
+                                <canvas id="categoryChart" height="200"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3 class="font-bold mb-3">Monthly Spending Trend</h3>
+                                <canvas id="spendingTrendChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6">
+                        <h2 class="text-xl font-extrabold mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-alt text-indigo-400"></i> Export Reports
+                        </h2>
+                        <div class="flex flex-wrap gap-3">
+                            <button id="exportRequisitionsCSV" class="bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 rounded-xl font-bold transition">
+                                <i class="fas fa-file-csv mr-2"></i> Export Requisitions
+                            </button>
+                            <button id="exportSuppliersCSV" class="bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl font-bold transition">
+                                <i class="fas fa-file-csv mr-2"></i> Export Suppliers
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Purchase Modal -->
+    <div id="purchaseModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <i class="fas fa-shopping-cart mr-2"></i> <span id="purchaseModalTitle">Add Purchase</span>
+                </h2>
+                <button onclick="closeModal('purchaseModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="purchaseForm">
+                <input type="hidden" id="purchaseEditId">
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Purchase ID</label>
+                    <input type="text" id="purchaseId" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 font-mono text-sm" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Item Name *</label>
+                    <input type="text" id="purchaseItemName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
+                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" min="1" value="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
+                        <input type="text" id="purchaseUnit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" placeholder="kg, pcs">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Price *</label>
+                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                        <select id="purchaseCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                            <option value="IT Equipment">💻 IT Equipment</option>
+                            <option value="Office Supplies">📎 Office Supplies</option>
+                            <option value="Furniture">🪑 Furniture</option>
+                            <option value="Food">🍔 Food</option>
+                            <option value="Healthcare">🏥 Healthcare</option>
+                            <option value="Other">📌 Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Supplier</label>
+                    <input type="text" id="purchaseSupplier" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" placeholder="Supplier name">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Date</label>
+                    <input type="date" id="purchaseDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Notes</label>
+                    <textarea id="purchaseNotes" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none resize-none" placeholder="Additional notes..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Status</label>
+                    <select id="purchaseStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                        <option value="approved">✅ Approved</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="paid">💰 Paid</option>
+                        <option value="received">📋 Received</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 py-2.5 rounded-xl font-bold transition">
+                    <i class="fas fa-save mr-2"></i> Save Purchase
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Requisition Modal -->
+    <div id="editRequisitionModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <i class="fas fa-edit mr-2"></i> Edit Requisition
+                </h2>
+                <button onclick="closeModal('editRequisitionModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="editRequisitionForm">
+                <input type="hidden" id="editRequisitionId">
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Item Name</label>
+                    <input type="text" id="editReqItemName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Quantity</label>
+                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
+                        <input type="text" id="editReqUnit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" placeholder="kg, pcs">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price</label>
+                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                        <select id="editReqCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                            <option value="IT Equipment">💻 IT Equipment</option>
+                            <option value="Office Supplies">📎 Office Supplies</option>
+                            <option value="Furniture">🪑 Furniture</option>
+                            <option value="Software">📀 Software</option>
+                            <option value="Services">🔧 Services</option>
+                            <option value="Food">🍔 Food</option>
+                            <option value="Healthcare">🏥 Healthcare</option>
+                            <option value="Other">📌 Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Supplier</label>
+                    <input type="text" id="editReqSupplier" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Requested By</label>
+                    <input type="text" id="editReqRequestedBy" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Justification</label>
+                    <textarea id="editReqJustification" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none resize-none"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Priority</label>
+                    <select id="editReqPriority" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                        <option value="urgent">⚠️ Urgent</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Status</label>
+                    <select id="editReqStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                        <option value="pending">⏳ Pending</option>
+                        <option value="approved">✅ Approved</option>
+                        <option value="rejected">❌ Rejected</option>
+                        <option value="ordered">📦 Ordered</option>
+                        <option value="received">📬 Received</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-2.5 rounded-xl font-bold transition">
+                    <i class="fas fa-save mr-2"></i> Update Requisition
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- View Details Modal (Receipt Style) -->
+    <div id="viewDetailsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <i class="fas fa-receipt mr-2"></i> Purchase Receipt
+                </h2>
+                <button onclick="closeModal('viewDetailsModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="detailsContent" class="space-y-3"></div>
+            <div class="mt-5 pt-4 border-t border-slate-700 flex gap-3 no-print">
+                <button id="printReceiptBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 py-2.5 rounded-xl font-bold transition">
+                    <i class="fas fa-print mr-2"></i> Print Receipt
+                </button>
+                <button id="downloadReceiptBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-2.5 rounded-xl font-bold transition">
+                    <i class="fas fa-download mr-2"></i> Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Add Floating Button -->
+    <button id="floatingAddBtn" class="floating-btn fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white text-xl z-10 md:hidden no-print">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Global state
+        let currentUser = null;
+        let userData = null;
+        let purchases = [];
+        let requisitions = [];
+        let suppliers = [];
+        let currentCurrency = 'AED';
+        let currencySymbol = 'D';
+        let currentTheme = 'dark';
+        let charts = { category: null, trend: null };
+        
+        // Pagination
+        let reqCurrentPage = 1;
+        let poCurrentPage = 1;
+        let itemsPerPage = 10;
+        
+        // Selection state
+        let selectedPurchases = new Set();
+        
+        const currencies = {
+            USD: { symbol: '$', name: 'US Dollar' },
+            EUR: { symbol: '€', name: 'Euro' },
+            AED: { symbol: 'D', name: 'Dirham' },
+            RWF: { symbol: 'FRw', name: 'Rwandan Franc' }
+        };
+        
+        const navItems = [
+            { icon: 'fa-chart-line', text: 'Dashboard', page: 'dashboard.html', active: false },
+            { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
+            { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: true },
+            { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false }
+        ];
+        
+        const LOGO_URL = "https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png";
+        const COMPANY_NAME = "MAYE System";
+        const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
+        
+        // Helper function to generate reference ID
+        function generateReferenceId() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `MAYE-PROC-${year}${month}-${random}`;
+        }
+        
+        // Update print metadata
+        function updatePrintMetadata() {
+            document.getElementById('printDate').textContent = new Date().toLocaleString();
+            document.getElementById('printRefId').textContent = generateReferenceId();
+            document.getElementById('printGeneratedBy').textContent = userData?.fullName || currentUser?.email || 'System User';
+        }
+        
+        // ============================================
+        // ID GENERATORS (unchanged)
+        // ============================================
+        function generatePurchaseId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'PUR';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function generateRequisitionId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'REQ';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function generateSupplierCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'SUP';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        
+        function formatMoney(amount) {
+            const symbol = currencies[currentCurrency]?.symbol || 'D';
+            if (currentCurrency === 'AED') return `${symbol} ${amount.toLocaleString()}`;
+            return `${symbol} ${amount.toLocaleString()}`;
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+            toast.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) overlay.classList.add('active');
+            else overlay.classList.remove('active');
+        }
+        
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('flex');
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const statusMap = {
+                'pending': 'status-pending', 'approved': 'status-approved', 'rejected': 'status-rejected',
+                'ordered': 'status-ordered', 'received': 'status-received', 'delivered': 'status-delivered',
+                'paid': 'status-paid'
+            };
+            const textMap = {
+                'pending': '⏳ Pending', 'approved': '✅ Approved', 'rejected': '❌ Rejected',
+                'ordered': '📦 Ordered', 'received': '📋 Received', 'delivered': '📬 Delivered',
+                'paid': '💰 Paid'
+            };
+            return `<span class="status-badge ${statusMap[status] || 'status-pending'}">${textMap[status] || status}</span>`;
+        }
+        
+        function getPriorityBadge(priority) {
+            const map = { 'low': '🟢 Low', 'medium': '🟡 Medium', 'high': '🔴 High', 'urgent': '⚠️ Urgent' };
+            return map[priority] || '🟢 Low';
+        }
+        
+        // Format audit date
+        function formatAuditDate(timestamp) {
+            if (!timestamp) return 'N/A';
+            if (timestamp.toDate) return timestamp.toDate().toLocaleString();
+            return new Date(timestamp).toLocaleString();
+        }
+        
+        // ============================================
+        // AUTHENTICATION & DATA LOADING
+        // ============================================
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (!user || !user.emailVerified) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            currentUser = user;
+            await loadUserData();
+            await loadPurchases();
+            await loadRequisitions();
+            await loadSuppliers();
+            renderSidebar();
+            setupEventListeners();
+            setupTabs();
+            updateStats();
+            renderPurchasesTable();
+            renderRequisitionsTable();
+            renderSuppliersList();
+            initReportsCharts();
+            setupRealtimeListener();
+            updatePrintMetadata();
+        });
+        
+        async function loadUserData() {
+            try {
+                const doc = await db.collection('users').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    userData = doc.data();
+                    document.getElementById('userName').textContent = userData?.fullName || currentUser.email.split('@')[0];
+                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
+                    if (userData?.settings) {
+                        currentCurrency = userData.settings.currency || 'AED';
+                        currentTheme = userData.settings.theme || 'dark';
+                        currencySymbol = currencies[currentCurrency]?.symbol || 'D';
+                    }
+                    if (userData?.profilePicture) {
+                        document.getElementById('userAvatar').src = userData.profilePicture;
+                        document.getElementById('userAvatar').classList.remove('hidden');
+                        document.getElementById('userAvatarFallback').classList.add('hidden');
+                    }
+                }
+                if (currentTheme === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+        
+        async function loadPurchases() {
+            showLoading(true);
+            try {
+                const snapshot = await db.collection('purchases')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                purchases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                purchases.sort((a, b) => {
+                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
+                    return 0;
+                });
+                updateStats();
+                renderPurchasesTable();
+                if (charts.category) initReportsCharts();
+            } catch (error) {
+                console.error('Error loading purchases:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function loadRequisitions() {
+            try {
+                const snapshot = await db.collection('requisitions')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                requisitions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                requisitions.sort((a, b) => {
+                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
+                    return 0;
+                });
+                renderRequisitionsTable();
+            } catch (error) {
+                console.error('Error loading requisitions:', error);
+            }
+        }
+        
+        async function loadSuppliers() {
+            try {
+                const snapshot = await db.collection('suppliers')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                suppliers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                document.getElementById('totalSuppliers').textContent = suppliers.length;
+                renderSuppliersList();
+            } catch (error) {
+                console.error('Error loading suppliers:', error);
+            }
+        }
+        
+        function setupRealtimeListener() {
+            if (!currentUser) return;
+            db.collection('purchases')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => loadPurchases(), (error) => console.error('Realtime error:', error));
+        }
+        
+        function updateStats() {
+            const totalReqs = requisitions.length;
+            const pendingReqs = requisitions.filter(r => r.status === 'pending').length;
+            const totalAmount = requisitions.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
+            const totalSpend = purchases.reduce((s, p) => s + ((p.price || 0) * (p.quantity || 0)), 0);
+            document.getElementById('totalRequisitions').textContent = totalReqs;
+            document.getElementById('totalPurchases').textContent = purchases.length;
+            document.getElementById('totalSpend').textContent = formatMoney(totalSpend);
+            document.getElementById('pendingApprovals').textContent = pendingReqs;
+            document.getElementById('totalAmount').textContent = formatMoney(totalAmount);
+        }
+        
+        // ============================================
+        // RENDER FUNCTIONS with Audit Trail
+        // ============================================
+        
+        function updateSelectionUI() {
+            const count = selectedPurchases.size;
+            const toolbar = document.getElementById('selectionToolbar');
+            if (toolbar) {
+                if (count > 0) {
+                    toolbar.classList.remove('hidden');
+                    document.getElementById('selectedCount').innerHTML = `${count} selected`;
+                } else {
+                    toolbar.classList.add('hidden');
+                }
+            }
+            const selectAll = document.getElementById('selectAllPOs');
+            if (selectAll) {
+                const visibleIds = purchases.slice((poCurrentPage-1)*itemsPerPage, poCurrentPage*itemsPerPage).map(p => p.id);
+                const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedPurchases.has(id));
+                selectAll.checked = allSelected;
+            }
+            renderPurchasesTable();
+        }
+        
+        function renderPurchasesTable() {
+            const tbody = document.getElementById('purchasesTableBody');
+            if (!tbody) return;
+            const filterStatus = document.getElementById('poFilterStatus')?.value || 'all';
+            const searchTerm = document.getElementById('poSearch')?.value.toLowerCase() || '';
+            
+            let filtered = [...purchases];
+            if (filterStatus !== 'all') filtered = filtered.filter(p => p.status === filterStatus);
+            if (searchTerm) filtered = filtered.filter(p => 
+                p.itemName?.toLowerCase().includes(searchTerm) || 
+                p.id?.toLowerCase().includes(searchTerm) ||
+                p.supplier?.toLowerCase().includes(searchTerm)
+            );
+            
+            const start = (poCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = filtered.slice(start, end);
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>';
+                const paginationDiv = document.getElementById('purchasePagination');
+                if (paginationDiv) paginationDiv.innerHTML = '';
+                return;
+            }
+            
+            tbody.innerHTML = pageItems.map(p => `
+                <tr class="border-b border-slate-700 hover:bg-slate-800/30">
+                    <td class="p-3"><input type="checkbox" class="select-checkbox purchase-select" data-id="${p.id}" ${selectedPurchases.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); togglePurchaseSelect('${p.id}')"></td>
+                    <td class="p-3 font-mono text-sm" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.id}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.quantity || 0}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.unit || 'pcs'}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(p.price || 0)}</td>
+                    <td class="p-3 font-bold text-emerald-400" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney((p.price || 0) * (p.quantity || 0))}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.category || 'Other'}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.supplier) || '—'}</td>
+                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${getStatusBadge(p.status)}</td>
+                    <td class="p-3 text-xs" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</td>
+                    <td class="p-3">
+                        <button onclick="event.stopPropagation(); editPurchase('${p.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
+                        <button onclick="event.stopPropagation(); deletePurchase('${p.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                  </tr>
+            `).join('');
+            
+            let paginationHtml = '';
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                paginationHtml += `<button class="pagination-btn ${poCurrentPage === i ? 'active' : ''}" onclick="goToPoPage(${i})">${i}</button>`;
+            }
+            if (totalPages > 5) {
+                paginationHtml += '<span class="px-2">...</span>';
+                paginationHtml += `<button class="pagination-btn" onclick="goToPoPage(${totalPages})">${totalPages}</button>`;
+            }
+            const paginationDiv = document.getElementById('purchasePagination');
+            if (paginationDiv) paginationDiv.innerHTML = paginationHtml;
+        }
+        
+        function renderRequisitionsTable() {
+            const tbody = document.getElementById('requisitionsTableBody');
+            if (!tbody) return;
+            const filterStatus = document.getElementById('reqFilterStatus')?.value || 'all';
+            const searchTerm = document.getElementById('reqSearch')?.value.toLowerCase() || '';
+            
+            let filtered = [...requisitions];
+            if (filterStatus !== 'all') filtered = filtered.filter(r => r.status === filterStatus);
+            if (searchTerm) filtered = filtered.filter(r => r.itemName?.toLowerCase().includes(searchTerm) || r.reqId?.toLowerCase().includes(searchTerm));
+            
+            const start = (reqCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = filtered.slice(start, end);
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td>';
+                const paginationDiv = document.getElementById('reqPagination');
+                if (paginationDiv) paginationDiv.innerHTML = '';
+                return;
+            }
+            
+            tbody.innerHTML = pageItems.map(r => {
+                const createdByName = r.createdBy || 'System';
+                const createdAtFormatted = formatAuditDate(r.createdAt);
+                const updatedByName = r.updatedBy || '—';
+                const updatedAtFormatted = formatAuditDate(r.updatedAt);
+                return `
+                    <tr class="border-b border-slate-700 hover:bg-slate-800/30">
+                        <td class="p-3 font-mono text-sm">${r.reqId || r.id.slice(-6)}</td>
+                        <td class="p-3">${escapeHtml(r.itemName)}</td>
+                        <td class="p-3">${r.quantity || 0}</td>
+                        <td class="p-3">${r.unit || 'pcs'}</td>
+                        <td class="p-3">${formatMoney(r.unitPrice || 0)}</td>
+                        <td class="p-3 font-bold text-emerald-400">${formatMoney(r.totalAmount || 0)}</td>
+                        <td class="p-3">${r.category || 'Other'}</td>
+                        <td class="p-3">${getPriorityBadge(r.priority)}</td>
+                        <td class="p-3">${getStatusBadge(r.status)}</td>
+                        <td class="p-3">
+                            <button onclick="event.stopPropagation(); editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
+                            <button onclick="event.stopPropagation(); deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr class="border-b border-slate-700 bg-slate-800/20">
+                        <td colspan="10" class="p-2">
+                            <div class="audit-text">
+                                <span><i class="fas fa-user-plus text-indigo-400"></i> Created by: ${escapeHtml(createdByName)} on ${createdAtFormatted}</span>
+                                <span><i class="fas fa-edit text-amber-400"></i> Last edit: ${escapeHtml(updatedByName)} on ${updatedAtFormatted}</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            let paginationHtml = '';
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                paginationHtml += `<button class="pagination-btn ${reqCurrentPage === i ? 'active' : ''}" onclick="goToReqPage(${i})">${i}</button>`;
+            }
+            if (totalPages > 5) {
+                paginationHtml += '<span class="px-2">...</span>';
+                paginationHtml += `<button class="pagination-btn" onclick="goToReqPage(${totalPages})">${totalPages}</button>`;
+            }
+            const paginationDiv = document.getElementById('reqPagination');
+            if (paginationDiv) paginationDiv.innerHTML = paginationHtml;
+        }
+        
+        function renderSuppliersList() {
+            const container = document.getElementById('suppliersList');
+            if (!container) return;
+            if (suppliers.length === 0) {
+                container.innerHTML = '<div class="text-center text-slate-400 py-8"><i class="fas fa-truck fa-3x mb-3 opacity-50"></i><p>No suppliers added yet</p></div>';
+                return;
+            }
+            container.innerHTML = suppliers.map(sup => `
+                <div class="flex justify-between items-center p-3 bg-slate-800/30 rounded-xl">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs text-indigo-400">${sup.code || sup.id.slice(-6)}</span>
+                            <div class="font-bold">${escapeHtml(sup.name)}</div>
+                        </div>
+                        <div class="text-xs text-slate-400">${sup.contact || ''} • ${sup.email || ''} • ${sup.phone || ''}</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editSupplier('${sup.id}')" class="text-indigo-400 hover:text-indigo-300"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteSupplier('${sup.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function initReportsCharts() {
+            const categoryMap = {};
+            purchases.forEach(p => {
+                const cat = p.category || 'Other';
+                categoryMap[cat] = (categoryMap[cat] || 0) + ((p.price || 0) * (p.quantity || 0));
+            });
+            const ctxCategory = document.getElementById('categoryChart');
+            if (ctxCategory) {
+                if (charts.category) charts.category.destroy();
+                charts.category = new Chart(ctxCategory, {
+                    type: 'doughnut',
+                    data: { labels: Object.keys(categoryMap), datasets: [{ data: Object.values(categoryMap), backgroundColor: ['#4F46E5', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'] }] },
+                    options: { responsive: true, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+                });
+            }
+            const monthlyMap = {};
+            purchases.forEach(p => {
+                if (p.createdAt) {
+                    const date = p.createdAt.toDate();
+                    const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                    monthlyMap[month] = (monthlyMap[month] || 0) + ((p.price || 0) * (p.quantity || 0));
+                }
+            });
+            const ctxTrend = document.getElementById('spendingTrendChart');
+            if (ctxTrend) {
+                if (charts.trend) charts.trend.destroy();
+                charts.trend = new Chart(ctxTrend, {
+                    type: 'line',
+                    data: { labels: Object.keys(monthlyMap).slice(-6), datasets: [{ label: 'Spending', data: Object.values(monthlyMap).slice(-6), borderColor: '#4F46E5', tension: 0.4, fill: true }] },
+                    options: { responsive: true, plugins: { legend: { labels: { color: '#94a3b8' } } } }
+                });
+            }
+        }
+        
+        // ============================================
+        // CRUD OPERATIONS with Auto-Register
+        // ============================================
+        
+        window.togglePurchaseSelect = (id) => {
+            if (selectedPurchases.has(id)) selectedPurchases.delete(id);
+            else selectedPurchases.add(id);
+            updateSelectionUI();
+        };
+        
+        window.selectAllPOs = () => {
+            const selectAll = document.getElementById('selectAllPOs');
+            const visibleIds = purchases.slice((poCurrentPage-1)*itemsPerPage, poCurrentPage*itemsPerPage).map(p => p.id);
+            if (selectAll && selectAll.checked) {
+                visibleIds.forEach(id => selectedPurchases.add(id));
+            } else {
+                visibleIds.forEach(id => selectedPurchases.delete(id));
+            }
+            updateSelectionUI();
+        };
+        
+        async function addPurchase(event) {
+            event.preventDefault();
+            const purchaseId = document.getElementById('purchaseId')?.value || generatePurchaseId();
+            const itemName = document.getElementById('purchaseItemName')?.value.trim();
+            const quantity = parseInt(document.getElementById('purchaseQuantity')?.value);
+            const unit = document.getElementById('purchaseUnit')?.value.trim();
+            const price = parseFloat(document.getElementById('purchasePrice')?.value);
+            const category = document.getElementById('purchaseCategory')?.value;
+            const supplier = document.getElementById('purchaseSupplier')?.value.trim();
+            const date = document.getElementById('purchaseDate')?.value || new Date().toISOString().split('T')[0];
+            const notes = document.getElementById('purchaseNotes')?.value;
+            const status = document.getElementById('purchaseStatus')?.value;
+            const editId = document.getElementById('purchaseEditId')?.value;
+            
+            if (!itemName || !quantity || !price) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const purchaseData = {
+                    id: purchaseId,
+                    userId: currentUser.uid,
+                    itemName, quantity, unit: unit || 'pcs', price,
+                    totalAmount: quantity * price, category, supplier, date, notes, status,
+                    updatedBy: userData?.fullName || currentUser.email,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                if (editId) {
+                    await db.collection('purchases').doc(editId).update(purchaseData);
+                    showToast(`Purchase ${purchaseId} updated!`, 'success');
+                } else {
+                    purchaseData.createdBy = userData?.fullName || currentUser.email;
+                    purchaseData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('purchases').add(purchaseData);
+                    showToast(`Purchase ${purchaseId} added!`, 'success');
+                }
+                closeModal('purchaseModal');
+                document.getElementById('purchaseForm')?.reset();
+                document.getElementById('purchaseEditId').value = '';
+                await loadPurchases();
+            } catch (error) {
+                showToast('Error saving purchase', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function addRequisition(event) {
+            event.preventDefault();
+            const reqId = generateRequisitionId();
+            const itemName = document.getElementById('reqItemName')?.value.trim();
+            const quantity = parseInt(document.getElementById('reqQuantity')?.value);
+            const unit = document.getElementById('reqUnit')?.value.trim();
+            const unitPrice = parseFloat(document.getElementById('reqUnitPrice')?.value);
+            const category = document.getElementById('reqCategory')?.value;
+            const supplier = document.getElementById('reqSupplier')?.value;
+            const requestedBy = document.getElementById('reqRequestedBy')?.value;
+            const justification = document.getElementById('reqJustification')?.value;
+            const priority = document.getElementById('reqPriority')?.value;
+            
+            if (!itemName || !quantity || !unitPrice) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                await db.collection('requisitions').add({
+                    reqId, userId: currentUser.uid, itemName, quantity, unit: unit || 'pcs',
+                    unitPrice, totalAmount: quantity * unitPrice, category, supplier,
+                    requestedBy, justification, priority, status: 'pending',
+                    createdBy: userData?.fullName || currentUser.email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: userData?.fullName || currentUser.email,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast(`Requisition ${reqId} submitted!`, 'success');
+                document.getElementById('requisitionForm')?.reset();
+                document.getElementById('reqId').value = generateRequisitionId();
+                await loadRequisitions();
+            } catch (error) {
+                showToast('Error submitting requisition', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function addSupplier(event) {
+            event.preventDefault();
+            const code = generateSupplierCode();
+            const name = document.getElementById('supplierName')?.value.trim();
+            if (!name) { showToast('Supplier name required', 'error'); return; }
+            showLoading(true);
+            try {
+                await db.collection('suppliers').add({
+                    code, userId: currentUser.uid, name,
+                    contact: document.getElementById('supplierContact')?.value,
+                    email: document.getElementById('supplierEmail')?.value,
+                    phone: document.getElementById('supplierPhone')?.value,
+                    address: document.getElementById('supplierAddress')?.value,
+                    createdBy: userData?.fullName || currentUser.email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast(`Supplier ${name} added!`, 'success');
+                document.getElementById('supplierForm')?.reset();
+                document.getElementById('supplierCode').value = generateSupplierCode();
+                await loadSuppliers();
+            } catch (error) {
+                showToast('Error adding supplier', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        window.editRequisition = async (id) => {
+            const req = requisitions.find(r => r.id === id);
+            if (!req) return;
+            document.getElementById('editRequisitionId').value = req.id;
+            document.getElementById('editReqItemName').value = req.itemName || '';
+            document.getElementById('editReqQuantity').value = req.quantity || 1;
+            document.getElementById('editReqUnit').value = req.unit || '';
+            document.getElementById('editReqUnitPrice').value = req.unitPrice || 0;
+            document.getElementById('editReqCategory').value = req.category || 'Other';
+            document.getElementById('editReqSupplier').value = req.supplier || '';
+            document.getElementById('editReqRequestedBy').value = req.requestedBy || '';
+            document.getElementById('editReqJustification').value = req.justification || '';
+            document.getElementById('editReqPriority').value = req.priority || 'medium';
+            document.getElementById('editReqStatus').value = req.status || 'pending';
+            openModal('editRequisitionModal');
+        };
+        
+        async function updateRequisition(event) {
+            event.preventDefault();
+            const id = document.getElementById('editRequisitionId')?.value;
+            const itemName = document.getElementById('editReqItemName')?.value;
+            const quantity = parseInt(document.getElementById('editReqQuantity')?.value);
+            const unit = document.getElementById('editReqUnit')?.value;
+            const unitPrice = parseFloat(document.getElementById('editReqUnitPrice')?.value);
+            const category = document.getElementById('editReqCategory')?.value;
+            const supplier = document.getElementById('editReqSupplier')?.value;
+            const requestedBy = document.getElementById('editReqRequestedBy')?.value;
+            const justification = document.getElementById('editReqJustification')?.value;
+            const priority = document.getElementById('editReqPriority')?.value;
+            const status = document.getElementById('editReqStatus')?.value;
+            const oldStatus = requisitions.find(r => r.id === id)?.status;
+            
+            if (!itemName || !quantity || !unitPrice) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const updateData = {
+                    itemName, quantity, unit: unit || 'pcs', unitPrice,
+                    totalAmount: quantity * unitPrice, category, supplier,
+                    requestedBy, justification, priority, status,
+                    updatedBy: userData?.fullName || currentUser.email,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('requisitions').doc(id).update(updateData);
+                showToast('Requisition updated successfully!', 'success');
+                
+                // AUTO-REGISTER PURCHASE WHEN STATUS CHANGES TO 'approved'
+                if (status === 'approved' && oldStatus !== 'approved') {
+                    const reqData = { ...updateData, id, reqId: document.getElementById('editRequisitionId')?.value };
+                    const purchaseId = generatePurchaseId();
+                    
+                    await db.collection('purchases').add({
+                        id: purchaseId,
+                        userId: currentUser.uid,
+                        requisitionId: id,
+                        requisitionRef: reqData.reqId,
+                        itemName: itemName,
+                        quantity: quantity,
+                        unit: unit || 'pcs',
+                        price: unitPrice,
+                        totalAmount: quantity * unitPrice,
+                        category: category,
+                        supplier: supplier,
+                        date: new Date().toISOString().split('T')[0],
+                        notes: `Auto-created from approved requisition ${reqData.reqId || id.slice(-6)}`,
+                        status: 'approved',
+                        createdBy: userData?.fullName || currentUser.email,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedBy: userData?.fullName || currentUser.email,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    showToast(`Purchase order ${purchaseId} auto-created from approved requisition!`, 'success');
+                    await loadPurchases();
+                }
+                
+                closeModal('editRequisitionModal');
+                await loadRequisitions();
+            } catch (error) {
+                showToast('Error updating requisition', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        window.viewPurchaseDetails = async (id) => {
+            const p = purchases.find(x => x.id === id);
+            if (!p) return;
+            const total = (p.price || 0) * (p.quantity || 0);
+            const detailsHtml = `
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Purchase ID:</span><span class="font-mono">${p.id}</span></div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Item:</span><span class="font-bold">${escapeHtml(p.itemName)}</span></div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Quantity:</span>${p.quantity} ${p.unit || 'pcs'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Unit Price:</span>${formatMoney(p.price)}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Total:</span><span class="font-bold text-emerald-400">${formatMoney(total)}</span></div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Category:</span>${p.category || 'Other'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Supplier:</span>${escapeHtml(p.supplier) || '—'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Status:</span>${getStatusBadge(p.status)}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Date:</span>${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Created By:</span>${escapeHtml(p.createdBy) || '—'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Created At:</span>${p.createdAt ? new Date(p.createdAt.toDate()).toLocaleString() : '—'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Last Edited By:</span>${escapeHtml(p.updatedBy) || '—'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Last Edited:</span>${p.updatedAt ? new Date(p.updatedAt.toDate()).toLocaleString() : '—'}</div>
+                    ${p.notes ? `<div class="py-1"><span class="text-slate-400">Notes:</span><br>${escapeHtml(p.notes)}</div>` : ''}
+                </div>
+            `;
+            document.getElementById('detailsContent').innerHTML = detailsHtml;
+            openModal('viewDetailsModal');
+            
+            document.getElementById('printReceiptBtn').onclick = () => {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(getReceiptHTML(p));
+                printWindow.print();
+            };
+            document.getElementById('downloadReceiptBtn').onclick = async () => {
+                const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `receipt-${p.id}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+                await html2pdf().set(opt).from(getReceiptHTML(p)).save();
+                showToast('Receipt downloaded!', 'success');
+            };
+        };
+        
+        function getReceiptHTML(purchase) {
+            const total = (purchase.price || 0) * (purchase.quantity || 0);
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>Receipt - ${purchase.id}</title>
+                <style>
+                    body { font-family: 'Inter', Arial, sans-serif; padding: 20px; background: white; }
+                    .receipt { max-width: 380px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; }
+                    .header { text-align: center; border-bottom: 2px solid #4F46E5; padding-bottom: 15px; margin-bottom: 15px; }
+                    .header img { width: 50px; margin-bottom: 8px; }
+                    .header h2 { font-size: 18px; margin: 5px 0; color: #4F46E5; }
+                    .header p { font-size: 11px; color: #64748b; margin: 3px 0; }
+                    .items td { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; }
+                    .total-row { font-weight: bold; border-top: 2px solid #4F46E5; }
+                    .footer { text-align: center; font-size: 10px; color: #94a3b8; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+                    .label { color: #64748b; font-size: 11px; }
+                    .value { font-weight: 600; }
+                </style>
+                </head>
+                <body>
+                <div class="receipt">
+                    <div class="header"><img src="${LOGO_URL}" alt="Logo"><h2>${COMPANY_NAME}</h2><p>${COMPANY_SLOGAN}</p></div>
+                    <div><span class="label">Receipt No:</span> <span class="value">${purchase.id}</span></div>
+                    <div><span class="label">Date:</span> <span class="value">${purchase.date || new Date().toLocaleDateString()}</span></div>
+                    <div><span class="label">Status:</span> ${getStatusBadge(purchase.status)}</div>
+                    <div><span class="label">Created By:</span> <span class="value">${escapeHtml(purchase.createdBy) || 'System'}</span></div>
+                    <table class="items"><tr><td class="label">Item</td><td class="value">${purchase.itemName}</td></tr>
+                    <tr><td class="label">Quantity</td><td class="value">${purchase.quantity} ${purchase.unit || 'pcs'}</td></tr>
+                    <tr><td class="label">Unit Price</td><td class="value">${formatMoney(purchase.price)}<\/td><\/tr>
+                    <tr class="total-row"><td class="label">Total<\/td><td class="value">${formatMoney(total)}<\/td><\/tr>
+                    ${purchase.supplier ? `<tr><td class="label">Supplier<\/td><td class="value">${purchase.supplier}<\/td><\/tr>` : ''}
+                    ${purchase.notes ? `<tr><td class="label">Notes<\/td><td class="value">${purchase.notes}<\/td><\/tr>` : ''}
+                <\/table>
+                    <div class="footer"><p>Thank you for your business!</p><p>Generated on: ${new Date().toLocaleString()}</p></div>
+                </div>
+                </body>
+                </html>
+            `;
+        }
+        
+        window.editPurchase = async (id) => {
+            const p = purchases.find(x => x.id === id);
+            if (p) {
+                document.getElementById('purchaseModalTitle').innerHTML = 'Edit Purchase';
+                document.getElementById('purchaseEditId').value = p.id;
+                document.getElementById('purchaseId').value = p.id;
+                document.getElementById('purchaseItemName').value = p.itemName;
+                document.getElementById('purchaseQuantity').value = p.quantity;
+                document.getElementById('purchaseUnit').value = p.unit || '';
+                document.getElementById('purchasePrice').value = p.price;
+                document.getElementById('purchaseCategory').value = p.category || 'Other';
+                document.getElementById('purchaseSupplier').value = p.supplier || '';
+                document.getElementById('purchaseDate').value = p.date || '';
+                document.getElementById('purchaseNotes').value = p.notes || '';
+                document.getElementById('purchaseStatus').value = p.status || 'approved';
+                openModal('purchaseModal');
+            }
+        };
+        
+        window.deletePurchase = async (id) => {
+            if (confirm('Delete this purchase record?')) {
+                showLoading(true);
+                try {
+                    await db.collection('purchases').doc(id).delete();
+                    showToast('Purchase deleted', 'success');
+                    selectedPurchases.delete(id);
+                    updateSelectionUI();
+                    await loadPurchases();
+                } catch (error) {
+                    showToast('Error deleting purchase', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        };
+        
+        window.deleteRequisition = async (id) => {
+            if (confirm('Delete this requisition?')) {
+                showLoading(true);
+                try {
+                    await db.collection('requisitions').doc(id).delete();
+                    showToast('Requisition deleted', 'success');
+                    await loadRequisitions();
+                } catch (error) {
+                    showToast('Error deleting requisition', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        };
+        
+        window.editSupplier = async (id) => {
+            const sup = suppliers.find(s => s.id === id);
+            if (sup) {
+                document.getElementById('supplierCode').value = sup.code || '';
+                document.getElementById('supplierName').value = sup.name;
+                document.getElementById('supplierContact').value = sup.contact || '';
+                document.getElementById('supplierEmail').value = sup.email || '';
+                document.getElementById('supplierPhone').value = sup.phone || '';
+                document.getElementById('supplierAddress').value = sup.address || '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+        
+        window.deleteSupplier = async (id) => {
+            if (confirm('Delete this supplier?')) {
+                showLoading(true);
+                try {
+                    await db.collection('suppliers').doc(id).delete();
+                    await loadSuppliers();
+                    showToast('Supplier deleted', 'success');
+                } catch (error) {
+                    showToast('Error deleting supplier', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        };
+        
+        function exportRequisitionsToCSV() {
+            if (requisitions.length === 0) { showToast('No data to export', 'warning'); return; }
+            let csv = 'ID,Item Name,Quantity,Unit,Unit Price,Total,Category,Supplier,Requested By,Priority,Status,Created By,Created At,Last Edited By,Last Edited\n';
+            requisitions.forEach(r => {
+                csv += `${r.reqId || r.id.slice(-6)},${r.itemName},${r.quantity},${r.unit || 'pcs'},${r.unitPrice},${r.totalAmount},${r.category},${r.supplier || ''},${r.requestedBy || ''},${r.priority},${r.status},${r.createdBy || ''},${formatAuditDate(r.createdAt)},${r.updatedBy || ''},${formatAuditDate(r.updatedAt)}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `requisitions-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('CSV exported!', 'success');
+        }
+        
+        function exportSuppliersToCSV() {
+            if (suppliers.length === 0) { showToast('No data to export', 'warning'); return; }
+            let csv = 'Code,Name,Contact Person,Email,Phone,Address,Created By,Created At\n';
+            suppliers.forEach(s => {
+                csv += `${s.code || s.id.slice(-6)},${s.name},${s.contact || ''},${s.email || ''},${s.phone || ''},${(s.address || '').replace(/,/g, ';')},${s.createdBy || ''},${formatAuditDate(s.createdAt)}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `suppliers-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('CSV exported!', 'success');
+        }
+        
+        async function exportPurchasesToPDF() {
+            if (purchases.length === 0) {
+                showToast('No data to export', 'warning');
+                return;
+            }
+            
+            updatePrintMetadata();
+            const headers = ['PO #', 'Item', 'Qty', 'Unit', 'Price', 'Total', 'Category', 'Supplier', 'Status', 'Date'];
+            const data = purchases.map(p => [
+                p.id, p.itemName, p.quantity, p.unit || 'pcs', formatMoney(p.price), 
+                formatMoney(p.price * p.quantity), p.category || 'Other', p.supplier || '—', 
+                p.status, p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')
+            ]);
+            const totalSpend = purchases.reduce((s, p) => s + ((p.price || 0) * (p.quantity || 0)), 0);
+            
+            const printHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>Procurement Report</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { font-family: 'Inter', Arial, sans-serif; background: white; padding: 30px; }
+                    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 2px solid #4F46E5; }
+                    .header-left { display: flex; align-items: center; gap: 15px; }
+                    .header-left img { height: 60px; width: auto; }
+                    .header-left h1 { font-size: 20px; font-weight: 800; color: #4F46E5; margin: 0; }
+                    .header-left p { font-size: 11px; color: #64748b; margin: 2px 0; }
+                    .header-right { text-align: right; }
+                    .header-right .report-title { font-size: 14px; font-weight: 700; color: #1e293b; }
+                    .header-right .metadata { font-size: 10px; color: #64748b; margin-top: 5px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th { background: #4F46E5; color: white; padding: 10px; font-size: 11px; text-align: left; }
+                    td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 10px; }
+                    .footer { text-align: center; padding: 20px; border-top: 1px solid #e2e8f0; margin-top: 25px; font-size: 9px; color: #94a3b8; }
+                    .total-section { margin-top: 20px; text-align: right; font-weight: bold; }
+                </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="header-left">
+                            <img src="${LOGO_URL}" alt="MAYE Logo">
+                            <div><h1>${COMPANY_NAME}</h1><p>${COMPANY_SLOGAN}</p></div>
+                        </div>
+                        <div class="header-right">
+                            <div class="report-title">Procurement Report</div>
+                            <div class="metadata">Date: ${new Date().toLocaleString()}<br>Reference: ${generateReferenceId()}</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 15px 0;">Purchase Orders Summary</h3>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                        <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+                    </table>
+                    <div class="total-section">Total Spend: ${formatMoney(totalSpend)}</div>
+                    <div class="footer">
+                        <p>Confidential - MAYE System Internal Procurement Analytics</p>
+                        <p>Generated by: ${userData?.fullName || currentUser?.email || 'System User'}</p>
+                        <p>© ${new Date().getFullYear()} ${COMPANY_NAME} - All rights reserved</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `procurement-${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, backgroundColor: '#ffffff' }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
+            showToast('Generating PDF report...', 'info');
+            await html2pdf().set(opt).from(printHTML).save();
+            showToast('PDF exported!', 'success');
+        }
+        
+        function exportPurchasesToCSV() {
+            if (purchases.length === 0) { showToast('No data to export', 'warning'); return; }
+            let csv = 'ID,Item Name,Quantity,Unit,Price,Total,Category,Supplier,Status,Date,Created By,Created At,Last Edited By,Last Edited,Notes\n';
+            purchases.forEach(p => {
+                csv += `${p.id},${p.itemName},${p.quantity},${p.unit || 'pcs'},${p.price},${p.price * p.quantity},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${p.createdBy || ''},${formatAuditDate(p.createdAt)},${p.updatedBy || ''},${formatAuditDate(p.updatedAt)},${(p.notes || '').replace(/,/g, ';')}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `procurement-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('CSV exported!', 'success');
+        }
+        
+        function exportSelectedToCSV() {
+            const selected = purchases.filter(p => selectedPurchases.has(p.id));
+            if (selected.length === 0) { showToast('No items selected', 'warning'); return; }
+            let csv = 'ID,Item Name,Quantity,Unit,Price,Total,Category,Supplier,Status,Date,Notes\n';
+            selected.forEach(p => {
+                csv += `${p.id},${p.itemName},${p.quantity},${p.unit || 'pcs'},${p.price},${p.price * p.quantity},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${(p.notes || '').replace(/,/g, ';')}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `selected-purchases-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(`Exported ${selected.length} items!`, 'success');
+        }
+        
+        async function deleteSelectedPurchases() {
+            const selected = Array.from(selectedPurchases);
+            if (selected.length === 0) return;
+            if (!confirm(`Delete ${selected.length} selected purchase(s)?`)) return;
+            showLoading(true);
+            try {
+                const batch = db.batch();
+                selected.forEach(id => {
+                    const ref = db.collection('purchases').doc(id);
+                    batch.delete(ref);
+                });
+                await batch.commit();
+                showToast(`${selected.length} purchase(s) deleted!`, 'success');
+                selectedPurchases.clear();
+                updateSelectionUI();
+                await loadPurchases();
+            } catch (error) {
+                showToast('Error deleting items', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Pagination
+        function goToReqPage(page) { reqCurrentPage = page; renderRequisitionsTable(); }
+        function goToPoPage(page) { poCurrentPage = page; renderPurchasesTable(); }
+        
+        // ============================================
+        // UI SETUP
+        // ============================================
+        
+        function renderSidebar() {
+            const desktopNav = document.getElementById('sidebarNav');
+            const mobileNav = document.getElementById('mobileSidebarNav');
+            const navHtml = navItems.map(item => `
+                <div class="sidebar-nav-item ${item.active ? 'active' : ''}" onclick="window.location.href='${item.page}'">
+                    <i class="fas ${item.icon}"></i>
+                    <span class="nav-text font-semibold">${item.text}</span>
+                </div>
+            `).join('');
+            if (desktopNav) desktopNav.innerHTML = navHtml;
+            if (mobileNav) mobileNav.innerHTML = navHtml;
+        }
+        
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.procurement-tab');
+            const contents = document.querySelectorAll('.procurement-tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    tabs.forEach(t => {
+                        t.classList.remove('active', 'bg-indigo-600', 'text-white');
+                        t.classList.add('bg-slate-800', 'text-slate-300');
+                    });
+                    tab.classList.add('active', 'bg-indigo-600', 'text-white');
+                    tab.classList.remove('bg-slate-800', 'text-slate-300');
+                    contents.forEach(content => content.classList.add('hidden'));
+                    const target = document.getElementById(`${tabId}Tab`);
+                    if (target) target.classList.remove('hidden');
+                    if (tabId === 'reports') initReportsCharts();
+                });
+            });
+        }
+        
+        function setupEventListeners() {
+            const purchaseForm = document.getElementById('purchaseForm');
+            if (purchaseForm) purchaseForm.addEventListener('submit', addPurchase);
+            
+            const requisitionForm = document.getElementById('requisitionForm');
+            if (requisitionForm) requisitionForm.addEventListener('submit', addRequisition);
+            
+            const supplierForm = document.getElementById('supplierForm');
+            if (supplierForm) supplierForm.addEventListener('submit', addSupplier);
+            
+            const editRequisitionForm = document.getElementById('editRequisitionForm');
+            if (editRequisitionForm) editRequisitionForm.addEventListener('submit', updateRequisition);
+            
+            const addPurchaseBtn = document.getElementById('addPurchaseBtn');
+            if (addPurchaseBtn) {
+                addPurchaseBtn.addEventListener('click', () => {
+                    document.getElementById('purchaseModalTitle').innerHTML = 'Add Purchase';
+                    document.getElementById('purchaseEditId').value = '';
+                    const purchaseIdInput = document.getElementById('purchaseId');
+                    if (purchaseIdInput) purchaseIdInput.value = generatePurchaseId();
+                    const purchaseFormEl = document.getElementById('purchaseForm');
+                    if (purchaseFormEl) purchaseFormEl.reset();
+                    openModal('purchaseModal');
+                });
+            }
+            
+            const exportPurchasesPDFBtn = document.getElementById('exportPurchasesPDFBtn');
+            if (exportPurchasesPDFBtn) exportPurchasesPDFBtn.addEventListener('click', exportPurchasesToPDF);
+            
+            const exportPurchasesCSVBtn = document.getElementById('exportPurchasesCSVBtn');
+            if (exportPurchasesCSVBtn) exportPurchasesCSVBtn.addEventListener('click', exportPurchasesToCSV);
+            
+            const exportRequisitionsCSVBtn = document.getElementById('exportRequisitionsCSV');
+            if (exportRequisitionsCSVBtn) exportRequisitionsCSVBtn.addEventListener('click', exportRequisitionsToCSV);
+            
+            const exportSuppliersCSVBtn = document.getElementById('exportSuppliersCSV');
+            if (exportSuppliersCSVBtn) exportSuppliersCSVBtn.addEventListener('click', exportSuppliersToCSV);
+            
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            if (bulkDeleteBtn) bulkDeleteBtn.addEventListener('click', deleteSelectedPurchases);
+            
+            const bulkExportBtn = document.getElementById('bulkExportBtn');
+            if (bulkExportBtn) bulkExportBtn.addEventListener('click', exportSelectedToCSV);
+            
+            const bulkCancelBtn = document.getElementById('bulkCancelBtn');
+            if (bulkCancelBtn) {
+                bulkCancelBtn.addEventListener('click', () => {
+                    selectedPurchases.clear();
+                    updateSelectionUI();
+                });
+            }
+            
+            const selectAllPOs = document.getElementById('selectAllPOs');
+            if (selectAllPOs) selectAllPOs.addEventListener('change', selectAllPOs);
+            
+            const reqFilterStatus = document.getElementById('reqFilterStatus');
+            if (reqFilterStatus) reqFilterStatus.addEventListener('change', () => { reqCurrentPage = 1; renderRequisitionsTable(); });
+            
+            const reqSearch = document.getElementById('reqSearch');
+            if (reqSearch) reqSearch.addEventListener('input', () => { reqCurrentPage = 1; renderRequisitionsTable(); });
+            
+            const poFilterStatus = document.getElementById('poFilterStatus');
+            if (poFilterStatus) poFilterStatus.addEventListener('change', () => { poCurrentPage = 1; renderPurchasesTable(); });
+            
+            const poSearch = document.getElementById('poSearch');
+            if (poSearch) poSearch.addEventListener('input', () => { poCurrentPage = 1; renderPurchasesTable(); });
+            
+            const floatingAddBtn = document.getElementById('floatingAddBtn');
+            if (floatingAddBtn) {
+                floatingAddBtn.addEventListener('click', () => {
+                    const addBtn = document.getElementById('addPurchaseBtn');
+                    if (addBtn) addBtn.click();
+                });
+            }
+            
+            // Generate IDs on page load
+            const reqIdInput = document.getElementById('reqId');
+            if (reqIdInput) reqIdInput.value = generateRequisitionId();
+            
+            const supplierCodeInput = document.getElementById('supplierCode');
+            if (supplierCodeInput) supplierCodeInput.value = generateSupplierCode();
+            
+            // Sidebar toggle
+            let isCollapsed = false;
+            const toggleBtn = document.getElementById('toggleSidebarBtn');
+            const sidebar = document.getElementById('desktopSidebar');
+            const mainContent = document.getElementById('mainContent');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    isCollapsed = !isCollapsed;
+                    if (isCollapsed) {
+                        sidebar.classList.add('sidebar-collapsed');
+                        sidebar.classList.remove('sidebar-expanded');
+                        mainContent.style.marginLeft = '88px';
+                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'none');
+                        const logoArea = document.getElementById('sidebarLogoArea');
+                        if (logoArea) logoArea.style.display = 'none';
+                        toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    } else {
+                        sidebar.classList.remove('sidebar-collapsed');
+                        sidebar.classList.add('sidebar-expanded');
+                        mainContent.style.marginLeft = '290px';
+                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'inline');
+                        const logoArea = document.getElementById('sidebarLogoArea');
+                        if (logoArea) logoArea.style.display = 'block';
+                        toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    }
+                });
+            }
+            
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const mobileOverlay = document.getElementById('mobileMenuOverlay');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    if (mobileSidebar) mobileSidebar.style.transform = 'translateX(0)';
+                    if (mobileOverlay) mobileOverlay.classList.remove('hidden');
+                });
+            }
+            window.closeMobileMenu = () => {
+                if (mobileSidebar) mobileSidebar.style.transform = 'translateX(-100%)';
+                if (mobileOverlay) mobileOverlay.classList.add('hidden');
+            };
+            if (mobileOverlay) mobileOverlay.addEventListener('click', closeMobileMenu);
+            
+            // User dropdown
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (userDropdown) userDropdown.classList.toggle('hidden');
+                });
+            }
+            document.addEventListener('click', () => {
+                if (userDropdown) userDropdown?.classList.add('hidden');
+            });
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', async () => {
+                    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    await db.collection('users').doc(currentUser.uid).update({ 'settings.theme': currentTheme });
+                    if (currentTheme === 'light') document.body.classList.add('light-mode');
+                    else document.body.classList.remove('light-mode');
+                    themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    initReportsCharts();
+                });
+            }
+            
+            // Logout
+            const logoutBtns = ['logoutBtnSidebar', 'logoutBtnTopbar', 'logoutBtnMobile'];
+            logoutBtns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.addEventListener('click', async () => {
+                        showLoading(true);
+                        await auth.signOut();
+                        window.location.href = 'auth.html';
+                    });
+                }
+            });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Make functions global
+        window.goToReqPage = goToReqPage;
+        window.goToPoPage = goToPoPage;
+        window.closeModal = closeModal;
+        window.editPurchase = editPurchase;
+        window.deletePurchase = deletePurchase;
+        window.viewPurchaseDetails = viewPurchaseDetails;
+        window.editRequisition = editRequisition;
+        window.deleteRequisition = deleteRequisition;
+        window.editSupplier = editSupplier;
+        window.deleteSupplier = deleteSupplier;
+        window.togglePurchaseSelect = togglePurchaseSelect;
+        window.selectAllPOs = selectAllPOs;
+    </script>
+</body>
+</html>

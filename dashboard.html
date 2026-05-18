@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MAYE Dashboard | Financial Management System</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+    
+    <!-- Tailwind CSS - Development only -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+        
+        /* Sidebar Premium */
+        .sidebar-premium {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: 4px 0 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .sidebar-premium {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar-collapsed { width: 88px; }
+        .sidebar-expanded { width: 290px; }
+        
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin: 6px 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        
+        body.light-mode .sidebar-nav-item { color: #475569; }
+        
+        .sidebar-nav-item i { width: 24px; font-size: 1.2rem; }
+        
+        .sidebar-nav-item:hover {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.05));
+            color: #e2e8f0;
+            transform: translateX(5px);
+        }
+        
+        .sidebar-nav-item.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(79, 70, 229, 0.1));
+            color: #818cf8;
+            border-left: 3px solid #4F46E5;
+        }
+        
+        /* Topbar */
+        .topbar-premium {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .topbar-premium {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        .search-input {
+            background: rgba(51, 65, 85, 0.6);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 60px;
+            transition: all 0.25s ease;
+        }
+        
+        .user-btn {
+            background: rgba(51, 65, 85, 0.6);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 60px;
+            transition: all 0.25s ease;
+        }
+        
+        .user-btn:hover {
+            border-color: #4F46E5;
+            background: rgba(79, 70, 229, 0.15);
+        }
+        
+        /* Glass Card */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(79, 70, 229, 0.5);
+        }
+        
+        /* KPI Cards */
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(79, 70, 229, 0.25);
+            border-radius: 28px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: #4F46E5;
+        }
+        
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: 24px;
+            padding: 1.25rem;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(79, 70, 229, 0.4);
+            padding: 0.9rem 1.5rem;
+            border-radius: 60px;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .toast.success { background: rgba(34, 197, 94, 0.9); }
+        .toast.error { background: rgba(239, 68, 68, 0.9); }
+        .toast.info { background: rgba(59, 130, 246, 0.9); }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .spinner-premium {
+            width: 55px;
+            height: 55px;
+            border: 3px solid rgba(79, 70, 229, 0.2);
+            border-top-color: #4F46E5;
+            border-right-color: #818cf8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Activity item */
+        .activity-item {
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 16px;
+            padding: 12px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .activity-item:hover {
+            border-color: rgba(79, 70, 229, 0.4);
+            background: rgba(79, 70, 229, 0.08);
+        }
+        
+        /* Floating button */
+        .floating-btn {
+            background: linear-gradient(135deg, #4F46E5, #6366f1);
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
+            transition: all 0.25s ease;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Health meter */
+        .health-meter {
+            height: 8px;
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .health-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.5s infinite;
+            border-radius: 20px;
+        }
+        
+        @keyframes skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Page animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-animation {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu-premium {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #4F46E5; border-radius: 10px; }
+        
+        /* Light mode text */
+        body.light-mode .text-slate-200 { color: #1e293b; }
+        body.light-mode .text-slate-300 { color: #334155; }
+        body.light-mode .text-slate-400 { color: #64748b; }
+        body.light-mode .border-slate-700 { border-color: #e2e8f0; }
+        body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
+        body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
+        body.light-mode .bg-slate-900 { background-color: #ffffff; }
+        
+        @media (max-width: 768px) {
+            .kpi-value { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-premium"></div>
+    </div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/60 z-35 hidden backdrop-blur-sm" onclick="closeMobileMenu()"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div id="mobileSidebar" class="mobile-menu-premium fixed top-0 left-0 h-full w-72 z-40 transform -translate-x-full transition-transform duration-300 ease-out">
+        <div class="p-6 border-b border-indigo-500/20">
+            <div class="flex items-center gap-3">
+                <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-11 w-auto">
+                <div>
+                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">MAYE</span>
+                    <span class="font-semibold text-xs text-slate-400">Financial System</span>
+                </div>
+            </div>
+        </div>
+        <div id="mobileSidebarNav" class="p-4 space-y-1.5"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-indigo-500/20">
+            <button id="logoutBtnMobile" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Desktop Sidebar -->
+        <aside id="desktopSidebar" class="sidebar sidebar-expanded sidebar-premium flex flex-col h-screen fixed left-0 top-0 z-30 hidden md:flex">
+            <div class="px-5 pt-6 pb-5 border-b border-indigo-500/20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                        <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-7 w-auto">
+                    </div>
+                    <div id="sidebarLogoArea">
+                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">MAYE</span>
+                        <span class="font-bold text-xs text-slate-400 block">Dashboard</span>
+                    </div>
+                </div>
+                <button id="toggleSidebarBtn" class="text-slate-400 hover:text-indigo-400 transition-all p-1.5 rounded-lg hover:bg-indigo-500/10">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                </button>
+            </div>
+            <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
+            <div class="p-4 border-t border-indigo-500/20 mt-auto">
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text font-semibold">Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden md:ml-[290px] transition-all duration-300 ease-out" id="mainContent">
+            <!-- Topbar -->
+            <header class="topbar-premium sticky top-0 z-20">
+                <div class="px-5 sm:px-7 py-3.5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white text-2xl p-1.5 rounded-xl hover:bg-indigo-500/10 transition">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="hidden md:flex items-center search-input px-4 py-2.5 min-w-[320px]">
+                            <i class="fas fa-search text-slate-400 mr-3"></i>
+                            <input type="text" id="globalSearch" placeholder="Search income... (Ctrl+K)" class="bg-transparent outline-none text-sm flex-1 text-slate-200 font-medium">
+                            <kbd class="hidden sm:inline-block text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-lg font-mono">Ctrl+K</kbd>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button id="themeToggle" class="user-btn !rounded-full !w-10 !h-10 flex items-center justify-center text-slate-300 hover:text-indigo-400 transition">
+                            <i class="fas fa-moon text-lg"></i>
+                        </button>
+                        
+                        <div class="relative">
+                            <button id="userMenuBtn" class="user-btn flex items-center gap-2 px-3 py-2">
+                                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <img id="userAvatar" src="" class="w-8 h-8 rounded-full object-cover hidden">
+                                    <i id="userAvatarFallback" class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <div class="hidden lg:block text-left">
+                                    <p id="userName" class="text-sm font-bold text-slate-200">Loading...</p>
+                                    <p class="text-xs text-slate-400">User</p>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
+                            </button>
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                                <div class="p-4 border-b border-indigo-500/20">
+                                    <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
+                                </div>
+                                <div class="py-2">
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='income.html'">
+                                        <i class="fas fa-money-bill-wave w-5 text-emerald-400"></i> Income
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='procurement.html'">
+                                        <i class="fas fa-shopping-cart w-5 text-amber-400"></i> Procurement
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
+                                        <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
+                                        <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
+                                    </div>
+                                    <hr class="border-indigo-500/20 my-1">
+                                    <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
+                                        <i class="fas fa-sign-out-alt w-5"></i> Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden px-5 pb-4">
+                    <div class="search-input flex items-center px-4 py-2.5">
+                        <i class="fas fa-search text-slate-400 mr-3"></i>
+                        <input type="text" id="mobileSearch" placeholder="Search..." class="bg-transparent outline-none text-sm flex-1 text-slate-200">
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Breadcrumb -->
+            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30">
+                <div class="flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-home text-indigo-400 text-xs"></i>
+                    <span class="text-slate-400">Dashboard</span>
+                    <i class="fas fa-chevron-right text-xs text-slate-600"></i>
+                    <span class="text-slate-200 font-semibold">Overview</span>
+                </div>
+            </div>
+            
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-5 sm:p-7">
+                <!-- Skeleton loading -->
+                <div id="skeletonLoader" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div class="skeleton h-36 rounded-2xl"></div>
+                        <div class="skeleton h-36 rounded-2xl"></div>
+                        <div class="skeleton h-36 rounded-2xl"></div>
+                        <div class="skeleton h-36 rounded-2xl"></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="skeleton h-80 rounded-2xl"></div>
+                        <div class="skeleton h-80 rounded-2xl"></div>
+                    </div>
+                    <div class="skeleton h-96 rounded-2xl"></div>
+                </div>
+                
+                <!-- Actual content -->
+                <div id="actualContent" class="page-animation" style="display: none;"></div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Command Palette -->
+    <div id="commandPalette" class="fixed top-1/4 left-1/2 -translate-x-1/2 w-[90%] max-w-xl hidden z-[10000] bg-slate-800 rounded-2xl border border-indigo-500/30 shadow-2xl">
+        <div class="p-5 border-b border-slate-700">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-search text-indigo-400 text-xl"></i>
+                <input type="text" id="commandInput" placeholder="Type a command or search..." class="bg-transparent outline-none w-full text-white text-lg font-medium">
+            </div>
+        </div>
+        <div id="commandResults" class="max-h-80 overflow-y-auto p-3 space-y-2"></div>
+    </div>
+    
+    <!-- Add Income Modal -->
+    <div id="addIncomeModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent flex items-center gap-2">
+                    <i class="fas fa-plus-circle text-indigo-400"></i> Add Income
+                </h2>
+                <button onclick="closeModal('addIncomeModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="addIncomeForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
+                    <input type="number" id="incomeAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white font-bold" placeholder="0.00" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Type *</label>
+                    <select id="incomeType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
+                        <option value="salary">💰 Salary</option>
+                        <option value="bonus">🎉 Bonus</option>
+                        <option value="freelance">💻 Freelance</option>
+                        <option value="investment">📈 Investment</option>
+                        <option value="gift">🎁 Gift</option>
+                        <option value="other">📌 Other</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                    <input type="text" id="incomeCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Work, Side Hustle">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Date</label>
+                    <input type="date" id="incomeDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Description</label>
+                    <textarea id="incomeDescription" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white resize-none" placeholder="Additional notes..."></textarea>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-3 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20">
+                        <i class="fas fa-save mr-2"></i> Save Income
+                    </button>
+                    <button type="button" onclick="closeModal('addIncomeModal')" class="flex-1 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Quick Add Floating Button -->
+    <button id="floatingAddBtn" class="floating-btn fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white text-xl z-10 md:hidden">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Global state
+        let currentUser = null;
+        let userData = null;
+        let incomes = [];
+        let charts = { bar: null, line: null, pie: null };
+        let currentCurrency = 'RWF';
+        let currencySymbol = 'FRw';
+        let currentTheme = 'dark';
+        
+        const currencies = {
+            USD: { symbol: '$', name: 'US Dollar' },
+            EUR: { symbol: '€', name: 'Euro' },
+            AED: { symbol: 'D', name: 'Dirham' },
+            RWF: { symbol: 'FRw', name: 'Rwandan Franc' }
+        };
+        
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const navItems = [
+            { icon: 'fa-chart-line', text: 'Dashboard', page: 'dashboard.html', active: true },
+            { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
+            { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: false },
+            { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false }
+        ];
+        
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        
+        function formatMoney(amount) {
+            if (amount === undefined || amount === null) amount = 0;
+            const symbol = currencies[currentCurrency]?.symbol || 'FRw';
+            if (currentCurrency === 'AED') return `${symbol} ${amount.toLocaleString()}`;
+            return `${symbol} ${amount.toLocaleString()}`;
+        }
+        
+        function formatCompactMoney(amount) {
+            if (amount >= 1000000) return formatMoney(amount / 1000000) + 'M';
+            if (amount >= 1000) return formatMoney(amount / 1000) + 'K';
+            return formatMoney(amount);
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+            toast.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) overlay.classList.add('active');
+            else overlay.classList.remove('active');
+        }
+        
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('flex');
+            document.getElementById(modalId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('flex');
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+        
+        auth.onAuthStateChanged(async (user) => {
+            console.log('🔐 Auth state changed:', user?.email);
+            
+            if (!user) {
+                console.log('❌ No user, redirecting to auth.html');
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            if (!user.emailVerified) {
+                console.log('⚠️ Email not verified');
+                await auth.signOut();
+                window.location.href = 'auth.html?verify=true';
+                return;
+            }
+            
+            currentUser = user;
+            console.log('✅ User authenticated:', currentUser.email);
+            
+            await loadUserData();
+            await loadIncomes();
+            renderSidebar();
+            setupEventListeners();
+            setupRealtimeListener();
+        });
+        
+        async function loadUserData() {
+            try {
+                console.log('📥 Loading user data for:', currentUser.uid);
+                const doc = await db.collection('users').doc(currentUser.uid).get();
+                
+                if (doc.exists) {
+                    userData = doc.data();
+                    console.log('✅ User data loaded:', userData?.fullName);
+                    
+                    if (userData?.settings?.currency) {
+                        currentCurrency = userData.settings.currency;
+                        currencySymbol = currencies[currentCurrency]?.symbol || 'FRw';
+                    }
+                    if (userData?.settings?.theme) {
+                        currentTheme = userData.settings.theme;
+                        if (currentTheme === 'light') {
+                            document.body.classList.add('light-mode');
+                            document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun text-lg"></i>';
+                        }
+                    }
+                    
+                    document.getElementById('userName').textContent = userData?.fullName || currentUser.email.split('@')[0];
+                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
+                    
+                    if (userData?.profilePicture) {
+                        document.getElementById('userAvatar').src = userData.profilePicture;
+                        document.getElementById('userAvatar').classList.remove('hidden');
+                        document.getElementById('userAvatarFallback').classList.add('hidden');
+                    }
+                } else {
+                    console.warn('⚠️ User document not found, creating...');
+                    userData = {
+                        fullName: currentUser.email.split('@')[0],
+                        email: currentUser.email,
+                        settings: { currency: 'RWF', theme: 'dark' }
+                    };
+                    await db.collection('users').doc(currentUser.uid).set(userData);
+                }
+            } catch (error) {
+                console.error('❌ Error loading user data:', error);
+                showToast('Error loading user data: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadIncomes() {
+            console.log('📥 Loading incomes for user:', currentUser?.uid);
+            
+            if (!currentUser) {
+                console.error('❌ No current user');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                // Try with simple query first (no orderBy to avoid index requirement)
+                let query = db.collection('income').where('userId', '==', currentUser.uid);
+                
+                const snapshot = await query.get();
+                
+                console.log('📊 Query result:', snapshot.size, 'records found');
+                
+                incomes = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(), 
+                    amount: doc.data().amount || 0 
+                }));
+                
+                // Sort manually instead of using orderBy
+                incomes.sort((a, b) => {
+                    if (a.timestamp && b.timestamp) {
+                        return b.timestamp - a.timestamp;
+                    }
+                    return 0;
+                });
+                
+                console.log('💰 Processed incomes:', incomes.length);
+                
+                if (incomes.length === 0) {
+                    console.warn('⚠️ No income records found');
+                    showToast('No income data. Click + to add your first income!', 'info');
+                } else {
+                    const total = incomes.reduce((sum, inc) => sum + inc.amount, 0);
+                    console.log('💰 Total income:', total);
+                }
+                
+                hideSkeletonAndRender();
+                
+            } catch (error) {
+                console.error('❌ Error loading incomes:', error);
+                console.error('Error details:', error.message);
+                
+                if (error.code === 'failed-precondition' && error.message.includes('index')) {
+                    console.warn('⚠️ Index required! Creating fallback query...');
+                    // Fallback: try without any ordering
+                    try {
+                        const fallbackSnapshot = await db.collection('income').where('userId', '==', currentUser.uid).get();
+                        incomes = fallbackSnapshot.docs.map(doc => ({ 
+                            id: doc.id, 
+                            ...doc.data(), 
+                            amount: doc.data().amount || 0 
+                        }));
+                        console.log('📊 Fallback query successful:', incomes.length, 'records');
+                        hideSkeletonAndRender();
+                    } catch (fallbackError) {
+                        console.error('❌ Fallback also failed:', fallbackError);
+                        showToast('Please create required index. Check console for link.', 'error');
+                        hideSkeletonAndRender();
+                    }
+                } else {
+                    showToast('Error loading data: ' + error.message, 'error');
+                    hideSkeletonAndRender();
+                }
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function hideSkeletonAndRender() {
+            document.getElementById('skeletonLoader').style.display = 'none';
+            document.getElementById('actualContent').style.display = 'block';
+            renderDashboard();
+        }
+        
+        // Real-time listener
+        function setupRealtimeListener() {
+            if (!currentUser) return;
+            
+            db.collection('income')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot((snapshot) => {
+                    console.log('🔄 Real-time update received, changes:', snapshot.docChanges().length);
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            console.log('📝 Income added:', change.doc.data().amount);
+                            showToast('New income added!', 'success');
+                        } else if (change.type === 'modified') {
+                            console.log('✏️ Income modified');
+                            showToast('Income updated', 'info');
+                        } else if (change.type === 'removed') {
+                            console.log('🗑️ Income deleted');
+                            showToast('Income deleted', 'info');
+                        }
+                    });
+                    loadIncomes();
+                }, (error) => {
+                    console.error('❌ Realtime listener error:', error);
+                });
+        }
+        
+        // ============================================
+        // DASHBOARD RENDER
+        // ============================================
+        
+        function renderDashboard() {
+            console.log('🎨 Rendering dashboard with', incomes.length, 'incomes');
+            
+            const totalIncome = incomes.reduce((sum, inc) => sum + (inc.amount || 0), 0);
+            const totalExpenses = totalIncome * 0.42;
+            const netBalance = totalIncome - totalExpenses;
+            const savingsRate = totalIncome > 0 ? ((netBalance / totalIncome) * 100).toFixed(1) : 0;
+            const monthlyData = calculateMonthlyData();
+            const categoryData = calculateCategoryData();
+            
+            const html = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
+                    <div class="kpi-card p-5" onclick="openModal('addIncomeModal')">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Income</span>
+                            <div class="w-11 h-11 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-arrow-up text-green-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold" id="kpi-income">${formatMoney(totalIncome)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">All time earnings</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Expenses</span>
+                            <div class="w-11 h-11 bg-red-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-arrow-down text-red-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold" id="kpi-expense">${formatMoney(totalExpenses)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Estimated expenses</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Net Balance</span>
+                            <div class="w-11 h-11 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-wallet text-indigo-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold" id="kpi-balance">${formatMoney(netBalance)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Income - Expenses</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Savings Rate</span>
+                            <div class="w-11 h-11 bg-amber-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-piggy-bank text-amber-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold" id="kpi-savings">${savingsRate}%</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Of total income</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-7">
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg">Income vs Expenses</h3>
+                            <i class="fas fa-chart-simple text-slate-500"></i>
+                        </div>
+                        <canvas id="barChart" height="220"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg">Monthly Trend</h3>
+                            <i class="fas fa-chart-line text-slate-500"></i>
+                        </div>
+                        <canvas id="lineChart" height="220"></canvas>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-7">
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg">Category Distribution</h3>
+                            <i class="fas fa-chart-pie text-slate-500"></i>
+                        </div>
+                        <canvas id="pieChart" height="200"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg">Today's Summary</h3>
+                            <i class="fas fa-calendar-day text-slate-500"></i>
+                        </div>
+                        <div id="todaySummary" class="space-y-3"></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg">Financial Health</h3>
+                            <i class="fas fa-heartbeat text-slate-500"></i>
+                        </div>
+                        <div id="healthMeter"></div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 mb-7">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                            <i class="fas fa-robot text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-extrabold tracking-tight">AI Financial Insights</h3>
+                            <p class="text-xs text-slate-400 font-medium">Powered by real-time analysis</p>
+                        </div>
+                    </div>
+                    <div id="aiInsights" class="space-y-3 text-sm"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i class="fas fa-bolt text-yellow-400 text-xl"></i>
+                            <h3 class="font-bold text-lg">Quick Actions</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="openModal('addIncomeModal')" class="flex items-center justify-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 font-bold py-3.5 rounded-xl transition">
+                                <i class="fas fa-plus-circle"></i> Add Income
+                            </button>
+                            <button onclick="window.location.href='income.html'" class="flex items-center justify-center gap-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 font-bold py-3.5 rounded-xl transition">
+                                <i class="fas fa-list"></i> View All Income
+                            </button>
+                            <button onclick="window.location.href='reports.html'" class="flex items-center justify-center gap-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 font-bold py-3.5 rounded-xl transition">
+                                <i class="fas fa-chart-line"></i> Generate Report
+                            </button>
+                            <button id="refreshDataBtn" class="flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 font-bold py-3.5 rounded-xl transition">
+                                <i class="fas fa-sync-alt"></i> Refresh Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-history text-indigo-400 text-xl"></i>
+                                <h3 class="font-bold text-lg">Recent Activity</h3>
+                            </div>
+                            <button id="refreshActivityBtn" class="text-indigo-400 hover:text-indigo-300 text-sm font-semibold">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div id="activityFeed" class="space-y-3 max-h-80 overflow-y-auto pr-2"></div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('actualContent').innerHTML = html;
+            
+            setTimeout(() => {
+                initCharts(monthlyData, categoryData);
+                renderTodaySummary();
+                renderHealthMeter(parseFloat(savingsRate));
+                renderAIInsights(totalIncome, totalExpenses, netBalance, savingsRate);
+                renderActivityFeed();
+                
+                document.getElementById('refreshDataBtn')?.addEventListener('click', () => {
+                    showToast('Refreshing data...', 'info');
+                    loadIncomes();
+                });
+            }, 100);
+        }
+        
+        function calculateMonthlyData() {
+            const last6Months = [];
+            const today = new Date();
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                const monthName = monthNames[date.getMonth()];
+                const monthIncome = incomes.filter(inc => {
+                    if (!inc.date) return false;
+                    const incDate = new Date(inc.date);
+                    return incDate.getMonth() === date.getMonth() && incDate.getFullYear() === date.getFullYear();
+                }).reduce((sum, inc) => sum + (inc.amount || 0), 0);
+                last6Months.push({ month: monthName, income: monthIncome, expenses: monthIncome * 0.42 });
+            }
+            return last6Months;
+        }
+        
+        function calculateCategoryData() {
+            const categories = {};
+            incomes.forEach(inc => {
+                const type = inc.type || 'other';
+                if (!categories[type]) categories[type] = 0;
+                categories[type] += inc.amount || 0;
+            });
+            return categories;
+        }
+        
+        function initCharts(monthlyData, categoryData) {
+            const ctxBar = document.getElementById('barChart');
+            const ctxLine = document.getElementById('lineChart');
+            const ctxPie = document.getElementById('pieChart');
+            
+            if (!ctxBar || !ctxLine || !ctxPie) return;
+            
+            if (charts.bar) charts.bar.destroy();
+            if (charts.line) charts.line.destroy();
+            if (charts.pie) charts.pie.destroy();
+            
+            const textColor = currentTheme === 'light' ? '#475569' : '#94a3b8';
+            
+            charts.bar = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: monthlyData.map(d => d.month),
+                    datasets: [
+                        { label: 'Income', data: monthlyData.map(d => d.income), backgroundColor: '#22C55E', borderRadius: 8 },
+                        { label: 'Expenses', data: monthlyData.map(d => d.expenses), backgroundColor: '#EF4444', borderRadius: 8 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { labels: { color: textColor } }, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatMoney(ctx.raw)}` } } },
+                    scales: { y: { ticks: { color: textColor, callback: (v) => formatCompactMoney(v) } }, x: { ticks: { color: textColor } } }
+                }
+            });
+            
+            charts.line = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: monthlyData.map(d => d.month),
+                    datasets: [{ label: 'Income Trend', data: monthlyData.map(d => d.income), borderColor: '#4F46E5', backgroundColor: 'rgba(79, 70, 229, 0.1)', tension: 0.4, fill: true }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { labels: { color: textColor } } },
+                    scales: { y: { ticks: { color: textColor, callback: (v) => formatCompactMoney(v) } }, x: { ticks: { color: textColor } } }
+                }
+            });
+            
+            charts.pie = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryData).map(l => l.charAt(0).toUpperCase() + l.slice(1)),
+                    datasets: [{ data: Object.values(categoryData), backgroundColor: ['#4F46E5', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: textColor } } } }
+            });
+        }
+        
+        function renderTodaySummary() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayIncomes = incomes.filter(inc => inc.date === today);
+            const totalToday = todayIncomes.reduce((s, inc) => s + (inc.amount || 0), 0);
+            const topSource = todayIncomes.length > 0 ? todayIncomes[0].type || 'income' : 'none';
+            
+            document.getElementById('todaySummary').innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-coins text-green-400 mr-2"></i>Today's Income</span>
+                        <span class="font-extrabold text-green-400 text-lg">${formatMoney(totalToday)}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-list mr-2"></i>Transactions</span>
+                        <span class="font-bold">${todayIncomes.length} records</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-tag mr-2"></i>Top Source</span>
+                        <span class="font-bold text-indigo-400">${topSource.charAt(0).toUpperCase() + topSource.slice(1)}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderHealthMeter(savingsRate) {
+            let status = '', color = '', message = '';
+            if (savingsRate >= 30) { status = 'Excellent'; color = '#22C55E'; message = 'Outstanding! Keep up the great work!'; }
+            else if (savingsRate >= 20) { status = 'Good'; color = '#F59E0B'; message = 'You\'re on the right track!'; }
+            else if (savingsRate >= 10) { status = 'Fair'; color = '#3B82F6'; message = 'Room for improvement.'; }
+            else { status = 'Needs Attention'; color = '#EF4444'; message = 'Consider reducing expenses.'; }
+            
+            document.getElementById('healthMeter').innerHTML = `
+                <div class="text-center">
+                    <div class="text-5xl font-extrabold mb-3" style="color: ${color}">${savingsRate}%</div>
+                    <div class="health-meter mb-3">
+                        <div class="health-fill" style="width: ${Math.min(savingsRate, 100)}%; background: ${color}"></div>
+                    </div>
+                    <div class="font-bold text-xl mb-1" style="color: ${color}">${status}</div>
+                    <p class="text-xs text-slate-400 font-medium">${message}</p>
+                    <div class="mt-3 text-xs text-slate-500 font-medium">
+                        <i class="fas fa-info-circle mr-1"></i> Target: 20%+ savings rate
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderAIInsights(totalIncome, totalExpenses, netBalance, savingsRate) {
+            const insights = [];
+            if (totalIncome === 0) {
+                insights.push('📌 <span class="text-yellow-400 font-bold">No income recorded yet.</span> Start by adding your first income entry!');
+            } else {
+                if (savingsRate < 15) insights.push('💰 <span class="text-yellow-400 font-bold">Savings Alert:</span> Your savings rate is below 15%. Try to save at least 20% of your income.');
+                else if (savingsRate > 30) insights.push('🎯 <span class="text-green-400 font-bold">Excellent!</span> You\'re saving over 30% of your income.');
+                if (totalExpenses > totalIncome * 0.5) insights.push('📊 <span class="text-orange-400 font-bold">Expense Analysis:</span> Your expenses are high (over 50% of income).');
+                const topCategory = Object.entries(calculateCategoryData()).sort((a, b) => b[1] - a[1])[0];
+                if (topCategory) insights.push(`🎯 <span class="text-blue-400 font-bold">Top Income Source:</span> ${topCategory[0]}`);
+            }
+            if (insights.length === 0) insights.push('✨ <span class="text-green-400 font-bold">Great job!</span> Your finances look healthy.');
+            
+            document.getElementById('aiInsights').innerHTML = insights.map(i => `
+                <div class="flex items-start gap-3 p-3 bg-slate-800/40 rounded-xl">
+                    <div class="text-xl">${i.split(' ')[0]}</div>
+                    <div class="font-medium">${i.substring(i.indexOf(' ') + 1)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderActivityFeed() {
+            const recentIncomes = incomes.slice(0, 8);
+            if (recentIncomes.length === 0) {
+                document.getElementById('activityFeed').innerHTML = `
+                    <div class="text-center text-slate-400 py-8">
+                        <i class="fas fa-inbox text-4xl mb-3 opacity-50"></i>
+                        <p class="font-medium">No income records yet</p>
+                        <button onclick="openModal('addIncomeModal')" class="mt-3 text-indigo-400 text-sm font-bold hover:underline">Add your first income →</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('activityFeed').innerHTML = recentIncomes.map(inc => `
+                <div class="activity-item flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-plus-circle text-green-400"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold">${inc.type ? inc.type.charAt(0).toUpperCase() + inc.type.slice(1) : 'Income'}</div>
+                            <div class="text-xs text-slate-400 font-medium">${inc.date || new Date().toISOString().split('T')[0]}</div>
+                        </div>
+                    </div>
+                    <div class="font-extrabold text-green-400">+${formatMoney(inc.amount)}</div>
+                </div>
+            `).join('');
+        }
+        
+        // ============================================
+        // SIDEBAR RENDER
+        // ============================================
+        
+        function renderSidebar() {
+            const desktopNav = document.getElementById('sidebarNav');
+            const mobileNav = document.getElementById('mobileSidebarNav');
+            
+            const navHtml = navItems.map(item => `
+                <div class="sidebar-nav-item ${item.active ? 'active' : ''}" onclick="window.location.href='${item.page}'">
+                    <i class="fas ${item.icon}"></i>
+                    <span class="nav-text font-semibold">${item.text}</span>
+                </div>
+            `).join('');
+            
+            if (desktopNav) desktopNav.innerHTML = navHtml;
+            if (mobileNav) mobileNav.innerHTML = navHtml;
+        }
+        
+        // ============================================
+        // ADD INCOME
+        // ============================================
+        
+        async function addIncome(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('incomeAmount').value);
+            const type = document.getElementById('incomeType').value;
+            const category = document.getElementById('incomeCategory').value;
+            const date = document.getElementById('incomeDate').value || new Date().toISOString().split('T')[0];
+            const description = document.getElementById('incomeDescription').value;
+            
+            if (!amount || isNaN(amount) || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                await db.collection('income').add({
+                    userId: currentUser.uid,
+                    amount: amount,
+                    type: type,
+                    category: category || type,
+                    date: date,
+                    description: description,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showToast('Income added successfully!', 'success');
+                closeModal('addIncomeModal');
+                document.getElementById('addIncomeForm').reset();
+                await loadIncomes();
+                
+            } catch (error) {
+                console.error('Error adding income:', error);
+                showToast('Error adding income: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        
+        function setupEventListeners() {
+            document.getElementById('addIncomeForm').addEventListener('submit', addIncome);
+            
+            // Toggle sidebar
+            let isCollapsed = false;
+            const toggleBtn = document.getElementById('toggleSidebarBtn');
+            const sidebar = document.getElementById('desktopSidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    isCollapsed = !isCollapsed;
+                    if (isCollapsed) {
+                        sidebar.classList.add('sidebar-collapsed');
+                        sidebar.classList.remove('sidebar-expanded');
+                        mainContent.style.marginLeft = '88px';
+                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'none');
+                        document.getElementById('sidebarLogoArea').style.display = 'none';
+                        toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    } else {
+                        sidebar.classList.remove('sidebar-collapsed');
+                        sidebar.classList.add('sidebar-expanded');
+                        mainContent.style.marginLeft = '290px';
+                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'inline');
+                        document.getElementById('sidebarLogoArea').style.display = 'block';
+                        toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    }
+                });
+            }
+            
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const mobileOverlay = document.getElementById('mobileMenuOverlay');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileSidebar.style.transform = 'translateX(0)';
+                    mobileOverlay.classList.remove('hidden');
+                });
+            }
+            
+            window.closeMobileMenu = () => {
+                mobileSidebar.style.transform = 'translateX(-100%)';
+                mobileOverlay.classList.add('hidden');
+            };
+            
+            if (mobileOverlay) mobileOverlay.addEventListener('click', closeMobileMenu);
+            
+            // User dropdown
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('hidden');
+                });
+            }
+            
+            document.addEventListener('click', () => {
+                if (userDropdown) userDropdown.classList.add('hidden');
+            });
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', async () => {
+                    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    if (currentTheme === 'light') {
+                        document.body.classList.add('light-mode');
+                        themeToggle.innerHTML = '<i class="fas fa-sun text-lg"></i>';
+                    } else {
+                        document.body.classList.remove('light-mode');
+                        themeToggle.innerHTML = '<i class="fas fa-moon text-lg"></i>';
+                    }
+                    if (currentUser) {
+                        await db.collection('users').doc(currentUser.uid).update({
+                            'settings.theme': currentTheme
+                        });
+                    }
+                    showToast(`Switched to ${currentTheme} mode`, 'success');
+                });
+            }
+            
+            // Floating add button
+            const floatingBtn = document.getElementById('floatingAddBtn');
+            if (floatingBtn) floatingBtn.addEventListener('click', () => openModal('addIncomeModal'));
+            
+            // Refresh activity
+            const refreshBtn = document.getElementById('refreshActivityBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', async () => {
+                    showToast('Refreshing data...', 'info');
+                    await loadIncomes();
+                    showToast('Data refreshed', 'success');
+                });
+            }
+            
+            // Logout
+            const logoutBtns = ['logoutBtnSidebar', 'logoutBtnTopbar', 'logoutBtnMobile'];
+            logoutBtns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.addEventListener('click', async () => {
+                        showLoading(true);
+                        await auth.signOut();
+                        window.location.href = 'auth.html';
+                    });
+                }
+            });
+            
+            // Command palette (Ctrl+K)
+            const commandPalette = document.getElementById('commandPalette');
+            const commandInput = document.getElementById('commandInput');
+            const commandResults = document.getElementById('commandResults');
+            
+            const commands = [
+                { name: 'Add Income', action: () => openModal('addIncomeModal'), icon: 'fa-plus-circle' },
+                { name: 'Go to Income', action: () => window.location.href = 'income.html', icon: 'fa-money-bill-wave' },
+                { name: 'Go to Reports', action: () => window.location.href = 'reports.html', icon: 'fa-chart-pie' },
+                { name: 'Go to Settings', action: () => window.location.href = 'settings.html', icon: 'fa-cog' },
+                { name: 'Refresh Dashboard', action: () => loadIncomes(), icon: 'fa-sync-alt' }
+            ];
+            
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    commandPalette.classList.toggle('hidden');
+                    if (!commandPalette.classList.contains('hidden')) {
+                        setTimeout(() => commandInput?.focus(), 100);
+                    }
+                }
+                if (e.key === 'Escape') {
+                    commandPalette.classList.add('hidden');
+                    closeModal('addIncomeModal');
+                }
+            });
+            
+            if (commandInput) {
+                commandInput.addEventListener('input', () => {
+                    const query = commandInput.value.toLowerCase();
+                    const filtered = commands.filter(cmd => cmd.name.toLowerCase().includes(query));
+                    commandResults.innerHTML = filtered.map(cmd => `
+                        <div class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-indigo-500/10 cursor-pointer transition font-medium" onclick="(${cmd.action.toString()})(); document.getElementById('commandPalette').classList.add('hidden');">
+                            <i class="fas ${cmd.icon} text-indigo-400 w-5"></i>
+                            <span>${cmd.name}</span>
+                        </div>
+                    `).join('');
+                });
+                commandResults.innerHTML = commands.map(cmd => `
+                    <div class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-indigo-500/10 cursor-pointer transition font-medium" onclick="(${cmd.action.toString()})(); document.getElementById('commandPalette').classList.add('hidden');">
+                        <i class="fas ${cmd.icon} text-indigo-400 w-5"></i>
+                        <span>${cmd.name}</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Make functions global
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

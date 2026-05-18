@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Income Management - MAYE System | Advanced Earnings Tracker</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); }
+        
+        /* Sidebar Premium */
+        .sidebar-premium {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: 4px 0 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .sidebar-premium {
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+        }
+        
+        .sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar-collapsed { width: 88px; }
+        .sidebar-expanded { width: 290px; }
+        
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin: 6px 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        
+        body.light-mode .sidebar-nav-item { color: #475569; }
+        
+        .sidebar-nav-item i { width: 24px; font-size: 1.2rem; }
+        
+        .sidebar-nav-item:hover {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.05));
+            color: #e2e8f0;
+            transform: translateX(5px);
+        }
+        
+        .sidebar-nav-item.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(79, 70, 229, 0.1));
+            color: #818cf8;
+            border-left: 3px solid #4F46E5;
+        }
+        
+        /* Topbar */
+        .topbar-premium {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .topbar-premium { background: rgba(255, 255, 255, 0.85); }
+        
+        .search-input {
+            background: rgba(51, 65, 85, 0.6);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 60px;
+            transition: all 0.25s ease;
+        }
+        
+        .user-btn {
+            background: rgba(51, 65, 85, 0.6);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 60px;
+            transition: all 0.25s ease;
+        }
+        
+        .user-btn:hover {
+            border-color: #4F46E5;
+            background: rgba(79, 70, 229, 0.15);
+        }
+        
+        /* Glass Card */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .glass-card { background: rgba(255, 255, 255, 0.7); }
+        .glass-card:hover { border-color: rgba(79, 70, 229, 0.5); }
+        
+        /* Stat Card */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(79, 70, 229, 0.25);
+            border-radius: 28px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: #4F46E5;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Type Badges */
+        .type-badge {
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        
+        .type-salary { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .type-bonus { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .type-freelance { background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .type-investment { background: rgba(6, 182, 212, 0.2); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
+        .type-gift { background: rgba(236, 72, 153, 0.2); color: #EC4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+        .type-other { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 60px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-approved { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        
+        /* Tag */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(79, 70, 229, 0.15);
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+        
+        /* Table */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+        }
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.1);
+            font-weight: 500;
+        }
+        .data-table tr:hover td { background: rgba(79, 70, 229, 0.05); }
+        
+        .table-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+        tr:hover .table-actions { opacity: 1; }
+        
+        /* Pagination */
+        .pagination-btn {
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: rgba(51, 65, 85, 0.5);
+        }
+        .pagination-btn:hover { background: rgba(79, 70, 229, 0.2); color: #818cf8; }
+        .pagination-btn.active { background: #4F46E5; color: white; }
+        
+        /* Modal */
+        .modal-premium {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 32px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(79, 70, 229, 0.4);
+            padding: 0.9rem 1.5rem;
+            border-radius: 60px;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+        .toast.success { background: rgba(34, 197, 94, 0.9); }
+        .toast.error { background: rgba(239, 68, 68, 0.9); }
+        .toast.info { background: rgba(59, 130, 246, 0.9); }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .loading-overlay.active { visibility: visible; opacity: 1; }
+        
+        .spinner-premium {
+            width: 55px;
+            height: 55px;
+            border: 3px solid rgba(79, 70, 229, 0.2);
+            border-top-color: #4F46E5;
+            border-right-color: #818cf8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Floating button */
+        .floating-btn {
+            background: linear-gradient(135deg, #4F46E5, #6366f1);
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
+            transition: all 0.25s ease;
+        }
+        .floating-btn:hover { transform: scale(1.1); }
+        
+        /* Mobile menu */
+        .mobile-menu-premium {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #4F46E5; border-radius: 10px; }
+        
+        /* Page animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-animation { animation: fadeInUp 0.5s ease-out; }
+        
+        @media (max-width: 768px) {
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
+            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
+            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
+        }
+        
+        /* Light mode text */
+        body.light-mode .text-slate-200 { color: #1e293b; }
+        body.light-mode .text-slate-300 { color: #334155; }
+        body.light-mode .text-slate-400 { color: #64748b; }
+        body.light-mode .border-slate-700 { border-color: #e2e8f0; }
+        body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
+        body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
+        body.light-mode .bg-slate-900 { background-color: #ffffff; }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-premium"></div>
+    </div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/60 z-35 hidden backdrop-blur-sm" onclick="closeMobileMenu()"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div id="mobileSidebar" class="mobile-menu-premium fixed top-0 left-0 h-full w-72 z-40 transform -translate-x-full transition-transform duration-300 ease-out">
+        <div class="p-6 border-b border-indigo-500/20">
+            <div class="flex items-center gap-3">
+                <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-11 w-auto">
+                <div>
+                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">MAYE</span>
+                    <span class="font-semibold text-xs text-slate-400">Income</span>
+                </div>
+            </div>
+        </div>
+        <div id="mobileSidebarNav" class="p-4 space-y-1.5"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-indigo-500/20">
+            <button id="logoutBtnMobile" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Desktop Sidebar -->
+        <aside id="desktopSidebar" class="sidebar sidebar-expanded sidebar-premium flex flex-col h-screen fixed left-0 top-0 z-30 hidden md:flex">
+            <div class="px-5 pt-6 pb-5 border-b border-indigo-500/20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                        <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-7 w-auto">
+                    </div>
+                    <div id="sidebarLogoArea">
+                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">MAYE</span>
+                        <span class="font-bold text-xs text-slate-400 block">Income Manager</span>
+                    </div>
+                </div>
+                <button id="toggleSidebarBtn" class="text-slate-400 hover:text-indigo-400 transition-all p-1.5 rounded-lg hover:bg-indigo-500/10">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                </button>
+            </div>
+            <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
+            <div class="p-4 border-t border-indigo-500/20 mt-auto">
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text font-semibold">Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden md:ml-[290px] transition-all duration-300 ease-out" id="mainContent">
+            <!-- Topbar -->
+            <header class="topbar-premium sticky top-0 z-20">
+                <div class="px-5 sm:px-7 py-3.5 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white text-2xl p-1.5 rounded-xl hover:bg-indigo-500/10 transition">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-money-bill-wave text-indigo-400 text-xl"></i>
+                            <h1 class="text-lg font-bold hidden sm:block">Income Management</h1>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button id="themeToggle" class="user-btn !rounded-full !w-10 !h-10 flex items-center justify-center text-slate-300 hover:text-indigo-400 transition">
+                            <i class="fas fa-moon text-lg"></i>
+                        </button>
+                        
+                        <div class="relative">
+                            <button id="userMenuBtn" class="user-btn flex items-center gap-2 px-3 py-2">
+                                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <img id="userAvatar" src="" class="w-8 h-8 rounded-full object-cover hidden">
+                                    <i id="userAvatarFallback" class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <div class="hidden lg:block text-left">
+                                    <p id="userName" class="text-sm font-bold text-slate-200">Loading...</p>
+                                    <p class="text-xs text-slate-400">User</p>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
+                            </button>
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                                <div class="p-4 border-b border-indigo-500/20">
+                                    <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
+                                </div>
+                                <div class="py-2">
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='dashboard.html'">
+                                        <i class="fas fa-chart-line w-5 text-indigo-400"></i> Dashboard
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='procurement.html'">
+                                        <i class="fas fa-shopping-cart w-5 text-amber-400"></i> Procurement
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
+                                        <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
+                                        <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
+                                    </div>
+                                    <hr class="border-indigo-500/20 my-1">
+                                    <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
+                                        <i class="fas fa-sign-out-alt w-5"></i> Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden px-5 pb-4">
+                    <div class="search-input flex items-center px-4 py-2.5">
+                        <i class="fas fa-search text-slate-400 mr-3"></i>
+                        <input type="text" id="mobileSearch" placeholder="Search income..." class="bg-transparent outline-none text-sm flex-1 text-slate-200">
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Breadcrumb -->
+            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30">
+                <div class="flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-home text-indigo-400 text-xs"></i>
+                    <span class="text-slate-400">Income</span>
+                    <i class="fas fa-chevron-right text-xs text-slate-600"></i>
+                    <i class="fas fa-money-bill-wave text-indigo-400 text-xs"></i>
+                    <span class="text-slate-200 font-semibold">Management</span>
+                </div>
+            </div>
+            
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-5 sm:p-7 page-animation">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
+                    <div class="stat-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Income</span>
+                            <div class="w-11 h-11 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-coins text-green-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-3xl" id="statTotalIncome">FRw 0</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">All time earnings</div>
+                    </div>
+                    
+                    <div class="stat-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">This Month</span>
+                            <div class="w-11 h-11 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-calendar-alt text-indigo-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-3xl" id="statMonthlyIncome">FRw 0</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Current month</div>
+                    </div>
+                    
+                    <div class="stat-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Average</span>
+                            <div class="w-11 h-11 bg-amber-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-amber-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-3xl" id="statAverageIncome">FRw 0</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Per transaction</div>
+                    </div>
+                    
+                    <div class="stat-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Transactions</span>
+                            <div class="w-11 h-11 bg-purple-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-list-ul text-purple-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-3xl" id="statTransactionCount">0</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Total entries</div>
+                    </div>
+                </div>
+                
+                <!-- Filters Bar -->
+                <div class="glass-card p-4 mb-6">
+                    <div class="flex flex-wrap gap-3 items-center justify-between">
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn active px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="all">All</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="salary">💰 Salary</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="bonus">🎉 Bonus</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="freelance">💻 Freelance</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="investment">📈 Investment</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="gift">🎁 Gift</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="other">📌 Other</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="umusanzu">🤝 Umusanzu</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="sortSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-medium">
+                                <option value="date_desc">📅 Latest First</option>
+                                <option value="date_asc">📅 Oldest First</option>
+                                <option value="amount_desc">💰 Highest Amount</option>
+                                <option value="amount_asc">💰 Lowest Amount</option>
+                            </select>
+                            <select id="statusFilterSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-medium">
+                                <option value="all">All Status</option>
+                                <option value="pending">⏳ Pending</option>
+                                <option value="approved">✅ Approved</option>
+                                <option value="rejected">❌ Rejected</option>
+                            </select>
+                            <select id="dateRangeSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-medium">
+                                <option value="all">All Time</option>
+                                <option value="this_month">This Month</option>
+                                <option value="last_month">Last Month</option>
+                                <option value="this_year">This Year</option>
+                                <option value="last_3months">Last 3 Months</option>
+                            </select>
+                            <button id="refreshBtn" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-xl font-bold transition">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Income Table -->
+                <div class="glass-card overflow-hidden">
+                    <div class="p-5 border-b border-indigo-500/20 flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h2 class="text-xl font-extrabold tracking-tight">Income Records</h2>
+                            <p class="text-xs text-slate-400 mt-1">Manage all your earnings in one place</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="exportBtn" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 px-4 py-2 rounded-xl font-bold transition">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button id="addIncomeBtnTable" class="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20 flex items-center gap-2">
+                                <i class="fas fa-plus-circle"></i> Add Income
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Source/Contributor</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center text-slate-400 py-12">
+                                        <i class="fas fa-inbox text-4xl mb-3 opacity-50 block"></i>
+                                        No income records yet
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="p-5 border-t border-indigo-500/20 flex justify-between items-center flex-wrap gap-3">
+                        <div class="text-sm text-slate-400">
+                            Showing <span id="showingStart">0</span> - <span id="showingEnd">0</span> of <span id="totalRecords">0</span>
+                        </div>
+                        <div class="flex gap-2" id="paginationControls"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Income Modal -->
+    <div id="incomeModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-lg p-6 rounded-3xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent flex items-center gap-2">
+                    <i class="fas fa-plus-circle text-indigo-400"></i> <span id="modalTitle">Add Income</span>
+                </h2>
+                <button onclick="closeIncomeModal()" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="incomeForm">
+                <input type="hidden" id="editIncomeId">
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
+                        <input type="number" id="incomeAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white font-bold" placeholder="0.00" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Type *</label>
+                        <select id="incomeType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
+                            <option value="salary">💰 Salary</option>
+                            <option value="bonus">🎉 Bonus</option>
+                            <option value="freelance">💻 Freelance</option>
+                            <option value="investment">📈 Investment</option>
+                            <option value="gift">🎁 Gift</option>
+                            <option value="umusanzu">🤝 Umusanzu (Contribution)</option>
+                            <option value="other">📌 Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                        <input type="text" id="incomeCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Work, Side Hustle">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Source</label>
+                        <input type="text" id="incomeSource" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Company X, Client Y">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Contributor</label>
+                        <input type="text" id="incomeContributor" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="Person who contributed">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Status</label>
+                        <select id="incomeStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
+                            <option value="approved">✅ Approved</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="rejected">❌ Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Date</label>
+                    <input type="date" id="incomeDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Tags</label>
+                    <input type="text" id="incomeTags" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="monthly, bonus, special (comma separated)">
+                    <div id="tagSuggestions" class="flex flex-wrap gap-1 mt-2"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Description</label>
+                    <textarea id="incomeDescription" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white resize-none" placeholder="Additional notes about this income..."></textarea>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-3 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20">
+                        <i class="fas fa-save mr-2"></i> Save
+                    </button>
+                    <button type="button" onclick="closeIncomeModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl text-center">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-trash-alt text-red-400 text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold mb-2">Delete Income?</h2>
+            <p class="text-slate-400 mb-6">This action cannot be undone. This income record will be permanently removed.</p>
+            <div class="flex gap-3">
+                <button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold transition">Delete</button>
+                <button onclick="closeDeleteModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Update Status Modal -->
+    <div id="updateStatusModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <i class="fas fa-edit mr-2"></i> Update Status
+                </h2>
+                <button onclick="closeModal('updateStatusModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="updateStatusForm">
+                <input type="hidden" id="statusIncomeId">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">New Status</label>
+                    <select id="newStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500">
+                        <option value="pending">⏳ Pending</option>
+                        <option value="approved">✅ Approved</option>
+                        <option value="rejected">❌ Rejected</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Comments / Reason</label>
+                    <textarea id="statusComments" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500" placeholder="Add comments about this status change..."></textarea>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-3 rounded-xl font-bold transition">
+                    Update Status
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Export Modal -->
+    <div id="exportModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+            <h2 class="text-2xl font-extrabold mb-5 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent flex items-center gap-2">
+                <i class="fas fa-download"></i> Export Data
+            </h2>
+            <div class="space-y-3">
+                <button id="exportCSVBtn" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2">
+                    <i class="fas fa-file-csv"></i> Export as CSV
+                </button>
+                <button id="exportJSONBtn" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-600 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2">
+                    <i class="fas fa-code"></i> Export as JSON
+                </button>
+                <button onclick="closeModal('exportModal')" class="w-full bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Add Floating Button -->
+    <button id="floatingAddBtn" class="floating-btn fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white text-xl z-10 md:hidden">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Global state
+        let currentUser = null;
+        let allIncomes = [];
+        let filteredIncomes = [];
+        let currentFilter = 'all';
+        let currentStatusFilter = 'all';
+        let currentSort = 'date_desc';
+        let currentDateRange = 'all';
+        let currentSearch = '';
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let deleteId = null;
+        let currentCurrency = 'RWF';
+        let currentTheme = 'dark';
+        let currencySymbol = 'FRw';
+        
+        const currencies = {
+            USD: { symbol: '$', name: 'US Dollar' },
+            EUR: { symbol: '€', name: 'Euro' },
+            AED: { symbol: 'D', name: 'Dirham' },
+            RWF: { symbol: 'FRw', name: 'Rwandan Franc' }
+        };
+        
+        const typeClasses = {
+            salary: 'type-salary', bonus: 'type-bonus', freelance: 'type-freelance',
+            investment: 'type-investment', gift: 'type-gift', umusanzu: 'type-freelance', other: 'type-other'
+        };
+        
+        const navItems = [
+            { icon: 'fa-chart-line', text: 'Dashboard', page: 'dashboard.html', active: false },
+            { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: true },
+            { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: false },
+            { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false }
+        ];
+        
+        const commonTags = ['monthly', 'bonus', 'salary', 'freelance', 'investment', 'extra', 'one-time', 'recurring', 'side-hustle', 'overtime', 'umusanzu', 'contribution'];
+        
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        
+        function formatMoney(amount) {
+            const symbol = currencies[currentCurrency]?.symbol || 'FRw';
+            if (currentCurrency === 'AED') return `${symbol} ${amount.toLocaleString()}`;
+            return `${symbol} ${amount.toLocaleString()}`;
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+            toast.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) overlay.classList.add('active');
+            else overlay.classList.remove('active');
+        }
+        
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('flex');
+            document.getElementById(modalId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('flex');
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        function openIncomeModal(editMode = false, data = null) {
+            if (editMode && data) {
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Income';
+                document.getElementById('editIncomeId').value = data.id;
+                document.getElementById('incomeAmount').value = data.amount;
+                document.getElementById('incomeType').value = data.type || 'other';
+                document.getElementById('incomeCategory').value = data.category || '';
+                document.getElementById('incomeSource').value = data.source || '';
+                document.getElementById('incomeContributor').value = data.contributor || '';
+                document.getElementById('incomeStatus').value = data.status || 'approved';
+                document.getElementById('incomeDate').value = data.date || new Date().toISOString().split('T')[0];
+                document.getElementById('incomeTags').value = (data.tags || []).join(', ');
+                document.getElementById('incomeDescription').value = data.description || '';
+            } else {
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add Income';
+                document.getElementById('editIncomeId').value = '';
+                document.getElementById('incomeForm').reset();
+                document.getElementById('incomeDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('incomeStatus').value = 'approved';
+            }
+            openModal('incomeModal');
+        }
+        
+        function closeIncomeModal() { closeModal('incomeModal'); }
+        function openDeleteModal(id) { deleteId = id; openModal('deleteModal'); }
+        function closeDeleteModal() { closeModal('deleteModal'); deleteId = null; }
+        
+        function openUpdateStatusModal(id) {
+            document.getElementById('statusIncomeId').value = id;
+            document.getElementById('newStatus').value = 'approved';
+            document.getElementById('statusComments').value = '';
+            openModal('updateStatusModal');
+        }
+        
+        function getStatusBadge(status) {
+            const statusMap = {
+                'pending': 'status-pending',
+                'approved': 'status-approved',
+                'rejected': 'status-rejected'
+            };
+            const textMap = {
+                'pending': '⏳ Pending',
+                'approved': '✅ Approved',
+                'rejected': '❌ Rejected'
+            };
+            return `<span class="status-badge ${statusMap[status] || 'status-pending'}">${textMap[status] || status}</span>`;
+        }
+        
+        function generateIncomeId() {
+            const random = Math.floor(Math.random() * 10000);
+            return `INC${String(random).padStart(4, '0')}`;
+        }
+        
+        // Date range filter
+        function applyDateRange(incomes, range) {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            
+            switch(range) {
+                case 'this_month':
+                    return incomes.filter(inc => {
+                        if (!inc.date) return false;
+                        const d = new Date(inc.date);
+                        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+                    });
+                case 'last_month':
+                    return incomes.filter(inc => {
+                        if (!inc.date) return false;
+                        const d = new Date(inc.date);
+                        const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+                        const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+                        return d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear;
+                    });
+                case 'this_year':
+                    return incomes.filter(inc => {
+                        if (!inc.date) return false;
+                        const d = new Date(inc.date);
+                        return d.getFullYear() === currentYear;
+                    });
+                case 'last_3months':
+                    const threeMonthsAgo = new Date();
+                    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+                    return incomes.filter(inc => {
+                        if (!inc.date) return false;
+                        return new Date(inc.date) >= threeMonthsAgo;
+                    });
+                default:
+                    return incomes;
+            }
+        }
+        
+        // ============================================
+        // AUTHENTICATION & DATA LOADING
+        // ============================================
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (!user || !user.emailVerified) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            currentUser = user;
+            await loadUserSettings();
+            await loadIncomes();
+            renderSidebar();
+            setupEventListeners();
+            setupRealtimeListener();
+            renderTagSuggestions();
+        });
+        
+        async function loadUserSettings() {
+            try {
+                const doc = await db.collection('users').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('userName').textContent = data.fullName || currentUser.email.split('@')[0];
+                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
+                    if (data.settings) {
+                        currentCurrency = data.settings.currency || 'RWF';
+                        currentTheme = data.settings.theme || 'dark';
+                        currencySymbol = currencies[currentCurrency]?.symbol || 'FRw';
+                    }
+                    if (data.profilePicture) {
+                        document.getElementById('userAvatar').src = data.profilePicture;
+                        document.getElementById('userAvatar').classList.remove('hidden');
+                        document.getElementById('userAvatarFallback').classList.add('hidden');
+                    }
+                }
+                if (currentTheme === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+        
+        async function loadIncomes() {
+            showLoading(true);
+            try {
+                // Simple query without orderBy to avoid index requirement
+                const snapshot = await db.collection('income')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                    
+                allIncomes = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(), 
+                    amount: doc.data().amount || 0, 
+                    tags: doc.data().tags || [],
+                    description: doc.data().description || '',
+                    status: doc.data().status || 'approved',
+                    source: doc.data().source || '',
+                    contributor: doc.data().contributor || '',
+                    incomeId: doc.data().incomeId || `INC${String(doc.id).slice(-4).toUpperCase()}`
+                }));
+                
+                // Sort manually
+                allIncomes.sort((a, b) => {
+                    if (a.timestamp && b.timestamp) return b.timestamp - a.timestamp;
+                    if (a.date && b.date) return new Date(b.date) - new Date(a.date);
+                    return 0;
+                });
+                
+                applyFiltersAndRender();
+            } catch (error) {
+                console.error('Error loading incomes:', error);
+                showToast('Error loading income data: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function setupRealtimeListener() {
+            if (!currentUser) return;
+            db.collection('income')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    loadIncomes();
+                }, (error) => console.error('Realtime listener error:', error));
+        }
+        
+        // ============================================
+        // FILTERS, SORTING & RENDERING
+        // ============================================
+        
+        function applyFiltersAndRender() {
+            let result = [...allIncomes];
+            
+            if (currentFilter !== 'all') {
+                result = result.filter(inc => inc.type === currentFilter);
+            }
+            
+            if (currentStatusFilter !== 'all') {
+                result = result.filter(inc => inc.status === currentStatusFilter);
+            }
+            
+            result = applyDateRange(result, currentDateRange);
+            
+            if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
+                result = result.filter(inc => 
+                    (inc.type && inc.type.toLowerCase().includes(searchLower)) ||
+                    (inc.category && inc.category.toLowerCase().includes(searchLower)) ||
+                    (inc.source && inc.source.toLowerCase().includes(searchLower)) ||
+                    (inc.contributor && inc.contributor.toLowerCase().includes(searchLower)) ||
+                    (inc.description && inc.description.toLowerCase().includes(searchLower)) ||
+                    (inc.tags && inc.tags.some(t => t.toLowerCase().includes(searchLower)))
+                );
+            }
+            
+            switch (currentSort) {
+                case 'date_desc':
+                    result.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    break;
+                case 'date_asc':
+                    result.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    break;
+                case 'amount_desc':
+                    result.sort((a, b) => b.amount - a.amount);
+                    break;
+                case 'amount_asc':
+                    result.sort((a, b) => a.amount - b.amount);
+                    break;
+            }
+            
+            filteredIncomes = result;
+            updateStats();
+            renderTable();
+        }
+        
+        function updateStats() {
+            const totalIncome = allIncomes.reduce((sum, inc) => sum + (inc.amount || 0), 0);
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthlyIncome = allIncomes.filter(inc => inc.date && inc.date.startsWith(currentMonth)).reduce((sum, inc) => sum + inc.amount, 0);
+            const averageIncome = allIncomes.length > 0 ? totalIncome / allIncomes.length : 0;
+            
+            document.getElementById('statTotalIncome').innerHTML = formatMoney(totalIncome);
+            document.getElementById('statMonthlyIncome').innerHTML = formatMoney(monthlyIncome);
+            document.getElementById('statAverageIncome').innerHTML = formatMoney(averageIncome);
+            document.getElementById('statTransactionCount').innerHTML = allIncomes.length;
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('incomeTableBody');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = filteredIncomes.slice(start, end);
+            const totalRecords = filteredIncomes.length;
+            
+            if (pageItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-slate-400 py-12"><i class="fas fa-inbox text-4xl mb-3 opacity-50 block"></i>No income records found</td></tr>`;
+                document.getElementById('showingStart').textContent = '0';
+                document.getElementById('showingEnd').textContent = '0';
+                document.getElementById('totalRecords').textContent = '0';
+                document.getElementById('paginationControls').innerHTML = '';
+                return;
+            }
+            
+            tbody.innerHTML = pageItems.map(inc => `
+                <tr class="border-b border-slate-700 hover:bg-slate-800/30">
+                    <td data-label="ID" class="font-mono text-xs">${escapeHtml(inc.incomeId || inc.id.slice(-6))}</td>
+                    <td data-label="Type">
+                        <span class="type-badge ${typeClasses[inc.type] || 'type-other'}">${inc.type ? inc.type.charAt(0).toUpperCase() + inc.type.slice(1) : 'Other'}</span>
+                    </td>
+                    <td data-label="Source/Contributor">
+                        <div class="text-sm">
+                            <div class="font-medium">${escapeHtml(inc.source) || '—'}</div>
+                            <div class="text-xs text-slate-400">${escapeHtml(inc.contributor) || ''}</div>
+                        </div>
+                    </td>
+                    <td data-label="Amount" class="font-extrabold text-emerald-400">+${formatMoney(inc.amount)}</td>
+                    <td data-label="Date">${inc.date || '—'}</td>
+                    <td data-label="Status">${getStatusBadge(inc.status)}</td>
+                    <td data-label="Description" class="max-w-[150px] truncate">${escapeHtml(inc.description) || '—'}</td>
+                    <td data-label="Actions">
+                        <div class="table-actions">
+                            <button onclick="editIncome('${inc.id}')" class="text-indigo-400 hover:text-indigo-300 transition p-1" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="openUpdateStatusModal('${inc.id}')" class="text-amber-400 hover:text-amber-300 transition p-1" title="Update Status">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                            <button onclick="deleteIncome('${inc.id}')" class="text-red-400 hover:text-red-300 transition p-1" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('showingStart').textContent = start + 1;
+            document.getElementById('showingEnd').textContent = Math.min(end, totalRecords);
+            document.getElementById('totalRecords').textContent = totalRecords;
+            
+            const totalPages = Math.ceil(totalRecords / itemsPerPage);
+            let paginationHtml = '';
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                paginationHtml += `<button class="pagination-btn ${currentPage === i ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            if (totalPages > 5) {
+                paginationHtml += '<span class="px-2">...</span>';
+                paginationHtml += `<button class="pagination-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            document.getElementById('paginationControls').innerHTML = paginationHtml;
+        }
+        
+        function goToPage(page) { currentPage = page; renderTable(); }
+        
+        function renderTagSuggestions() {
+            const container = document.getElementById('tagSuggestions');
+            container.innerHTML = commonTags.map(tag => `
+                <span class="tag bg-indigo-500/20 hover:bg-indigo-500/30 cursor-pointer" onclick="addTag('${tag}')">${tag}</span>
+            `).join('');
+        }
+        
+        function addTag(tag) {
+            const input = document.getElementById('incomeTags');
+            const current = input.value;
+            if (current) {
+                const tags = current.split(',').map(t => t.trim());
+                if (!tags.includes(tag)) input.value = current + ', ' + tag;
+            } else {
+                input.value = tag;
+            }
+        }
+        
+        // ============================================
+        // CRUD OPERATIONS
+        // ============================================
+        
+        async function saveIncome(event) {
+            event.preventDefault();
+            const editId = document.getElementById('editIncomeId').value;
+            const amount = parseFloat(document.getElementById('incomeAmount').value);
+            const type = document.getElementById('incomeType').value;
+            const category = document.getElementById('incomeCategory').value;
+            const source = document.getElementById('incomeSource').value;
+            const contributor = document.getElementById('incomeContributor').value;
+            const status = document.getElementById('incomeStatus').value;
+            const date = document.getElementById('incomeDate').value || new Date().toISOString().split('T')[0];
+            const tagsInput = document.getElementById('incomeTags').value;
+            const description = document.getElementById('incomeDescription').value;
+            const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+            
+            if (!amount || isNaN(amount) || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const incomeData = {
+                    userId: currentUser.uid,
+                    amount: amount,
+                    type: type,
+                    category: category || type,
+                    source: source,
+                    contributor: contributor,
+                    status: status,
+                    date: date,
+                    tags: tags,
+                    description: description,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: currentUser.email
+                };
+                
+                if (editId) {
+                    await db.collection('income').doc(editId).update(incomeData);
+                    showToast('Income updated successfully!', 'success');
+                } else {
+                    incomeData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    incomeData.createdBy = currentUser.email;
+                    incomeData.incomeId = generateIncomeId();
+                    await db.collection('income').add(incomeData);
+                    showToast('Income added successfully!', 'success');
+                }
+                
+                closeIncomeModal();
+                document.getElementById('incomeForm').reset();
+                await loadIncomes();
+            } catch (error) {
+                console.error('Error saving income:', error);
+                showToast('Error saving income: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function updateStatus(event) {
+            event.preventDefault();
+            const id = document.getElementById('statusIncomeId').value;
+            const newStatus = document.getElementById('newStatus').value;
+            const comments = document.getElementById('statusComments').value;
+            
+            showLoading(true);
+            try {
+                await db.collection('income').doc(id).update({
+                    status: newStatus,
+                    statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    statusComments: comments,
+                    updatedBy: currentUser.email
+                });
+                showToast(`Status updated to ${newStatus}`, 'success');
+                closeModal('updateStatusModal');
+                await loadIncomes();
+            } catch (error) {
+                showToast('Error updating status', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        window.editIncome = async (id) => {
+            const income = allIncomes.find(inc => inc.id === id);
+            if (income) openIncomeModal(true, income);
+        };
+        
+        window.deleteIncome = (id) => { openDeleteModal(id); };
+        
+        async function confirmDelete() {
+            if (!deleteId) return;
+            showLoading(true);
+            try {
+                await db.collection('income').doc(deleteId).delete();
+                showToast('Income deleted successfully!', 'success');
+                closeDeleteModal();
+                await loadIncomes();
+            } catch (error) {
+                showToast('Error deleting income', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Export functions
+        function exportToCSV() {
+            if (filteredIncomes.length === 0) {
+                showToast('No data to export', 'warning');
+                return;
+            }
+            let csv = 'ID,Date,Type,Category,Source,Contributor,Amount,Status,Description,Tags\n';
+            filteredIncomes.forEach(inc => {
+                const row = [
+                    inc.incomeId || inc.id.slice(-6),
+                    inc.date || '',
+                    inc.type || '',
+                    inc.category || '',
+                    inc.source || '',
+                    inc.contributor || '',
+                    inc.amount || 0,
+                    inc.status || '',
+                    (inc.description || '').replace(/,/g, ';'),
+                    (inc.tags || []).join('|')
+                ].join(',');
+                csv += row + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `maye-incomes-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('CSV exported successfully!', 'success');
+        }
+        
+        function exportToJSON() {
+            if (filteredIncomes.length === 0) {
+                showToast('No data to export', 'warning');
+                return;
+            }
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                totalRecords: filteredIncomes.length,
+                totalAmount: filteredIncomes.reduce((s, inc) => s + inc.amount, 0),
+                data: filteredIncomes
+            };
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `maye-incomes-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('JSON exported successfully!', 'success');
+        }
+        
+        // ============================================
+        // SIDEBAR & EVENT LISTENERS
+        // ============================================
+        
+        function renderSidebar() {
+            const desktopNav = document.getElementById('sidebarNav');
+            const mobileNav = document.getElementById('mobileSidebarNav');
+            const navHtml = navItems.map(item => `
+                <div class="sidebar-nav-item ${item.active ? 'active' : ''}" onclick="window.location.href='${item.page}'">
+                    <i class="fas ${item.icon}"></i>
+                    <span class="nav-text font-semibold">${item.text}</span>
+                </div>
+            `).join('');
+            if (desktopNav) desktopNav.innerHTML = navHtml;
+            if (mobileNav) mobileNav.innerHTML = navHtml;
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('incomeForm').addEventListener('submit', saveIncome);
+            document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+            document.getElementById('updateStatusForm').addEventListener('submit', updateStatus);
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-indigo-600/20', 'text-indigo-400'));
+                    btn.classList.add('active', 'bg-indigo-600/20', 'text-indigo-400');
+                    currentFilter = btn.dataset.filter;
+                    currentPage = 1;
+                    applyFiltersAndRender();
+                });
+            });
+            
+            document.getElementById('sortSelect').addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                applyFiltersAndRender();
+            });
+            
+            document.getElementById('statusFilterSelect').addEventListener('change', (e) => {
+                currentStatusFilter = e.target.value;
+                currentPage = 1;
+                applyFiltersAndRender();
+            });
+            
+            document.getElementById('dateRangeSelect').addEventListener('change', (e) => {
+                currentDateRange = e.target.value;
+                currentPage = 1;
+                applyFiltersAndRender();
+            });
+            
+            const searchInput = document.getElementById('globalSearch');
+            const mobileSearch = document.getElementById('mobileSearch');
+            const handleSearch = (e) => {
+                currentSearch = e.target.value;
+                currentPage = 1;
+                applyFiltersAndRender();
+            };
+            if (searchInput) searchInput.addEventListener('input', handleSearch);
+            if (mobileSearch) mobileSearch.addEventListener('input', handleSearch);
+            
+            const addButtons = ['addIncomeBtnTable', 'floatingAddBtn'];
+            addButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) btn.addEventListener('click', () => openIncomeModal(false));
+            });
+            
+            document.getElementById('exportBtn')?.addEventListener('click', () => openModal('exportModal'));
+            document.getElementById('exportCSVBtn')?.addEventListener('click', () => { exportToCSV(); closeModal('exportModal'); });
+            document.getElementById('exportJSONBtn')?.addEventListener('click', () => { exportToJSON(); closeModal('exportModal'); });
+            
+            document.getElementById('refreshBtn')?.addEventListener('click', async () => {
+                showToast('Refreshing data...', 'info');
+                await loadIncomes();
+                showToast('Data refreshed', 'success');
+            });
+            
+            // Sidebar toggle
+            let isCollapsed = false;
+            const toggleBtn = document.getElementById('toggleSidebarBtn');
+            const sidebar = document.getElementById('desktopSidebar');
+            const mainContent = document.getElementById('mainContent');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    isCollapsed = !isCollapsed;
+                    if (isCollapsed) {
+                        sidebar.classList.add('sidebar-collapsed');
+                        sidebar.classList.remove('sidebar-expanded');
+                        mainContent.style.marginLeft = '88px';
+                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'none');
+                        document.getElementById('sidebarLogoArea').style.display = 'none';
+                        toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    } else {
+                        sidebar.classList.remove('sidebar-collapsed');
+                        sidebar.classList.add('sidebar-expanded');
+                        mainContent.style.marginLeft = '290px';
+                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'inline');
+                        document.getElementById('sidebarLogoArea').style.display = 'block';
+                        toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    }
+                });
+            }
+            
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const mobileOverlay = document.getElementById('mobileMenuOverlay');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileSidebar.style.transform = 'translateX(0)';
+                    mobileOverlay.classList.remove('hidden');
+                });
+            }
+            window.closeMobileMenu = () => {
+                mobileSidebar.style.transform = 'translateX(-100%)';
+                mobileOverlay.classList.add('hidden');
+            };
+            if (mobileOverlay) mobileOverlay.addEventListener('click', closeMobileMenu);
+            
+            // User dropdown
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('hidden');
+                });
+            }
+            document.addEventListener('click', () => userDropdown?.classList.add('hidden'));
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', async () => {
+                    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    await db.collection('users').doc(currentUser.uid).update({ 'settings.theme': currentTheme });
+                    if (currentTheme === 'light') document.body.classList.add('light-mode');
+                    else document.body.classList.remove('light-mode');
+                    themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                });
+            }
+            
+            // Logout
+            const logoutBtns = ['logoutBtnSidebar', 'logoutBtnTopbar', 'logoutBtnMobile'];
+            logoutBtns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.addEventListener('click', async () => {
+                        showLoading(true);
+                        await auth.signOut();
+                        window.location.href = 'auth.html';
+                    });
+                }
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                    e.preventDefault();
+                    openIncomeModal(false);
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('globalSearch')?.focus();
+                }
+                if (e.key === 'Escape') {
+                    closeIncomeModal();
+                    closeDeleteModal();
+                    closeModal('exportModal');
+                    closeModal('updateStatusModal');
+                }
+            });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        window.goToPage = goToPage;
+        window.addTag = addTag;
+        window.closeIncomeModal = closeIncomeModal;
+        window.closeDeleteModal = closeDeleteModal;
+        window.openUpdateStatusModal = openUpdateStatusModal;
+        window.editIncome = editIncome;
+        window.deleteIncome = deleteIncome;
+        window.exportToCSV = exportToCSV;
+        window.exportToJSON = exportToJSON;
+    </script>
+</body>
+</html>
