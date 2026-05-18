@@ -643,15 +643,15 @@
             console.log('🔐 Auth state changed:', user?.email);
             
             if (!user) {
-                console.log('❌ No user, redirecting to auth.html');
-                window.location.href = 'auth.html';
+                console.log('❌ No user, redirecting to index.html');
+                window.location.href = 'index.html';
                 return;
             }
             
             if (!user.emailVerified) {
                 console.log('⚠️ Email not verified');
                 await auth.signOut();
-                window.location.href = 'auth.html?verify=true';
+                window.location.href = 'index.html?verify=true';
                 return;
             }
             
@@ -1329,7 +1329,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'auth.html';
+                        window.location.href = 'index.html';
                     });
                 }
             });
