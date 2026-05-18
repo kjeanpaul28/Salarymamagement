@@ -1329,7 +1329,7 @@
         
         auth.onAuthStateChanged(async (user) => {
             if (!user || !user.emailVerified) {
-                window.location.href = 'auth.html';
+                window.location.href = 'index.html';
                 return;
             }
             currentUser = user;
@@ -2390,7 +2390,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'auth.html';
+                        window.location.href = 'index.html';
                     });
                 }
             });
