@@ -606,6 +606,9 @@
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
                                         <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
                                     </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='administration.html'">
+                                        <i class="fas fa-user-shield w-5 text-rose-400"></i> Admin
+                                    </div>
                                     <hr class="border-indigo-500/20 my-1">
                                     <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
                                         <i class="fas fa-sign-out-alt w-5"></i> Logout
@@ -618,7 +621,7 @@
             </header>
             
             <!-- Breadcrumb -->
-            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30">
+            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30 no-print">
                 <div class="flex items-center gap-2 text-sm font-medium">
                     <i class="fas fa-home text-indigo-400 text-xs"></i>
                     <span class="text-slate-400">Procurement</span>
@@ -835,7 +838,7 @@
                         
                         <!-- Advanced Search & Filters -->
                         <div class="search-filters no-print">
-                            <input type="text" id="searchInput" placeholder="🔍 Search by item, supplier, category..." class="filter-input flex-1 min-w-[150px]">
+                            <input type="text" id="searchInput" placeholder="🔍 Search by item, supplier, category, ID..." class="filter-input flex-1 min-w-[150px]">
                             <select id="statusFilter" class="filter-input">
                                 <option value="all">All Status</option>
                                 <option value="approved">✅ Approved</option>
@@ -898,7 +901,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="purchasesTableBody">
-                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>
+                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1233,7 +1236,8 @@
             { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
             { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: true },
             { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
-            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false }
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false },
+            { icon: 'fa-user-shield', text: 'Admin', page: 'administration.html', active: false }
         ];
         
         const LOGO_URL = "https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png";
@@ -1363,13 +1367,14 @@
         function filterPurchases() {
             let filtered = [...purchases];
             
-            // Search term filter (item, supplier, category)
+            // Search term filter (item, supplier, category, ID)
             if (searchTerm) {
                 const term = searchTerm.toLowerCase();
                 filtered = filtered.filter(p => 
                     p.itemName?.toLowerCase().includes(term) ||
                     p.supplier?.toLowerCase().includes(term) ||
-                    p.category?.toLowerCase().includes(term)
+                    p.category?.toLowerCase().includes(term) ||
+                    p.id?.toLowerCase().includes(term)
                 );
             }
             
@@ -1430,7 +1435,7 @@
         
         auth.onAuthStateChanged(async (user) => {
             if (!user || !user.emailVerified) {
-                window.location.href = 'index.html';
+                window.location.href = 'auth.html';
                 return;
             }
             currentUser = user;
@@ -1597,7 +1602,8 @@
                     <tr class="border-b border-slate-700 hover:bg-slate-800/30">
                         <td class="p-3"><input type="checkbox" class="select-checkbox purchase-select" data-id="${p.id}" ${selectedPurchases.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); togglePurchaseSelect('${p.id}')"></td>
                         <td class="p-3 font-mono text-sm" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.id}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${qty.toFixed(3)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${qty.toFixed(3)}</td>
                         <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.unit || 'pcs'}</td>
                         <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(price)}</td>
                         <td class="p-3 font-bold text-emerald-400" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(total)}</td>
@@ -1625,11 +1631,6 @@
             if (paginationDiv) paginationDiv.innerHTML = paginationHtml;
         }
         
-        function renderPurchasesTable() {
-            const filtered = filterPurchases();
-            renderPurchasesTableWithData(filtered);
-        }
-        
         function renderRequisitionsTable() {
             const tbody = document.getElementById('requisitionsTableBody');
             if (!tbody) return;
@@ -1646,7 +1647,7 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td></tr>';
+                tbody.innerHTML = '<td><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td></table>';
                 const paginationDiv = document.getElementById('reqPagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1674,16 +1675,16 @@
                         <td class="p-3">
                             <button onclick="editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
                             <button onclick="deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
+                         </td>
+                     </tr>
                     <tr class="border-b border-slate-700 bg-slate-800/20">
                         <td colspan="10" class="p-2">
                             <div class="audit-text">
                                 <span><i class="fas fa-user-plus text-indigo-400"></i> Created by: ${escapeHtml(createdByName)} on ${createdAtFormatted}</span>
                                 <span><i class="fas fa-edit text-amber-400"></i> Last edit: ${escapeHtml(updatedByName)} on ${updatedAtFormatted}</span>
                             </div>
-                        </td>
-                    </tr>
+                         </td>
+                     </tr>
                 `;
             }).join('');
             
@@ -2239,9 +2240,9 @@
                     
                     <h3 style="margin: 15px 0;">Purchase Orders Summary (${filtered.length} records)</h3>
                     <table style="width:100%;border-collapse:collapse;">
-                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')} </thead>
                         <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
-                    </table>
+                     </table>
                     <div class="total-section">Total Spend: ${formatMoney(totalSpend)}</div>
                     <div class="footer">
                         <p>Confidential - MAYE System Internal Procurement Analytics</p>
@@ -2579,7 +2580,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'index.html';
+                        window.location.href = 'auth.html';
                     });
                 }
             });
