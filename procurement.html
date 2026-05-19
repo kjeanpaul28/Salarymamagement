@@ -485,6 +485,12 @@
             margin-bottom: 1.5rem;
             border: 1px solid #e2e8f0;
         }
+        
+        /* Error input styling */
+        .input-error {
+            border-color: #EF4444 !important;
+            box-shadow: 0 0 0 1px #EF4444 !important;
+        }
     </style>
 </head>
 <body>
@@ -718,7 +724,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
-                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.001" step="0.001" min="0.001" value="1" required>
+                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.001" step="0.001" min="0.001" value="1" inputmode="decimal" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -726,7 +732,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price *</label>
-                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.000" step="0.001" min="0.001" required>
+                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.000" step="0.001" min="0.001" inputmode="decimal" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -901,7 +907,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="purchasesTableBody">
-                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>
+                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>
                                 </tbody>
                             </table>
                         </div>
@@ -1010,7 +1016,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
-                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" value="1" required>
+                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" value="1" inputmode="decimal" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -1020,7 +1026,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Price *</label>
-                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
+                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" inputmode="decimal" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -1082,7 +1088,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Quantity</label>
-                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
+                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" inputmode="decimal" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -1092,7 +1098,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price</label>
-                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
+                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" inputmode="decimal" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -1361,13 +1367,21 @@
         }
         
         // ============================================
+        // VALIDATION FUNCTION (accepts decimals like 0.618)
+        // ============================================
+        function isValidPositiveNumber(value) {
+            if (value === undefined || value === null || value === '') return false;
+            const num = parseFloat(value);
+            return !isNaN(num) && num > 0;
+        }
+        
+        // ============================================
         // ADVANCED SEARCH & FILTER FUNCTION
         // ============================================
         
         function filterPurchases() {
             let filtered = [...purchases];
             
-            // Search term filter (item, supplier, category, ID)
             if (searchTerm) {
                 const term = searchTerm.toLowerCase();
                 filtered = filtered.filter(p => 
@@ -1378,23 +1392,19 @@
                 );
             }
             
-            // Status filter
             if (statusFilter !== 'all') {
                 filtered = filtered.filter(p => p.status === statusFilter);
             }
             
-            // Category filter
             if (categoryFilter !== 'all') {
                 filtered = filtered.filter(p => p.category === categoryFilter);
             }
             
-            // Supplier filter
             if (supplierFilter) {
                 const sup = supplierFilter.toLowerCase();
                 filtered = filtered.filter(p => p.supplier?.toLowerCase().includes(sup));
             }
             
-            // Date range filter
             if (dateFrom) {
                 filtered = filtered.filter(p => p.date && p.date >= dateFrom);
             }
@@ -1402,7 +1412,6 @@
                 filtered = filtered.filter(p => p.date && p.date <= dateTo);
             }
             
-            // Sorting
             switch (currentSort) {
                 case 'newest':
                     filtered.sort((a, b) => new Date(b.date || b.createdAt?.toDate()) - new Date(a.date || a.createdAt?.toDate()));
@@ -1435,7 +1444,7 @@
         
         auth.onAuthStateChanged(async (user) => {
             if (!user || !user.emailVerified) {
-                window.location.href = 'auth.html';
+                window.location.href = 'index.html';
                 return;
             }
             currentUser = user;
@@ -1588,7 +1597,7 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>';
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>';
                 const paginationDiv = document.getElementById('purchasePagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1635,11 +1644,11 @@
             const tbody = document.getElementById('requisitionsTableBody');
             if (!tbody) return;
             const filterStatus = document.getElementById('reqFilterStatus')?.value || 'all';
-            const searchTerm = document.getElementById('reqSearch')?.value.toLowerCase() || '';
+            const searchTermVal = document.getElementById('reqSearch')?.value.toLowerCase() || '';
             
             let filtered = [...requisitions];
             if (filterStatus !== 'all') filtered = filtered.filter(r => r.status === filterStatus);
-            if (searchTerm) filtered = filtered.filter(r => r.itemName?.toLowerCase().includes(searchTerm) || r.reqId?.toLowerCase().includes(searchTerm));
+            if (searchTermVal) filtered = filtered.filter(r => r.itemName?.toLowerCase().includes(searchTermVal) || r.reqId?.toLowerCase().includes(searchTermVal));
             
             const start = (reqCurrentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
@@ -1647,7 +1656,7 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<td><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td></table>';
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td</tr>';
                 const paginationDiv = document.getElementById('reqPagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1675,16 +1684,16 @@
                         <td class="p-3">
                             <button onclick="editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
                             <button onclick="deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
-                         </td>
-                     </tr>
+                          </td>
+                      </tr>
                     <tr class="border-b border-slate-700 bg-slate-800/20">
                         <td colspan="10" class="p-2">
                             <div class="audit-text">
                                 <span><i class="fas fa-user-plus text-indigo-400"></i> Created by: ${escapeHtml(createdByName)} on ${createdAtFormatted}</span>
                                 <span><i class="fas fa-edit text-amber-400"></i> Last edit: ${escapeHtml(updatedByName)} on ${updatedAtFormatted}</span>
                             </div>
-                         </td>
-                     </tr>
+                          </td>
+                      </tr>
                 `;
             }).join('');
             
@@ -1785,9 +1794,9 @@
             event.preventDefault();
             const purchaseId = document.getElementById('purchaseId')?.value || generatePurchaseId();
             const itemName = document.getElementById('purchaseItemName')?.value.trim();
-            const quantity = parseFloat(document.getElementById('purchaseQuantity')?.value) || 0;
+            const quantity = parseFloat(document.getElementById('purchaseQuantity')?.value);
             const unit = document.getElementById('purchaseUnit')?.value.trim();
-            const price = parseFloat(document.getElementById('purchasePrice')?.value) || 0;
+            const price = parseFloat(document.getElementById('purchasePrice')?.value);
             const category = document.getElementById('purchaseCategory')?.value;
             const supplier = document.getElementById('purchaseSupplier')?.value.trim();
             const date = document.getElementById('purchaseDate')?.value || new Date().toISOString().split('T')[0];
@@ -1795,8 +1804,12 @@
             const status = document.getElementById('purchaseStatus')?.value;
             const editId = document.getElementById('purchaseEditId')?.value;
             
-            if (!itemName || quantity <= 0 || price <= 0) {
-                showToast('Please fill all required fields with valid values', 'error');
+            // Debug log
+            console.log('Purchase submission:', { quantity, price, itemName });
+            
+            // Use parseFloat validation - accepts 0.01, 0.67, 0.145, etc.
+            if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
+                showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${price}`, 'error');
                 return;
             }
             
@@ -1806,8 +1819,16 @@
                 const purchaseData = {
                     id: purchaseId,
                     userId: currentUser.uid,
-                    itemName, quantity, unit: unit || 'pcs', price,
-                    totalAmount: total, category, supplier, date, notes, status,
+                    itemName: itemName,
+                    quantity: quantity,
+                    unit: unit || 'pcs',
+                    price: price,
+                    totalAmount: total,
+                    category: category,
+                    supplier: supplier,
+                    date: date,
+                    notes: notes,
+                    status: status,
                     updatedBy: userData?.fullName || currentUser.email,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
@@ -1825,6 +1846,7 @@
                 document.getElementById('purchaseEditId').value = '';
                 await loadPurchases();
             } catch (error) {
+                console.error('Error saving purchase:', error);
                 showToast('Error saving purchase', 'error');
             } finally {
                 showLoading(false);
@@ -1835,17 +1857,21 @@
             event.preventDefault();
             const reqId = generateRequisitionId();
             const itemName = document.getElementById('reqItemName')?.value.trim();
-            const quantity = parseFloat(document.getElementById('reqQuantity')?.value) || 0;
+            const quantity = parseFloat(document.getElementById('reqQuantity')?.value);
             const unit = document.getElementById('reqUnit')?.value.trim();
-            const unitPrice = parseFloat(document.getElementById('reqUnitPrice')?.value) || 0;
+            const unitPrice = parseFloat(document.getElementById('reqUnitPrice')?.value);
             const category = document.getElementById('reqCategory')?.value;
             const supplier = document.getElementById('reqSupplier')?.value;
             const requestedBy = document.getElementById('reqRequestedBy')?.value;
             const justification = document.getElementById('reqJustification')?.value;
             const priority = document.getElementById('reqPriority')?.value;
             
-            if (!itemName || quantity <= 0 || unitPrice <= 0) {
-                showToast('Please fill all required fields with valid values', 'error');
+            // Debug log
+            console.log('Requisition submission:', { quantity, unitPrice, itemName });
+            
+            // Use parseFloat validation - accepts 0.01, 0.67, 0.145, etc.
+            if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(unitPrice) || unitPrice <= 0) {
+                showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${unitPrice}`, 'error');
                 return;
             }
             
@@ -1853,9 +1879,19 @@
             try {
                 const total = quantity * unitPrice;
                 await db.collection('requisitions').add({
-                    reqId, userId: currentUser.uid, itemName, quantity, unit: unit || 'pcs',
-                    unitPrice, totalAmount: total, category, supplier,
-                    requestedBy, justification, priority, status: 'pending',
+                    reqId: reqId,
+                    userId: currentUser.uid,
+                    itemName: itemName,
+                    quantity: quantity,
+                    unit: unit || 'pcs',
+                    unitPrice: unitPrice,
+                    totalAmount: total,
+                    category: category,
+                    supplier: supplier,
+                    requestedBy: requestedBy,
+                    justification: justification,
+                    priority: priority,
+                    status: 'pending',
                     createdBy: userData?.fullName || currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedBy: userData?.fullName || currentUser.email,
@@ -1866,7 +1902,8 @@
                 document.getElementById('reqId').value = generateRequisitionId();
                 await loadRequisitions();
             } catch (error) {
-                showToast('Error submitting requisition', 'error');
+                console.error('Error submitting requisition:', error);
+                showToast('Error submitting requisition: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
@@ -1880,7 +1917,9 @@
             showLoading(true);
             try {
                 await db.collection('suppliers').add({
-                    code, userId: currentUser.uid, name,
+                    code: code,
+                    userId: currentUser.uid,
+                    name: name,
                     contact: document.getElementById('supplierContact')?.value,
                     email: document.getElementById('supplierEmail')?.value,
                     phone: document.getElementById('supplierPhone')?.value,
@@ -1920,9 +1959,9 @@
             event.preventDefault();
             const id = document.getElementById('editRequisitionId')?.value;
             const itemName = document.getElementById('editReqItemName')?.value;
-            const quantity = parseFloat(document.getElementById('editReqQuantity')?.value) || 0;
+            const quantity = parseFloat(document.getElementById('editReqQuantity')?.value);
             const unit = document.getElementById('editReqUnit')?.value;
-            const unitPrice = parseFloat(document.getElementById('editReqUnitPrice')?.value) || 0;
+            const unitPrice = parseFloat(document.getElementById('editReqUnitPrice')?.value);
             const category = document.getElementById('editReqCategory')?.value;
             const supplier = document.getElementById('editReqSupplier')?.value;
             const requestedBy = document.getElementById('editReqRequestedBy')?.value;
@@ -1931,8 +1970,12 @@
             const status = document.getElementById('editReqStatus')?.value;
             const oldStatus = requisitions.find(r => r.id === id)?.status;
             
-            if (!itemName || quantity <= 0 || unitPrice <= 0) {
-                showToast('Please fill all required fields with valid values', 'error');
+            // Debug log
+            console.log('Update requisition:', { quantity, unitPrice, itemName, status });
+            
+            // Use parseFloat validation - accepts 0.01, 0.67, 0.145, etc.
+            if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(unitPrice) || unitPrice <= 0) {
+                showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${unitPrice}`, 'error');
                 return;
             }
             
@@ -1940,9 +1983,17 @@
             try {
                 const total = quantity * unitPrice;
                 const updateData = {
-                    itemName, quantity, unit: unit || 'pcs', unitPrice,
-                    totalAmount: total, category, supplier,
-                    requestedBy, justification, priority, status,
+                    itemName: itemName,
+                    quantity: quantity,
+                    unit: unit || 'pcs',
+                    unitPrice: unitPrice,
+                    totalAmount: total,
+                    category: category,
+                    supplier: supplier,
+                    requestedBy: requestedBy,
+                    justification: justification,
+                    priority: priority,
+                    status: status,
                     updatedBy: userData?.fullName || currentUser.email,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
@@ -1982,6 +2033,7 @@
                 closeModal('editRequisitionModal');
                 await loadRequisitions();
             } catch (error) {
+                console.error('Error updating requisition:', error);
                 showToast('Error updating requisition', 'error');
             } finally {
                 showLoading(false);
@@ -2242,7 +2294,7 @@
                     <table style="width:100%;border-collapse:collapse;">
                         <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')} </thead>
                         <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
-                     </table>
+                    </table>
                     <div class="total-section">Total Spend: ${formatMoney(totalSpend)}</div>
                     <div class="footer">
                         <p>Confidential - MAYE System Internal Procurement Analytics</p>
@@ -2580,7 +2632,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'auth.html';
+                        window.location.href = 'index.html';
                     });
                 }
             });
