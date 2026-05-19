@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MAYE Procurement | Purchase & Requisition Management</title>
+    <title>MAYE Procurement | Advanced Purchase & Requisition Management</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
@@ -24,9 +24,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        * {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
+        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
@@ -34,9 +32,7 @@
             transition: background 0.3s ease;
         }
         
-        body.light-mode {
-            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-        }
+        body.light-mode { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); }
         
         /* Sidebar Premium */
         .sidebar-premium {
@@ -348,7 +344,59 @@
             color: white;
         }
         
-        /* Checkbox for multiple select */
+        /* Search & Filter Bar */
+        .search-filters {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        
+        .filter-input {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.2s;
+            color: #e2e8f0;
+        }
+        
+        .filter-input:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        
+        body.light-mode .filter-input {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+        
+        /* Sort button */
+        .sort-btn {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sort-btn:hover, .sort-btn.active {
+            background: rgba(79, 70, 229, 0.2);
+            border-color: #4F46E5;
+            color: #818cf8;
+        }
+        
+        /* Checkbox */
         .select-checkbox {
             width: 18px;
             height: 18px;
@@ -364,102 +412,6 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-        }
-        
-        /* ============================================
-           PREMIUM PRINT STYLESHEET - Corporate Report
-        ============================================ */
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; margin: 0; padding: 0; }
-            .print-container { padding: 20px; }
-            
-            /* Hide all interactive elements */
-            .sidebar-premium, .topbar-premium, .floating-btn, .selection-toolbar,
-            .procurement-tab, .glass-card .grid button, .glass-card .grid select,
-            .glass-card .grid input, .no-print, .theme-toggle, .user-btn,
-            #addPurchaseBtn, #exportPurchasesPDFBtn, #exportPurchasesCSVBtn,
-            #poFilterStatus, #poSearch, #selectAllPOs, .pagination-btn,
-            .floating-btn, .mobile-menu-premium, .breadcrumb {
-                display: none !important;
-            }
-            
-            /* Reset main content */
-            .main-content, #mainContent, .flex-1 {
-                margin-left: 0 !important;
-                padding: 0 !important;
-                overflow: visible !important;
-            }
-            
-            /* Force clean white backgrounds */
-            .glass-card, .stat-card, .chart-container {
-                background: white !important;
-                border: 1px solid #e2e8f0 !important;
-                box-shadow: none !important;
-                backdrop-filter: none !important;
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-            
-            /* KPI cards */
-            .stat-value {
-                background: none !important;
-                -webkit-background-clip: unset !important;
-                background-clip: unset !important;
-                color: #1e293b !important;
-            }
-            
-            /* Text colors */
-            .text-slate-200, .text-slate-300, .text-slate-400 {
-                color: #1e293b !important;
-            }
-            
-            /* Table styles */
-            .data-table th {
-                background: #f1f5f9 !important;
-                color: #1e293b !important;
-                border: 1px solid #e2e8f0 !important;
-            }
-            
-            .data-table td {
-                border: 1px solid #e2e8f0 !important;
-            }
-            
-            /* Page breaks */
-            .stat-card, .chart-container, .data-table tr {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-        }
-        
-        /* Corporate Metadata Block */
-        .corporate-metadata {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e2e8f0;
-        }
-        
-        body.light-mode .corporate-metadata {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-        }
-        
-        /* Light mode text colors */
-        body.light-mode .text-slate-200 { color: #1e293b; }
-        body.light-mode .text-slate-300 { color: #334155; }
-        body.light-mode .text-slate-400 { color: #64748b; }
-        body.light-mode .border-slate-700 { border-color: #e2e8f0; }
-        body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
-        body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
-        body.light-mode .bg-slate-900 { background-color: #ffffff; }
-        
-        /* Responsive table */
-        @media (max-width: 768px) {
-            .data-table thead { display: none; }
-            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
-            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
-            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
         }
         
         /* Selection toolbar */
@@ -480,6 +432,58 @@
         
         body.light-mode .selection-toolbar {
             background: white;
+        }
+        
+        /* Print styles */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; margin: 0; padding: 0; }
+            .sidebar-premium, .topbar-premium, .floating-btn, .selection-toolbar,
+            .procurement-tab, .filter-input, .sort-btn, .pagination-btn,
+            .floating-btn, .mobile-menu-premium, .breadcrumb {
+                display: none !important;
+            }
+            .main-content, #mainContent, .flex-1 {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+            }
+            .glass-card, .stat-card, .chart-container {
+                background: white !important;
+                border: 1px solid #e2e8f0 !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+            .data-table th {
+                background: #f1f5f9 !important;
+                color: #1e293b !important;
+            }
+        }
+        
+        /* Light mode text */
+        body.light-mode .text-slate-200 { color: #1e293b; }
+        body.light-mode .text-slate-300 { color: #334155; }
+        body.light-mode .text-slate-400 { color: #64748b; }
+        body.light-mode .border-slate-700 { border-color: #e2e8f0; }
+        body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
+        body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
+        body.light-mode .bg-slate-900 { background-color: #ffffff; }
+        
+        @media (max-width: 768px) {
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
+            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
+            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
+            .search-filters { flex-direction: column; align-items: stretch; }
+            .filter-input, .sort-btn { width: 100%; }
+        }
+        
+        .corporate-metadata {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
@@ -649,7 +653,7 @@
                             <span class="text-slate-400 text-xs font-bold uppercase">Total Spend</span>
                             <i class="fas fa-coins text-emerald-400 text-lg"></i>
                         </div>
-                        <div class="text-2xl font-bold" id="totalSpend">D 0</div>
+                        <div class="text-2xl font-bold" id="totalSpend">D 0.000</div>
                         <div class="text-xs text-slate-500 mt-1">All purchases</div>
                     </div>
                     <div class="stat-card p-4">
@@ -665,7 +669,7 @@
                             <span class="text-slate-400 text-xs font-bold uppercase">Total Amount</span>
                             <i class="fas fa-dollar-sign text-emerald-400 text-lg"></i>
                         </div>
-                        <div class="text-2xl font-bold" id="totalAmount">D 0</div>
+                        <div class="text-2xl font-bold" id="totalAmount">D 0.000</div>
                         <div class="text-xs text-slate-500 mt-1">All requisitions</div>
                     </div>
                     <div class="stat-card p-4">
@@ -711,7 +715,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
-                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="1" min="1" value="1" required>
+                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.001" step="0.001" min="0.001" value="1" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -719,7 +723,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price *</label>
-                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.00" step="0.01" required>
+                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.000" step="0.001" min="0.001" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -829,6 +833,36 @@
                             </div>
                         </div>
                         
+                        <!-- Advanced Search & Filters -->
+                        <div class="search-filters no-print">
+                            <input type="text" id="searchInput" placeholder="🔍 Search by item, supplier, category..." class="filter-input flex-1 min-w-[150px]">
+                            <select id="statusFilter" class="filter-input">
+                                <option value="all">All Status</option>
+                                <option value="approved">✅ Approved</option>
+                                <option value="pending">⏳ Pending</option>
+                                <option value="paid">💰 Paid</option>
+                                <option value="received">📋 Received</option>
+                            </select>
+                            <select id="categoryFilter" class="filter-input">
+                                <option value="all">All Categories</option>
+                                <option value="IT Equipment">💻 IT Equipment</option>
+                                <option value="Office Supplies">📎 Office Supplies</option>
+                                <option value="Furniture">🪑 Furniture</option>
+                                <option value="Food">🍔 Food</option>
+                                <option value="Healthcare">🏥 Healthcare</option>
+                                <option value="Other">📌 Other</option>
+                            </select>
+                            <input type="text" id="supplierFilter" placeholder="🏢 Supplier name..." class="filter-input w-36">
+                            <input type="date" id="dateFromFilter" class="filter-input w-32">
+                            <input type="date" id="dateToFilter" class="filter-input w-32">
+                            <div class="flex gap-1">
+                                <button class="sort-btn" data-sort="newest">📅 Newest</button>
+                                <button class="sort-btn" data-sort="oldest">📅 Oldest</button>
+                                <button class="sort-btn" data-sort="highest">💰 Highest</button>
+                                <button class="sort-btn" data-sort="lowest">💰 Lowest</button>
+                            </div>
+                        </div>
+                        
                         <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
                             <h2 class="text-xl font-extrabold flex items-center gap-2">
                                 <i class="fas fa-shopping-cart text-indigo-400"></i> Purchase Orders
@@ -843,14 +877,6 @@
                                 <button id="exportPurchasesCSVBtn" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 px-4 py-2 rounded-xl font-bold transition">
                                     <i class="fas fa-file-csv mr-1"></i> CSV
                                 </button>
-                                <select id="poFilterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
-                                    <option value="all">All Orders</option>
-                                    <option value="approved">✅ Approved</option>
-                                    <option value="pending">⏳ Pending</option>
-                                    <option value="paid">💰 Paid</option>
-                                    <option value="received">📋 Received</option>
-                                </select>
-                                <input type="text" id="poSearch" placeholder="Search..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm w-40">
                             </div>
                         </div>
                         <div class="overflow-x-auto">
@@ -872,7 +898,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="purchasesTableBody">
-                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>
+                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>
                                 </tbody>
                             </table>
                         </div>
@@ -981,7 +1007,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
-                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" min="1" value="1" required>
+                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" value="1" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -991,7 +1017,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Price *</label>
-                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.01" required>
+                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -1053,7 +1079,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Quantity</label>
-                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" min="1" required>
+                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -1063,7 +1089,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price</label>
-                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.01" required>
+                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -1182,9 +1208,18 @@
         let reqCurrentPage = 1;
         let poCurrentPage = 1;
         let itemsPerPage = 10;
+        let currentSort = 'newest';
         
         // Selection state
         let selectedPurchases = new Set();
+        
+        // Search state
+        let searchTerm = '';
+        let statusFilter = 'all';
+        let categoryFilter = 'all';
+        let supplierFilter = '';
+        let dateFrom = '';
+        let dateTo = '';
         
         const currencies = {
             USD: { symbol: '$', name: 'US Dollar' },
@@ -1205,60 +1240,15 @@
         const COMPANY_NAME = "MAYE System";
         const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
         
-        // Helper function to generate reference ID
-        function generateReferenceId() {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-            return `MAYE-PROC-${year}${month}-${random}`;
-        }
-        
-        // Update print metadata
-        function updatePrintMetadata() {
-            document.getElementById('printDate').textContent = new Date().toLocaleString();
-            document.getElementById('printRefId').textContent = generateReferenceId();
-            document.getElementById('printGeneratedBy').textContent = userData?.fullName || currentUser?.email || 'System User';
-        }
-        
         // ============================================
-        // ID GENERATORS (unchanged)
-        // ============================================
-        function generatePurchaseId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'PUR';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-        
-        function generateRequisitionId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'REQ';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-        
-        function generateSupplierCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'SUP';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-        
-        // ============================================
-        // UTILITY FUNCTIONS
+        // FORMATTING FUNCTIONS (with 3 decimals)
         // ============================================
         
         function formatMoney(amount) {
             const symbol = currencies[currentCurrency]?.symbol || 'D';
-            if (currentCurrency === 'AED') return `${symbol} ${amount.toLocaleString()}`;
-            return `${symbol} ${amount.toLocaleString()}`;
+            const formatted = amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+            if (currentCurrency === 'AED') return `${symbol} ${formatted}`;
+            return `${symbol} ${formatted}`;
         }
         
         function showToast(message, type = 'info') {
@@ -1316,11 +1306,122 @@
             return map[priority] || '🟢 Low';
         }
         
-        // Format audit date
         function formatAuditDate(timestamp) {
             if (!timestamp) return 'N/A';
             if (timestamp.toDate) return timestamp.toDate().toLocaleString();
             return new Date(timestamp).toLocaleString();
+        }
+        
+        function generateReferenceId() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `MAYE-PROC-${year}${month}-${random}`;
+        }
+        
+        function updatePrintMetadata() {
+            document.getElementById('printDate').textContent = new Date().toLocaleString();
+            document.getElementById('printRefId').textContent = generateReferenceId();
+            document.getElementById('printGeneratedBy').textContent = userData?.fullName || currentUser?.email || 'System User';
+        }
+        
+        // ============================================
+        // ID GENERATORS
+        // ============================================
+        function generatePurchaseId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'PUR';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function generateRequisitionId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'REQ';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function generateSupplierCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'SUP';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // ============================================
+        // ADVANCED SEARCH & FILTER FUNCTION
+        // ============================================
+        
+        function filterPurchases() {
+            let filtered = [...purchases];
+            
+            // Search term filter (item, supplier, category)
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filtered = filtered.filter(p => 
+                    p.itemName?.toLowerCase().includes(term) ||
+                    p.supplier?.toLowerCase().includes(term) ||
+                    p.category?.toLowerCase().includes(term)
+                );
+            }
+            
+            // Status filter
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(p => p.status === statusFilter);
+            }
+            
+            // Category filter
+            if (categoryFilter !== 'all') {
+                filtered = filtered.filter(p => p.category === categoryFilter);
+            }
+            
+            // Supplier filter
+            if (supplierFilter) {
+                const sup = supplierFilter.toLowerCase();
+                filtered = filtered.filter(p => p.supplier?.toLowerCase().includes(sup));
+            }
+            
+            // Date range filter
+            if (dateFrom) {
+                filtered = filtered.filter(p => p.date && p.date >= dateFrom);
+            }
+            if (dateTo) {
+                filtered = filtered.filter(p => p.date && p.date <= dateTo);
+            }
+            
+            // Sorting
+            switch (currentSort) {
+                case 'newest':
+                    filtered.sort((a, b) => new Date(b.date || b.createdAt?.toDate()) - new Date(a.date || a.createdAt?.toDate()));
+                    break;
+                case 'oldest':
+                    filtered.sort((a, b) => new Date(a.date || a.createdAt?.toDate()) - new Date(b.date || b.createdAt?.toDate()));
+                    break;
+                case 'highest':
+                    filtered.sort((a, b) => (b.price || 0) * (b.quantity || 0) - (a.price || 0) * (a.quantity || 0));
+                    break;
+                case 'lowest':
+                    filtered.sort((a, b) => (a.price || 0) * (a.quantity || 0) - (b.price || 0) * (b.quantity || 0));
+                    break;
+                default:
+                    filtered.sort((a, b) => new Date(b.createdAt?.toDate()) - new Date(a.createdAt?.toDate()));
+            }
+            
+            return filtered;
+        }
+        
+        function renderFilteredPurchases() {
+            const filtered = filterPurchases();
+            renderPurchasesTableWithData(filtered);
+            updateSelectionUI();
         }
         
         // ============================================
@@ -1329,7 +1430,7 @@
         
         auth.onAuthStateChanged(async (user) => {
             if (!user || !user.emailVerified) {
-                window.location.href = 'index.html';
+                window.location.href = 'auth.html';
                 return;
             }
             currentUser = user;
@@ -1341,7 +1442,7 @@
             setupEventListeners();
             setupTabs();
             updateStats();
-            renderPurchasesTable();
+            renderFilteredPurchases();
             renderRequisitionsTable();
             renderSuppliersList();
             initReportsCharts();
@@ -1380,13 +1481,19 @@
                 const snapshot = await db.collection('purchases')
                     .where('userId', '==', currentUser.uid)
                     .get();
-                purchases = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                purchases = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(),
+                    quantity: parseFloat(doc.data().quantity) || 0,
+                    price: parseFloat(doc.data().price) || 0,
+                    total: (parseFloat(doc.data().price) || 0) * (parseFloat(doc.data().quantity) || 0)
+                }));
                 purchases.sort((a, b) => {
                     if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
                     return 0;
                 });
                 updateStats();
-                renderPurchasesTable();
+                renderFilteredPurchases();
                 if (charts.category) initReportsCharts();
             } catch (error) {
                 console.error('Error loading purchases:', error);
@@ -1438,13 +1545,13 @@
             const totalSpend = purchases.reduce((s, p) => s + ((p.price || 0) * (p.quantity || 0)), 0);
             document.getElementById('totalRequisitions').textContent = totalReqs;
             document.getElementById('totalPurchases').textContent = purchases.length;
-            document.getElementById('totalSpend').textContent = formatMoney(totalSpend);
+            document.getElementById('totalSpend').innerHTML = formatMoney(totalSpend);
             document.getElementById('pendingApprovals').textContent = pendingReqs;
-            document.getElementById('totalAmount').textContent = formatMoney(totalAmount);
+            document.getElementById('totalAmount').innerHTML = formatMoney(totalAmount);
         }
         
         // ============================================
-        // RENDER FUNCTIONS with Audit Trail
+        // RENDER FUNCTIONS
         // ============================================
         
         function updateSelectionUI() {
@@ -1464,22 +1571,11 @@
                 const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedPurchases.has(id));
                 selectAll.checked = allSelected;
             }
-            renderPurchasesTable();
         }
         
-        function renderPurchasesTable() {
+        function renderPurchasesTableWithData(filtered) {
             const tbody = document.getElementById('purchasesTableBody');
             if (!tbody) return;
-            const filterStatus = document.getElementById('poFilterStatus')?.value || 'all';
-            const searchTerm = document.getElementById('poSearch')?.value.toLowerCase() || '';
-            
-            let filtered = [...purchases];
-            if (filterStatus !== 'all') filtered = filtered.filter(p => p.status === filterStatus);
-            if (searchTerm) filtered = filtered.filter(p => 
-                p.itemName?.toLowerCase().includes(searchTerm) || 
-                p.id?.toLowerCase().includes(searchTerm) ||
-                p.supplier?.toLowerCase().includes(searchTerm)
-            );
             
             const start = (poCurrentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
@@ -1487,31 +1583,35 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>';
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>';
                 const paginationDiv = document.getElementById('purchasePagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
             }
             
-            tbody.innerHTML = pageItems.map(p => `
-                <tr class="border-b border-slate-700 hover:bg-slate-800/30">
-                    <td class="p-3"><input type="checkbox" class="select-checkbox purchase-select" data-id="${p.id}" ${selectedPurchases.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); togglePurchaseSelect('${p.id}')"></td>
-                    <td class="p-3 font-mono text-sm" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.id}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.quantity || 0}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.unit || 'pcs'}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(p.price || 0)}</td>
-                    <td class="p-3 font-bold text-emerald-400" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney((p.price || 0) * (p.quantity || 0))}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.category || 'Other'}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.supplier) || '—'}</td>
-                    <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${getStatusBadge(p.status)}</td>
-                    <td class="p-3 text-xs" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</td>
-                    <td class="p-3">
-                        <button onclick="event.stopPropagation(); editPurchase('${p.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
-                        <button onclick="event.stopPropagation(); deletePurchase('${p.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                  </tr>
-            `).join('');
+            tbody.innerHTML = pageItems.map(p => {
+                const qty = parseFloat(p.quantity) || 0;
+                const price = parseFloat(p.price) || 0;
+                const total = qty * price;
+                return `
+                    <tr class="border-b border-slate-700 hover:bg-slate-800/30">
+                        <td class="p-3"><input type="checkbox" class="select-checkbox purchase-select" data-id="${p.id}" ${selectedPurchases.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); togglePurchaseSelect('${p.id}')"></td>
+                        <td class="p-3 font-mono text-sm" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.id}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${qty.toFixed(3)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.unit || 'pcs'}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(price)}</td>
+                        <td class="p-3 font-bold text-emerald-400" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(total)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.category || 'Other'}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.supplier) || '—'}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${getStatusBadge(p.status)}</td>
+                        <td class="p-3 text-xs" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</td>
+                        <td class="p-3">
+                            <button onclick="event.stopPropagation(); editPurchase('${p.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
+                            <button onclick="event.stopPropagation(); deletePurchase('${p.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
             
             let paginationHtml = '';
             for (let i = 1; i <= Math.min(totalPages, 5); i++) {
@@ -1523,6 +1623,11 @@
             }
             const paginationDiv = document.getElementById('purchasePagination');
             if (paginationDiv) paginationDiv.innerHTML = paginationHtml;
+        }
+        
+        function renderPurchasesTable() {
+            const filtered = filterPurchases();
+            renderPurchasesTableWithData(filtered);
         }
         
         function renderRequisitionsTable() {
@@ -1541,13 +1646,16 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td>';
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td></tr>';
                 const paginationDiv = document.getElementById('reqPagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
             }
             
             tbody.innerHTML = pageItems.map(r => {
+                const qty = parseFloat(r.quantity) || 0;
+                const unitPrice = parseFloat(r.unitPrice) || 0;
+                const total = qty * unitPrice;
                 const createdByName = r.createdBy || 'System';
                 const createdAtFormatted = formatAuditDate(r.createdAt);
                 const updatedByName = r.updatedBy || '—';
@@ -1556,16 +1664,16 @@
                     <tr class="border-b border-slate-700 hover:bg-slate-800/30">
                         <td class="p-3 font-mono text-sm">${r.reqId || r.id.slice(-6)}</td>
                         <td class="p-3">${escapeHtml(r.itemName)}</td>
-                        <td class="p-3">${r.quantity || 0}</td>
+                        <td class="p-3">${qty.toFixed(3)}</td>
                         <td class="p-3">${r.unit || 'pcs'}</td>
-                        <td class="p-3">${formatMoney(r.unitPrice || 0)}</td>
-                        <td class="p-3 font-bold text-emerald-400">${formatMoney(r.totalAmount || 0)}</td>
+                        <td class="p-3">${formatMoney(unitPrice)}</td>
+                        <td class="p-3 font-bold text-emerald-400">${formatMoney(total)}</td>
                         <td class="p-3">${r.category || 'Other'}</td>
                         <td class="p-3">${getPriorityBadge(r.priority)}</td>
                         <td class="p-3">${getStatusBadge(r.status)}</td>
                         <td class="p-3">
-                            <button onclick="event.stopPropagation(); editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
-                            <button onclick="event.stopPropagation(); deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
+                            <button onclick="editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
                         </td>
                     </tr>
                     <tr class="border-b border-slate-700 bg-slate-800/20">
@@ -1619,7 +1727,8 @@
             const categoryMap = {};
             purchases.forEach(p => {
                 const cat = p.category || 'Other';
-                categoryMap[cat] = (categoryMap[cat] || 0) + ((p.price || 0) * (p.quantity || 0));
+                const amount = (parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0);
+                categoryMap[cat] = (categoryMap[cat] || 0) + amount;
             });
             const ctxCategory = document.getElementById('categoryChart');
             if (ctxCategory) {
@@ -1635,7 +1744,8 @@
                 if (p.createdAt) {
                     const date = p.createdAt.toDate();
                     const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
-                    monthlyMap[month] = (monthlyMap[month] || 0) + ((p.price || 0) * (p.quantity || 0));
+                    const amount = (parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0);
+                    monthlyMap[month] = (monthlyMap[month] || 0) + amount;
                 }
             });
             const ctxTrend = document.getElementById('spendingTrendChart');
@@ -1650,7 +1760,7 @@
         }
         
         // ============================================
-        // CRUD OPERATIONS with Auto-Register
+        // CRUD OPERATIONS with Decimal Support
         // ============================================
         
         window.togglePurchaseSelect = (id) => {
@@ -1674,9 +1784,9 @@
             event.preventDefault();
             const purchaseId = document.getElementById('purchaseId')?.value || generatePurchaseId();
             const itemName = document.getElementById('purchaseItemName')?.value.trim();
-            const quantity = parseInt(document.getElementById('purchaseQuantity')?.value);
+            const quantity = parseFloat(document.getElementById('purchaseQuantity')?.value) || 0;
             const unit = document.getElementById('purchaseUnit')?.value.trim();
-            const price = parseFloat(document.getElementById('purchasePrice')?.value);
+            const price = parseFloat(document.getElementById('purchasePrice')?.value) || 0;
             const category = document.getElementById('purchaseCategory')?.value;
             const supplier = document.getElementById('purchaseSupplier')?.value.trim();
             const date = document.getElementById('purchaseDate')?.value || new Date().toISOString().split('T')[0];
@@ -1684,18 +1794,19 @@
             const status = document.getElementById('purchaseStatus')?.value;
             const editId = document.getElementById('purchaseEditId')?.value;
             
-            if (!itemName || !quantity || !price) {
-                showToast('Please fill all required fields', 'error');
+            if (!itemName || quantity <= 0 || price <= 0) {
+                showToast('Please fill all required fields with valid values', 'error');
                 return;
             }
             
             showLoading(true);
             try {
+                const total = quantity * price;
                 const purchaseData = {
                     id: purchaseId,
                     userId: currentUser.uid,
                     itemName, quantity, unit: unit || 'pcs', price,
-                    totalAmount: quantity * price, category, supplier, date, notes, status,
+                    totalAmount: total, category, supplier, date, notes, status,
                     updatedBy: userData?.fullName || currentUser.email,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
@@ -1723,25 +1834,26 @@
             event.preventDefault();
             const reqId = generateRequisitionId();
             const itemName = document.getElementById('reqItemName')?.value.trim();
-            const quantity = parseInt(document.getElementById('reqQuantity')?.value);
+            const quantity = parseFloat(document.getElementById('reqQuantity')?.value) || 0;
             const unit = document.getElementById('reqUnit')?.value.trim();
-            const unitPrice = parseFloat(document.getElementById('reqUnitPrice')?.value);
+            const unitPrice = parseFloat(document.getElementById('reqUnitPrice')?.value) || 0;
             const category = document.getElementById('reqCategory')?.value;
             const supplier = document.getElementById('reqSupplier')?.value;
             const requestedBy = document.getElementById('reqRequestedBy')?.value;
             const justification = document.getElementById('reqJustification')?.value;
             const priority = document.getElementById('reqPriority')?.value;
             
-            if (!itemName || !quantity || !unitPrice) {
-                showToast('Please fill all required fields', 'error');
+            if (!itemName || quantity <= 0 || unitPrice <= 0) {
+                showToast('Please fill all required fields with valid values', 'error');
                 return;
             }
             
             showLoading(true);
             try {
+                const total = quantity * unitPrice;
                 await db.collection('requisitions').add({
                     reqId, userId: currentUser.uid, itemName, quantity, unit: unit || 'pcs',
-                    unitPrice, totalAmount: quantity * unitPrice, category, supplier,
+                    unitPrice, totalAmount: total, category, supplier,
                     requestedBy, justification, priority, status: 'pending',
                     createdBy: userData?.fullName || currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1807,9 +1919,9 @@
             event.preventDefault();
             const id = document.getElementById('editRequisitionId')?.value;
             const itemName = document.getElementById('editReqItemName')?.value;
-            const quantity = parseInt(document.getElementById('editReqQuantity')?.value);
+            const quantity = parseFloat(document.getElementById('editReqQuantity')?.value) || 0;
             const unit = document.getElementById('editReqUnit')?.value;
-            const unitPrice = parseFloat(document.getElementById('editReqUnitPrice')?.value);
+            const unitPrice = parseFloat(document.getElementById('editReqUnitPrice')?.value) || 0;
             const category = document.getElementById('editReqCategory')?.value;
             const supplier = document.getElementById('editReqSupplier')?.value;
             const requestedBy = document.getElementById('editReqRequestedBy')?.value;
@@ -1818,16 +1930,17 @@
             const status = document.getElementById('editReqStatus')?.value;
             const oldStatus = requisitions.find(r => r.id === id)?.status;
             
-            if (!itemName || !quantity || !unitPrice) {
-                showToast('Please fill all required fields', 'error');
+            if (!itemName || quantity <= 0 || unitPrice <= 0) {
+                showToast('Please fill all required fields with valid values', 'error');
                 return;
             }
             
             showLoading(true);
             try {
+                const total = quantity * unitPrice;
                 const updateData = {
                     itemName, quantity, unit: unit || 'pcs', unitPrice,
-                    totalAmount: quantity * unitPrice, category, supplier,
+                    totalAmount: total, category, supplier,
                     requestedBy, justification, priority, status,
                     updatedBy: userData?.fullName || currentUser.email,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1838,23 +1951,22 @@
                 
                 // AUTO-REGISTER PURCHASE WHEN STATUS CHANGES TO 'approved'
                 if (status === 'approved' && oldStatus !== 'approved') {
-                    const reqData = { ...updateData, id, reqId: document.getElementById('editRequisitionId')?.value };
                     const purchaseId = generatePurchaseId();
                     
                     await db.collection('purchases').add({
                         id: purchaseId,
                         userId: currentUser.uid,
                         requisitionId: id,
-                        requisitionRef: reqData.reqId,
+                        requisitionRef: updateData.reqId,
                         itemName: itemName,
                         quantity: quantity,
                         unit: unit || 'pcs',
                         price: unitPrice,
-                        totalAmount: quantity * unitPrice,
+                        totalAmount: total,
                         category: category,
                         supplier: supplier,
                         date: new Date().toISOString().split('T')[0],
-                        notes: `Auto-created from approved requisition ${reqData.reqId || id.slice(-6)}`,
+                        notes: `Auto-created from approved requisition`,
                         status: 'approved',
                         createdBy: userData?.fullName || currentUser.email,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1878,13 +1990,15 @@
         window.viewPurchaseDetails = async (id) => {
             const p = purchases.find(x => x.id === id);
             if (!p) return;
-            const total = (p.price || 0) * (p.quantity || 0);
+            const qty = parseFloat(p.quantity) || 0;
+            const price = parseFloat(p.price) || 0;
+            const total = qty * price;
             const detailsHtml = `
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Purchase ID:</span><span class="font-mono">${p.id}</span></div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Item:</span><span class="font-bold">${escapeHtml(p.itemName)}</span></div>
-                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Quantity:</span>${p.quantity} ${p.unit || 'pcs'}</div>
-                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Unit Price:</span>${formatMoney(p.price)}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Quantity:</span>${qty.toFixed(3)} ${p.unit || 'pcs'}</div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Unit Price:</span>${formatMoney(price)}</div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Total:</span><span class="font-bold text-emerald-400">${formatMoney(total)}</span></div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Category:</span>${p.category || 'Other'}</div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Supplier:</span>${escapeHtml(p.supplier) || '—'}</div>
@@ -1913,7 +2027,9 @@
         };
         
         function getReceiptHTML(purchase) {
-            const total = (purchase.price || 0) * (purchase.quantity || 0);
+            const qty = parseFloat(purchase.quantity) || 0;
+            const price = parseFloat(purchase.price) || 0;
+            const total = qty * price;
             return `
                 <!DOCTYPE html>
                 <html>
@@ -1939,13 +2055,14 @@
                     <div><span class="label">Date:</span> <span class="value">${purchase.date || new Date().toLocaleDateString()}</span></div>
                     <div><span class="label">Status:</span> ${getStatusBadge(purchase.status)}</div>
                     <div><span class="label">Created By:</span> <span class="value">${escapeHtml(purchase.createdBy) || 'System'}</span></div>
-                    <table class="items"><tr><td class="label">Item</td><td class="value">${purchase.itemName}</td></tr>
-                    <tr><td class="label">Quantity</td><td class="value">${purchase.quantity} ${purchase.unit || 'pcs'}</td></tr>
-                    <tr><td class="label">Unit Price</td><td class="value">${formatMoney(purchase.price)}<\/td><\/tr>
-                    <tr class="total-row"><td class="label">Total<\/td><td class="value">${formatMoney(total)}<\/td><\/tr>
-                    ${purchase.supplier ? `<tr><td class="label">Supplier<\/td><td class="value">${purchase.supplier}<\/td><\/tr>` : ''}
-                    ${purchase.notes ? `<tr><td class="label">Notes<\/td><td class="value">${purchase.notes}<\/td><\/tr>` : ''}
-                <\/table>
+                    <table class="items">
+                        <tr><td class="label">Item</td><td class="value">${purchase.itemName}</td></tr>
+                        <tr><td class="label">Quantity</td><td class="value">${qty.toFixed(3)} ${purchase.unit || 'pcs'}</td></tr>
+                        <tr><td class="label">Unit Price</td><td class="value">${formatMoney(price)}</td></tr>
+                        <tr class="total-row"><td class="label">Total</td><td class="value">${formatMoney(total)}</td></tr>
+                        ${purchase.supplier ? `<tr><td class="label">Supplier</td><td class="value">${purchase.supplier}</td></tr>` : ''}
+                        ${purchase.notes ? `<tr><td class="label">Notes</td><td class="value">${purchase.notes}</td></tr>` : ''}
+                    </table>
                     <div class="footer"><p>Thank you for your business!</p><p>Generated on: ${new Date().toLocaleString()}</p></div>
                 </div>
                 </body>
@@ -2036,7 +2153,9 @@
             if (requisitions.length === 0) { showToast('No data to export', 'warning'); return; }
             let csv = 'ID,Item Name,Quantity,Unit,Unit Price,Total,Category,Supplier,Requested By,Priority,Status,Created By,Created At,Last Edited By,Last Edited\n';
             requisitions.forEach(r => {
-                csv += `${r.reqId || r.id.slice(-6)},${r.itemName},${r.quantity},${r.unit || 'pcs'},${r.unitPrice},${r.totalAmount},${r.category},${r.supplier || ''},${r.requestedBy || ''},${r.priority},${r.status},${r.createdBy || ''},${formatAuditDate(r.createdAt)},${r.updatedBy || ''},${formatAuditDate(r.updatedAt)}\n`;
+                const qty = parseFloat(r.quantity) || 0;
+                const unitPrice = parseFloat(r.unitPrice) || 0;
+                csv += `${r.reqId || r.id.slice(-6)},${r.itemName},${qty.toFixed(3)},${r.unit || 'pcs'},${unitPrice.toFixed(3)},${(qty * unitPrice).toFixed(3)},${r.category},${r.supplier || ''},${r.requestedBy || ''},${r.priority},${r.status},${r.createdBy || ''},${formatAuditDate(r.createdAt)},${r.updatedBy || ''},${formatAuditDate(r.updatedAt)}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
@@ -2071,13 +2190,18 @@
             }
             
             updatePrintMetadata();
+            const filtered = filterPurchases();
             const headers = ['PO #', 'Item', 'Qty', 'Unit', 'Price', 'Total', 'Category', 'Supplier', 'Status', 'Date'];
-            const data = purchases.map(p => [
-                p.id, p.itemName, p.quantity, p.unit || 'pcs', formatMoney(p.price), 
-                formatMoney(p.price * p.quantity), p.category || 'Other', p.supplier || '—', 
-                p.status, p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')
-            ]);
-            const totalSpend = purchases.reduce((s, p) => s + ((p.price || 0) * (p.quantity || 0)), 0);
+            const data = filtered.map(p => {
+                const qty = parseFloat(p.quantity) || 0;
+                const price = parseFloat(p.price) || 0;
+                return [
+                    p.id, p.itemName, qty.toFixed(3), p.unit || 'pcs', formatMoney(price), 
+                    formatMoney(qty * price), p.category || 'Other', p.supplier || '—', 
+                    p.status, p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')
+                ];
+            });
+            const totalSpend = filtered.reduce((s, p) => s + ((parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0)), 0);
             
             const printHTML = `
                 <!DOCTYPE html>
@@ -2113,7 +2237,7 @@
                         </div>
                     </div>
                     
-                    <h3 style="margin: 15px 0;">Purchase Orders Summary</h3>
+                    <h3 style="margin: 15px 0;">Purchase Orders Summary (${filtered.length} records)</h3>
                     <table style="width:100%;border-collapse:collapse;">
                         <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
                         <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
@@ -2137,7 +2261,9 @@
             if (purchases.length === 0) { showToast('No data to export', 'warning'); return; }
             let csv = 'ID,Item Name,Quantity,Unit,Price,Total,Category,Supplier,Status,Date,Created By,Created At,Last Edited By,Last Edited,Notes\n';
             purchases.forEach(p => {
-                csv += `${p.id},${p.itemName},${p.quantity},${p.unit || 'pcs'},${p.price},${p.price * p.quantity},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${p.createdBy || ''},${formatAuditDate(p.createdAt)},${p.updatedBy || ''},${formatAuditDate(p.updatedAt)},${(p.notes || '').replace(/,/g, ';')}\n`;
+                const qty = parseFloat(p.quantity) || 0;
+                const price = parseFloat(p.price) || 0;
+                csv += `${p.id},${p.itemName},${qty.toFixed(3)},${p.unit || 'pcs'},${price.toFixed(3)},${(qty * price).toFixed(3)},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${p.createdBy || ''},${formatAuditDate(p.createdAt)},${p.updatedBy || ''},${formatAuditDate(p.updatedAt)},${(p.notes || '').replace(/,/g, ';')}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
@@ -2154,7 +2280,9 @@
             if (selected.length === 0) { showToast('No items selected', 'warning'); return; }
             let csv = 'ID,Item Name,Quantity,Unit,Price,Total,Category,Supplier,Status,Date,Notes\n';
             selected.forEach(p => {
-                csv += `${p.id},${p.itemName},${p.quantity},${p.unit || 'pcs'},${p.price},${p.price * p.quantity},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${(p.notes || '').replace(/,/g, ';')}\n`;
+                const qty = parseFloat(p.quantity) || 0;
+                const price = parseFloat(p.price) || 0;
+                csv += `${p.id},${p.itemName},${qty.toFixed(3)},${p.unit || 'pcs'},${price.toFixed(3)},${(qty * price).toFixed(3)},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${(p.notes || '').replace(/,/g, ';')}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
@@ -2191,7 +2319,7 @@
         
         // Pagination
         function goToReqPage(page) { reqCurrentPage = page; renderRequisitionsTable(); }
-        function goToPoPage(page) { poCurrentPage = page; renderPurchasesTable(); }
+        function goToPoPage(page) { poCurrentPage = page; renderFilteredPurchases(); }
         
         // ============================================
         // UI SETUP
@@ -2256,6 +2384,73 @@
                 });
             }
             
+            // Search and filter event listeners
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchTerm = e.target.value;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            }
+            
+            const statusFilterSelect = document.getElementById('statusFilter');
+            if (statusFilterSelect) {
+                statusFilterSelect.addEventListener('change', (e) => {
+                    statusFilter = e.target.value;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            }
+            
+            const categoryFilterSelect = document.getElementById('categoryFilter');
+            if (categoryFilterSelect) {
+                categoryFilterSelect.addEventListener('change', (e) => {
+                    categoryFilter = e.target.value;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            }
+            
+            const supplierFilterInput = document.getElementById('supplierFilter');
+            if (supplierFilterInput) {
+                supplierFilterInput.addEventListener('input', (e) => {
+                    supplierFilter = e.target.value;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            }
+            
+            const dateFromFilter = document.getElementById('dateFromFilter');
+            if (dateFromFilter) {
+                dateFromFilter.addEventListener('change', (e) => {
+                    dateFrom = e.target.value;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            }
+            
+            const dateToFilter = document.getElementById('dateToFilter');
+            if (dateToFilter) {
+                dateToFilter.addEventListener('change', (e) => {
+                    dateTo = e.target.value;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            }
+            
+            // Sort buttons
+            const sortBtns = document.querySelectorAll('.sort-btn');
+            sortBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sortBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSort = btn.dataset.sort;
+                    poCurrentPage = 1;
+                    renderFilteredPurchases();
+                });
+            });
+            
             const exportPurchasesPDFBtn = document.getElementById('exportPurchasesPDFBtn');
             if (exportPurchasesPDFBtn) exportPurchasesPDFBtn.addEventListener('click', exportPurchasesToPDF);
             
@@ -2290,12 +2485,6 @@
             
             const reqSearch = document.getElementById('reqSearch');
             if (reqSearch) reqSearch.addEventListener('input', () => { reqCurrentPage = 1; renderRequisitionsTable(); });
-            
-            const poFilterStatus = document.getElementById('poFilterStatus');
-            if (poFilterStatus) poFilterStatus.addEventListener('change', () => { poCurrentPage = 1; renderPurchasesTable(); });
-            
-            const poSearch = document.getElementById('poSearch');
-            if (poSearch) poSearch.addEventListener('input', () => { poCurrentPage = 1; renderPurchasesTable(); });
             
             const floatingAddBtn = document.getElementById('floatingAddBtn');
             if (floatingAddBtn) {
@@ -2390,7 +2579,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'index.html';
+                        window.location.href = 'auth.html';
                     });
                 }
             });
