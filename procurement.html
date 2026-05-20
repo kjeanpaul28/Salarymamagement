@@ -485,47 +485,6 @@
             margin-bottom: 1.5rem;
             border: 1px solid #e2e8f0;
         }
-        
-        /* PDF Export Report styling */
-        .pdf-report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #4F46E5;
-        }
-        .pdf-report-header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .pdf-report-header-left img {
-            height: 60px;
-            width: auto;
-        }
-        .pdf-report-header-left h1 {
-            font-size: 18px;
-            font-weight: 800;
-            color: #4F46E5;
-            margin: 0;
-        }
-        .pdf-report-header-left p {
-            font-size: 10px;
-            color: #64748b;
-            margin: 2px 0;
-        }
-        .pdf-report-header-right {
-            text-align: right;
-        }
-        .pdf-report-footer {
-            text-align: center;
-            padding: 15px;
-            border-top: 1px solid #e2e8f0;
-            margin-top: 20px;
-            font-size: 9px;
-            color: #94a3b8;
-        }
     </style>
 </head>
 <body>
@@ -845,9 +804,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="requisitionsTableBody">
-                                    <tr><td colspan="10" class="text-center text-slate-400 py-8">Loading requisitions...</td</tr>
+                                    <td><td colspan="10" class="text-center text-slate-400 py-8">Loading requisitions...</td></tr>
                                 </tbody>
-                            </table>
+                             </table>
                         </div>
                         <div id="reqPagination" class="flex justify-center gap-2 mt-4"></div>
                     </div>
@@ -926,7 +885,7 @@
                         <div class="overflow-x-auto">
                             <table class="data-table w-full">
                                 <thead>
-                                    <tr>
+                                    <tr class="border-b border-slate-700">
                                         <th class="w-10"><input type="checkbox" id="selectAllPOs" class="select-checkbox"></th>
                                         <th>PO #</th>
                                         <th>Item</th>
@@ -942,7 +901,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="purchasesTableBody">
-                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>
+                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -1286,7 +1245,7 @@
         const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
         
         // ============================================
-        // FORMATTING FUNCTIONS
+        // FORMATTING FUNCTIONS (with 3 decimals)
         // ============================================
         
         function formatMoney(amount) {
@@ -1399,6 +1358,15 @@
                 result += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             return result;
+        }
+        
+        // ============================================
+        // VALIDATION FUNCTION
+        // ============================================
+        function isValidPositiveNumber(value) {
+            if (value === undefined || value === null || value === '') return false;
+            const num = parseFloat(value);
+            return !isNaN(num) && num > 0;
         }
         
         // ============================================
@@ -1623,7 +1591,7 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>';
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td<tr>';
                 const paginationDiv = document.getElementById('purchasePagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1650,7 +1618,7 @@
                             <button onclick="event.stopPropagation(); editPurchase('${p.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
                             <button onclick="event.stopPropagation(); deletePurchase('${p.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
                         </td>
-                    </td>
+                    </tr>
                 `;
             }).join('');
             
@@ -1682,7 +1650,7 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td</td>';
+                                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td</tr>';
                 const paginationDiv = document.getElementById('reqPagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1796,7 +1764,7 @@
         }
         
         // ============================================
-        // CRUD OPERATIONS with Auto-Register
+        // CRUD OPERATIONS with AUTO-REGISTER FIX
         // ============================================
         
         window.togglePurchaseSelect = (id) => {
@@ -1831,7 +1799,7 @@
             const editId = document.getElementById('purchaseEditId')?.value;
             
             if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
-                showToast('Please fill all required fields with valid positive values', 'error');
+                showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${price}`, 'error');
                 return;
             }
             
@@ -1889,7 +1857,7 @@
             const priority = document.getElementById('reqPriority')?.value;
             
             if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(unitPrice) || unitPrice <= 0) {
-                showToast('Please fill all required fields with valid positive values', 'error');
+                showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${unitPrice}`, 'error');
                 return;
             }
             
@@ -1921,7 +1889,7 @@
                 await loadRequisitions();
             } catch (error) {
                 console.error('Error submitting requisition:', error);
-                showToast('Error submitting requisition', 'error');
+                showToast('Error submitting requisition: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
@@ -1973,6 +1941,9 @@
             openModal('editRequisitionModal');
         };
         
+        // ============================================
+        // AUTO-REGISTER PURCHASE FUNCTION - FIXED!
+        // ============================================
         async function updateRequisition(event) {
             event.preventDefault();
             const id = document.getElementById('editRequisitionId')?.value;
@@ -1988,8 +1959,16 @@
             const status = document.getElementById('editReqStatus')?.value;
             const oldStatus = requisitions.find(r => r.id === id)?.status;
             
+            console.log('=== UPDATE REQUISITION DEBUG ===');
+            console.log('Requisition ID:', id);
+            console.log('Old Status:', oldStatus);
+            console.log('New Status:', status);
+            console.log('Item:', itemName);
+            console.log('Quantity:', quantity);
+            console.log('Unit Price:', unitPrice);
+            
             if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(unitPrice) || unitPrice <= 0) {
-                showToast('Please fill all required fields with valid positive values', 'error');
+                showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${unitPrice}`, 'error');
                 return;
             }
             
@@ -2013,42 +1992,78 @@
                 };
                 
                 await db.collection('requisitions').doc(id).update(updateData);
+                console.log('Requisition updated successfully');
                 showToast('Requisition updated successfully!', 'success');
                 
                 // AUTO-REGISTER PURCHASE WHEN STATUS CHANGES TO 'approved'
-                if (status === 'approved' && oldStatus !== 'approved') {
-                    const purchaseId = generatePurchaseId();
+                if (status === 'approved') {
+                    console.log('Status is APPROVED - checking if auto-register needed...');
+                    console.log('Old status was:', oldStatus);
                     
-                    await db.collection('purchases').add({
-                        id: purchaseId,
-                        userId: currentUser.uid,
-                        requisitionId: id,
-                        requisitionRef: updateData.reqId,
+                    // Register purchase regardless of old status (always register when approved)
+                    const purchaseId = generatePurchaseId();
+                    console.log('Generated Purchase ID:', purchaseId);
+                    
+                    // Get the requisition data
+                    const reqData = {
                         itemName: itemName,
                         quantity: quantity,
                         unit: unit || 'pcs',
-                        price: unitPrice,
+                        unitPrice: unitPrice,
                         totalAmount: total,
                         category: category,
                         supplier: supplier,
-                        date: new Date().toISOString().split('T')[0],
-                        notes: `Auto-created from approved requisition`,
-                        status: 'approved',
-                        createdBy: userData?.fullName || currentUser.email,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        updatedBy: userData?.fullName || currentUser.email,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        reqId: document.getElementById('editRequisitionId')?.value
+                    };
+                    
+                    console.log('Purchase data to save:', {
+                        id: purchaseId,
+                        itemName: reqData.itemName,
+                        quantity: reqData.quantity,
+                        price: reqData.unitPrice,
+                        totalAmount: reqData.totalAmount,
+                        category: reqData.category,
+                        supplier: reqData.supplier
                     });
                     
-                    showToast(`Purchase order ${purchaseId} auto-created from approved requisition!`, 'success');
-                    await loadPurchases();
+                    try {
+                        await db.collection('purchases').add({
+                            id: purchaseId,
+                            userId: currentUser.uid,
+                            requisitionId: id,
+                            requisitionRef: reqData.reqId,
+                            itemName: reqData.itemName,
+                            quantity: reqData.quantity,
+                            unit: reqData.unit,
+                            price: reqData.unitPrice,
+                            totalAmount: reqData.totalAmount,
+                            category: reqData.category,
+                            supplier: reqData.supplier,
+                            date: new Date().toISOString().split('T')[0],
+                            notes: `Auto-created from approved requisition`,
+                            status: 'approved',
+                            createdBy: userData?.fullName || currentUser.email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            updatedBy: userData?.fullName || currentUser.email,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        
+                        console.log('Purchase auto-created successfully!');
+                        showToast(`Purchase order ${purchaseId} auto-created from approved requisition!`, 'success');
+                        await loadPurchases();
+                    } catch (purchaseError) {
+                        console.error('Error creating auto-purchase:', purchaseError);
+                        showToast('Requisition approved but auto-purchase creation failed: ' + purchaseError.message, 'error');
+                    }
+                } else {
+                    console.log('Status is NOT approved (', status, ') - skipping auto-register');
                 }
                 
                 closeModal('editRequisitionModal');
                 await loadRequisitions();
             } catch (error) {
                 console.error('Error updating requisition:', error);
-                showToast('Error updating requisition', 'error');
+                showToast('Error updating requisition: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
@@ -2258,90 +2273,66 @@
             
             updatePrintMetadata();
             const filtered = filterPurchases();
-            
-            // Generate table rows
-            const tableRows = filtered.map(p => {
+            const headers = ['PO #', 'Item', 'Qty', 'Unit', 'Price', 'Total', 'Category', 'Supplier', 'Status', 'Date'];
+            const data = filtered.map(p => {
                 const qty = parseFloat(p.quantity) || 0;
                 const price = parseFloat(p.price) || 0;
-                return `
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${p.id}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(p.itemName)}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${qty.toFixed(3)}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${p.unit || 'pcs'}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${formatMoney(price)}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${formatMoney(qty * price)}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${p.category || 'Other'}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(p.supplier) || '—'}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${p.status}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</td>
-                    </tr>
-                `;
-            }).join('');
-            
+                return [
+                    p.id, p.itemName, qty.toFixed(3), p.unit || 'pcs', formatMoney(price), 
+                    formatMoney(qty * price), p.category || 'Other', p.supplier || '—', 
+                    p.status, p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')
+                ];
+            });
             const totalSpend = filtered.reduce((s, p) => s + ((parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0)), 0);
             
             const printHTML = `
                 <!DOCTYPE html>
                 <html>
-                <head><meta charset="UTF-8"><title>MAYE Procurement Report</title>
+                <head><meta charset="UTF-8"><title>Procurement Report</title>
                 <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
                     body { font-family: 'Inter', Arial, sans-serif; background: white; padding: 30px; }
-                    .pdf-report-header {
-                        display: flex; justify-content: space-between; align-items: center;
-                        padding-bottom: 15px; margin-bottom: 15px; border-bottom: 2px solid #4F46E5;
-                    }
-                    .pdf-report-header-left { display: flex; align-items: center; gap: 12px; }
-                    .pdf-report-header-left img { height: 60px; width: auto; }
-                    .pdf-report-header-left h1 { font-size: 18px; font-weight: 800; color: #4F46E5; margin: 0; }
-                    .pdf-report-header-left p { font-size: 10px; color: #64748b; margin: 2px 0; }
-                    .pdf-report-header-right { text-align: right; }
-                    .pdf-report-header-right .title { font-size: 14px; font-weight: 700; color: #1e293b; }
-                    .pdf-report-header-right .metadata { font-size: 9px; color: #64748b; margin-top: 3px; }
-                    .summary-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin: 15px 0; display: flex; justify-content: space-between; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-                    th { background: #4F46E5; color: white; padding: 8px; font-size: 9px; text-align: left; }
-                    td { font-size: 9px; }
-                    .pdf-report-footer {
-                        text-align: center; padding: 15px; border-top: 1px solid #e2e8f0;
-                        margin-top: 20px; font-size: 8px; color: #94a3b8;
-                    }
+                    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 2px solid #4F46E5; }
+                    .header-left { display: flex; align-items: center; gap: 15px; }
+                    .header-left img { height: 60px; width: auto; }
+                    .header-left h1 { font-size: 20px; font-weight: 800; color: #4F46E5; margin: 0; }
+                    .header-left p { font-size: 11px; color: #64748b; margin: 2px 0; }
+                    .header-right { text-align: right; }
+                    .header-right .report-title { font-size: 14px; font-weight: 700; color: #1e293b; }
+                    .header-right .metadata { font-size: 10px; color: #64748b; margin-top: 5px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th { background: #4F46E5; color: white; padding: 10px; font-size: 11px; text-align: left; }
+                    td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 10px; }
+                    .footer { text-align: center; padding: 20px; border-top: 1px solid #e2e8f0; margin-top: 25px; font-size: 9px; color: #94a3b8; }
+                    .total-section { margin-top: 20px; text-align: right; font-weight: bold; }
                 </style>
                 </head>
                 <body>
-                    <div class="pdf-report-header">
-                        <div class="pdf-report-header-left">
+                    <div class="header">
+                        <div class="header-left">
                             <img src="${LOGO_URL}" alt="MAYE Logo">
                             <div><h1>${COMPANY_NAME}</h1><p>${COMPANY_SLOGAN}</p></div>
                         </div>
-                        <div class="pdf-report-header-right">
-                            <div class="title">Procurement Report</div>
-                            <div class="metadata">Date: ${new Date().toLocaleString()}<br>Ref: ${generateReferenceId()}</div>
+                        <div class="header-right">
+                            <div class="report-title">Procurement Report</div>
+                            <div class="metadata">Date: ${new Date().toLocaleString()}<br>Reference: ${generateReferenceId()}</div>
                         </div>
                     </div>
                     
-                    <div class="summary-box">
-                        <div><strong>Total Records:</strong> ${filtered.length}</div>
-                        <div><strong>Total Spend:</strong> ${formatMoney(totalSpend)}</div>
-                        <div><strong>Generated by:</strong> ${userData?.fullName || currentUser?.email || 'User'}</div>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr><th>PO #</th><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th><th>Category</th><th>Supplier</th><th>Status</th><th>Date</th></tr>
-                        </thead>
-                        <tbody>${tableRows}</tbody>
+                    <h3 style="margin: 15px 0;">Purchase Orders Summary (${filtered.length} records)</h3>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')} </thead>
+                        <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
                     </table>
-                    
-                    <div class="pdf-report-footer">
+                    <div class="total-section">Total Spend: ${formatMoney(totalSpend)}</div>
+                    <div class="footer">
                         <p>Confidential - MAYE System Internal Procurement Analytics</p>
+                        <p>Generated by: ${userData?.fullName || currentUser?.email || 'System User'}</p>
                         <p>© ${new Date().getFullYear()} ${COMPANY_NAME} - All rights reserved</p>
                     </div>
                 </body>
                 </html>
             `;
-            
             const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `procurement-${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, backgroundColor: '#ffffff' }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
             showToast('Generating PDF report...', 'info');
             await html2pdf().set(opt).from(printHTML).save();
