@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Debts Management - MAYE System | Track Money Lent & Borrowed</title>
+    <title>MAYE System | Secure Authentication Portal</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
     
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    
-    <!-- html2pdf for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -31,6 +25,8 @@
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
             transition: background 0.3s ease;
         }
         
@@ -38,248 +34,212 @@
             background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
         }
         
-        .sidebar-premium {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(79, 70, 229, 0.2);
-            box-shadow: 4px 0 25px -5px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+        /* Animated background particles */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
         }
         
-        body.light-mode .sidebar-premium {
-            background: rgba(255, 255, 255, 0.95);
+        .bg-animation .shape {
+            position: absolute;
+            background: rgba(79, 70, 229, 0.15);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
         }
         
-        .sidebar {
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        body.light-mode .bg-animation .shape {
+            background: rgba(79, 70, 229, 0.08);
         }
         
-        .sidebar-collapsed { width: 88px; }
-        .sidebar-expanded { width: 290px; }
-        
-        .sidebar-nav-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            margin: 6px 12px;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            color: #94a3b8;
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
         }
         
-        body.light-mode .sidebar-nav-item { color: #475569; }
-        
-        .sidebar-nav-item i { width: 24px; font-size: 1.2rem; }
-        
-        .sidebar-nav-item:hover {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.05));
-            color: #e2e8f0;
-            transform: translateX(5px);
-        }
-        
-        .sidebar-nav-item.active {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(79, 70, 229, 0.1));
-            color: #818cf8;
-            border-left: 3px solid #4F46E5;
-        }
-        
-        .sidebar-nav-item.admin-link {
-            border-top: 1px solid rgba(79, 70, 229, 0.2);
-            margin-top: 8px;
-            padding-top: 12px;
-        }
-        
-        .sidebar-nav-item.admin-link i {
-            color: #F59E0B;
-        }
-        
-        .topbar-premium {
+        /* Glass morphism card premium */
+        .glass-card {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        body.light-mode .topbar-premium {
-            background: rgba(255, 255, 255, 0.85);
-        }
-        
-        .user-btn {
-            background: rgba(51, 65, 85, 0.6);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 10;
             border: 1px solid rgba(79, 70, 229, 0.3);
-            border-radius: 60px;
-            transition: all 0.25s ease;
-        }
-        
-        body.light-mode .user-btn {
-            background: rgba(226, 232, 240, 0.6);
-        }
-        
-        .user-btn:hover {
-            border-color: #4F46E5;
-            background: rgba(79, 70, 229, 0.15);
-        }
-        
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(79, 70, 229, 0.2);
-            border-radius: 24px;
-            transition: all 0.3s ease;
         }
         
         body.light-mode .glass-card {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(79, 70, 229, 0.2);
         }
         
         .glass-card:hover {
-            border-color: rgba(79, 70, 229, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px -15px rgba(79, 70, 229, 0.3);
         }
         
-        .stat-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(79, 70, 229, 0.25);
-            border-radius: 28px;
-            transition: all 0.3s ease;
+        /* Form input styling premium */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.25rem;
         }
         
-        body.light-mode .stat-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: #4F46E5;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff, #c7d2fe);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        body.light-mode .stat-value {
-            background: linear-gradient(135deg, #1e293b, #4F46E5);
-        }
-        
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-        
-        .status-paid { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .status-partial { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .status-unpaid { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .status-overdue { background: rgba(220, 38, 38, 0.3); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.5); }
-        
-        .debt-card {
-            background: rgba(51, 65, 85, 0.3);
-            border-radius: 16px;
-            padding: 1rem;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            cursor: pointer;
-        }
-        
-        body.light-mode .debt-card {
-            background: rgba(226, 232, 240, 0.5);
-        }
-        
-        .debt-card:hover {
-            border-color: rgba(79, 70, 229, 0.4);
-            background: rgba(79, 70, 229, 0.08);
-            transform: translateX(4px);
-        }
-        
-        .modal-premium {
-            background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(79, 70, 229, 0.3);
-            border-radius: 32px;
-        }
-        
-        body.light-mode .modal-premium {
-            background: rgba(255, 255, 255, 0.98);
-        }
-        
-        .receipt-premium {
-            max-width: 450px;
-            width: 90%;
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 1.75rem;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(79, 70, 229, 0.15);
-        }
-        
-        body.light-mode .receipt-premium {
-            background: #ffffff;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
-        }
-        
-        .receipt-header {
-            text-align: center;
-            border-bottom: 2px solid #4F46E5;
-            padding-bottom: 15px;
-            margin-bottom: 18px;
-        }
-        
-        .receipt-header img {
-            height: 55px;
-            width: auto;
-            margin-bottom: 8px;
-        }
-        
-        .receipt-header h3 {
-            font-size: 18px;
-            font-weight: 800;
-            color: #4F46E5;
-            margin: 5px 0;
-        }
-        
-        .receipt-header p {
-            font-size: 11px;
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
             color: #64748b;
+            transition: all 0.2s;
+            pointer-events: none;
+            font-size: 1rem;
         }
         
-        .receipt-row {
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 1.5px solid rgba(79, 70, 229, 0.2);
+            border-radius: 16px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: rgba(30, 41, 59, 0.8);
+            color: #e2e8f0;
+        }
+        
+        body.light-mode .form-input {
+            background: rgba(241, 245, 249, 0.9);
+            color: #1e293b;
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        
+        .form-input:focus + .input-icon {
+            color: #4F46E5;
+        }
+        
+        /* Button styling premium */
+        .btn-primary {
+            background: linear-gradient(135deg, #4F46E5 0%, #6366f1 100%);
+            color: white;
+            padding: 0.875rem;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(79, 70, 229, 0.3);
+            padding: 0.75rem;
+            border-radius: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            width: 100%;
             display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 13px;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #e2e8f0;
         }
         
-        .receipt-row.total {
-            border-top: 2px solid #4F46E5;
-            border-bottom: none;
-            font-weight: 800;
-            font-size: 15px;
-            margin-top: 10px;
-            padding-top: 12px;
+        body.light-mode .btn-outline {
+            color: #1e293b;
+            border-color: rgba(79, 70, 229, 0.3);
         }
         
-        .receipt-footer {
-            text-align: center;
-            font-size: 10px;
-            color: #94a3b8;
-            margin-top: 18px;
-            padding-top: 12px;
-            border-top: 1px solid #e2e8f0;
+        .btn-outline:hover {
+            border-color: #4F46E5;
+            color: #4F46E5;
+            background: rgba(79, 70, 229, 0.1);
         }
         
+        /* Password strength meter */
+        .strength-meter {
+            height: 4px;
+            background: #334155;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease, background 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .strength-text {
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        /* Password toggle */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+        
+        .password-toggle:hover {
+            color: #4F46E5;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast notification premium */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -289,710 +249,432 @@
             border: 1px solid rgba(79, 70, 229, 0.4);
             padding: 0.9rem 1.5rem;
             border-radius: 60px;
+            box-shadow: 0 15px 35px -12px rgba(0, 0, 0, 0.4);
             z-index: 3000;
             animation: slideInRight 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.75rem;
             font-weight: 600;
+            font-size: 0.875rem;
         }
         
-        .toast.success { background: rgba(34, 197, 94, 0.9); }
-        .toast.error { background: rgba(239, 68, 68, 0.9); }
-        .toast.info { background: rgba(59, 130, 246, 0.9); }
-        .toast.warning { background: rgba(245, 158, 11, 0.9); }
+        .toast.success { background: rgba(34, 197, 94, 0.9); border-color: #22C55E; }
+        .toast.error { background: rgba(239, 68, 68, 0.9); border-color: #EF4444; }
+        .toast.info { background: rgba(59, 130, 246, 0.9); border-color: #3B82F6; }
         
         @keyframes slideInRight {
             from { opacity: 0; transform: translateX(100px); }
             to { opacity: 1; transform: translateX(0); }
         }
         
-        .loading-overlay {
+        /* Modal premium */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: flex;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.3s;
         }
         
-        .loading-overlay.active {
-            visibility: visible;
-            opacity: 1;
+        .modal.active {
+            display: flex;
         }
         
-        .spinner-premium {
-            width: 55px;
-            height: 55px;
-            border: 3px solid rgba(79, 70, 229, 0.2);
-            border-top-color: #4F46E5;
-            border-right-color: #818cf8;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .floating-btn {
-            background: linear-gradient(135deg, #4F46E5, #6366f1);
-            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
-            transition: all 0.25s ease;
-        }
-        
-        .floating-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .mobile-menu-premium {
+        .modal-content {
             background: rgba(15, 23, 42, 0.98);
             backdrop-filter: blur(16px);
-            border-right: 1px solid rgba(79, 70, 229, 0.3);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 32px;
+            max-width: 450px;
+            width: 90%;
+            padding: 2rem;
+            animation: modalSlideIn 0.3s ease;
         }
         
-        body.light-mode .mobile-menu-premium {
+        body.light-mode .modal-content {
             background: rgba(255, 255, 255, 0.98);
         }
         
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #4F46E5; border-radius: 10px; }
-        
-        body.light-mode ::-webkit-scrollbar-track { background: #e2e8f0; }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
         
-        .page-animation {
-            animation: fadeInUp 0.5s ease-out;
-        }
-        
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .data-table th {
-            text-align: left;
-            padding: 1rem;
-            background: rgba(15, 23, 42, 0.6);
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #94a3b8;
-            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
-        }
-        
-        body.light-mode .data-table th {
-            background: rgba(241, 245, 249, 0.8);
-        }
-        
-        .data-table td {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(79, 70, 229, 0.1);
-            font-weight: 500;
-        }
-        
-        .data-table tr:hover td {
-            background: rgba(79, 70, 229, 0.05);
-        }
-        
-        .pagination-btn {
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            background: rgba(51, 65, 85, 0.5);
-        }
-        
-        .pagination-btn:hover {
-            background: rgba(79, 70, 229, 0.2);
-            color: #818cf8;
-        }
-        
-        .pagination-btn.active {
-            background: #4F46E5;
-            color: white;
-        }
-        
-        body.light-mode .text-slate-200 { color: #1e293b; }
-        body.light-mode .text-slate-300 { color: #334155; }
-        body.light-mode .text-slate-400 { color: #64748b; }
-        body.light-mode .border-slate-700 { border-color: #e2e8f0; }
-        body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
-        body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
-        body.light-mode .bg-slate-900 { background-color: #ffffff; }
-        
-        .progress-bar {
-            height: 6px;
-            background: #334155;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-        
-        @media (max-width: 768px) {
-            .data-table thead { display: none; }
-            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
-            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
-            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
-        }
-        
-        .payment-item {
-            background: rgba(51, 65, 85, 0.3);
-            border-radius: 12px;
+        /* Social buttons */
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
             padding: 0.75rem;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1.5px solid rgba(79, 70, 229, 0.3);
+            background: rgba(30, 41, 59, 0.8);
+            color: #e2e8f0;
+            width: 100%;
         }
         
-        .payment-item:hover {
+        body.light-mode .social-btn {
+            background: rgba(241, 245, 249, 0.9);
+            color: #1e293b;
+        }
+        
+        .social-btn:hover {
+            border-color: #4F46E5;
             background: rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Checkbox custom */
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 1.5px solid rgba(79, 70, 229, 0.3);
+            cursor: pointer;
+            accent-color: #4F46E5;
+        }
+        
+        /* Logo animation */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .logo-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .glass-card {
+                margin: 1rem;
+                padding: 1.5rem !important;
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Light mode text colors */
+        body.light-mode .text-gray-500 { color: #64748b; }
+        body.light-mode .text-gray-600 { color: #475569; }
+        body.light-mode .text-gray-700 { color: #334155; }
+        body.light-mode .text-gray-800 { color: #1e293b; }
+        
+        /* Theme toggle inside auth page */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 60px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e2e8f0;
+        }
+        
+        body.light-mode .theme-toggle {
+            background: rgba(241, 245, 249, 0.9);
+            color: #1e293b;
+        }
+        
+        .theme-toggle:hover {
+            border-color: #4F46E5;
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner-premium"></div>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+        <span class="text-sm font-medium hidden sm:inline">Dark Mode</span>
     </div>
     
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/60 z-35 hidden backdrop-blur-sm" onclick="closeMobileMenu()"></div>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="shape" style="width: 400px; height: 400px; top: -150px; right: -150px; animation-duration: 25s;"></div>
+        <div class="shape" style="width: 250px; height: 250px; bottom: 50px; left: -80px; animation-duration: 20s;"></div>
+        <div class="shape" style="width: 180px; height: 180px; top: 40%; left: 15%; animation-duration: 30s;"></div>
+        <div class="shape" style="width: 120px; height: 120px; bottom: 25%; right: 10%; animation-duration: 18s;"></div>
+        <div class="shape" style="width: 300px; height: 300px; top: 60%; left: 70%; animation-duration: 22s;"></div>
+    </div>
     
-    <!-- Mobile Sidebar -->
-    <div id="mobileSidebar" class="mobile-menu-premium fixed top-0 left-0 h-full w-72 z-40 transform -translate-x-full transition-transform duration-300 ease-out">
-        <div class="p-6 border-b border-indigo-500/20">
-            <div class="flex items-center gap-3">
-                <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-11 w-auto">
-                <div>
-                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">MAYE</span>
-                    <span class="font-semibold text-xs text-slate-400">Debts</span>
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <!-- Main Auth Card -->
+        <div class="glass-card w-full max-w-md p-8">
+            <!-- Logo Section -->
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-4">
+                    <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                         alt="MAYE Logo" 
+                         class="h-20 w-auto logo-pulse">
+                </div>
+                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    MAYE System
+                </h1>
+                <p class="text-slate-400 text-sm mt-2 font-medium">Incungamutungo ry'Urugo</p>
+                <p class="text-xs text-slate-500 mt-1">Family Wealth Management System</p>
+            </div>
+            
+            <!-- Error Message Container -->
+            <div id="errorMessage" class="hidden bg-red-500/10 border-l-4 border-red-500 text-red-400 p-3 rounded-lg mb-4 text-sm">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText"></span>
                 </div>
             </div>
-        </div>
-        <div id="mobileSidebarNav" class="p-4 space-y-1.5"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-indigo-500/20">
-            <button id="logoutBtnMobile" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
+            
+            <!-- Success Message Container -->
+            <div id="successMessage" class="hidden bg-green-500/10 border-l-4 border-green-500 text-green-400 p-3 rounded-lg mb-4 text-sm">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="successText"></span>
+                </div>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" 
+                           id="loginEmail" 
+                           class="form-input" 
+                           placeholder="Email address"
+                           autocomplete="email"
+                           required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" 
+                           id="loginPassword" 
+                           class="form-input" 
+                           placeholder="Password"
+                           autocomplete="current-password"
+                           required>
+                    <i class="fas fa-eye-slash password-toggle" id="toggleLoginPassword"></i>
+                </div>
+                
+                <div class="flex justify-between items-center mb-6">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="rememberMe" class="checkbox-custom">
+                        <span class="text-sm text-slate-400 font-medium">Remember me</span>
+                    </label>
+                    <button type="button" id="forgotPasswordBtn" class="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition">
+                        Forgot Password?
+                    </button>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="btn-primary">
+                    <span id="loginBtnText">Sign In</span>
+                    <span id="loginSpinner" class="spinner hidden"></span>
+                </button>
+            </form>
+            
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR CONTINUE WITH</span>
+            </div>
+            
+            <!-- Social Login -->
+            <button id="googleLoginBtn" class="social-btn mb-3">
+                <i class="fab fa-google text-red-400 text-lg"></i>
+                Sign in with Google
             </button>
+            <button id="githubLoginBtn" class="social-btn mb-4">
+                <i class="fab fa-github text-slate-400 text-lg"></i>
+                Sign in with GitHub
+            </button>
+            
+            <!-- Register Button -->
+            <div class="mt-6 text-center">
+                <p class="text-slate-400 text-sm font-medium">Don't have an account?</p>
+                <button id="showRegisterBtn" class="btn-outline mt-2">
+                    <i class="fas fa-user-plus mr-2"></i> Create New Account
+                </button>
+            </div>
+            
+            <!-- Footer -->
+            <div class="mt-6 text-center text-xs text-slate-500">
+                <p>🔒 Secure authentication powered by Firebase</p>
+                <p class="mt-1">© 2024 MAYE System - All rights reserved</p>
+            </div>
         </div>
     </div>
     
-    <!-- Main Container -->
-    <div class="flex h-screen overflow-hidden">
-        <!-- Desktop Sidebar -->
-        <aside id="desktopSidebar" class="sidebar sidebar-expanded sidebar-premium flex flex-col h-screen fixed left-0 top-0 z-30 hidden md:flex">
-            <div class="px-5 pt-6 pb-5 border-b border-indigo-500/20 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="Logo" class="h-7 w-auto">
-                    </div>
-                    <div id="sidebarLogoArea">
-                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">MAYE</span>
-                        <span class="font-bold text-xs text-slate-400 block">Debts</span>
-                    </div>
-                </div>
-                <button id="toggleSidebarBtn" class="text-slate-400 hover:text-indigo-400 transition-all p-1.5 rounded-lg hover:bg-indigo-500/10">
-                    <i class="fas fa-chevron-left text-sm"></i>
-                </button>
-            </div>
-            <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
-            <div class="p-4 border-t border-indigo-500/20 mt-auto">
-                <div class="sidebar-nav-item admin-link text-amber-400 hover:bg-amber-500/10" onclick="window.location.href='administration.html'">
-                    <i class="fas fa-user-shield w-5"></i>
-                    <span class="nav-text font-semibold">Admin Panel</span>
-                </div>
-                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10 mt-2">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="nav-text font-semibold">Logout</span>
-                </button>
-            </div>
-        </aside>
-        
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden md:ml-[290px] transition-all duration-300 ease-out" id="mainContent">
-            <!-- Topbar -->
-            <header class="topbar-premium sticky top-0 z-20">
-                <div class="px-5 sm:px-7 py-3.5 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white text-2xl p-1.5 rounded-xl hover:bg-indigo-500/10 transition">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-hand-holding-usd text-indigo-400 text-xl"></i>
-                            <h1 class="text-lg font-bold hidden sm:block">Debt Management</h1>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <button id="themeToggle" class="user-btn !rounded-full !w-10 !h-10 flex items-center justify-center text-slate-300 hover:text-indigo-400 transition">
-                            <i class="fas fa-moon text-lg"></i>
-                        </button>
-                        
-                        <div class="relative">
-                            <button id="userMenuBtn" class="user-btn flex items-center gap-2 px-3 py-2">
-                                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
-                                    <img id="userAvatar" src="" class="w-8 h-8 rounded-full object-cover hidden">
-                                    <i id="userAvatarFallback" class="fas fa-user text-white text-sm"></i>
-                                </div>
-                                <div class="hidden lg:block text-left">
-                                    <p id="userName" class="text-sm font-bold text-slate-200">Loading...</p>
-                                    <p class="text-xs text-slate-400">User</p>
-                                </div>
-                                <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
-                            </button>
-                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-72 rounded-2xl hidden z-50 overflow-hidden">
-                                <div class="p-4 border-b border-indigo-500/20">
-                                    <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
-                                </div>
-                                <div class="py-2">
-                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='dashboard.html'">
-                                        <i class="fas fa-chart-line w-5 text-indigo-400"></i> Dashboard
-                                    </div>
-                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='income.html'">
-                                        <i class="fas fa-money-bill-wave w-5 text-emerald-400"></i> Income
-                                    </div>
-                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='procurement.html'">
-                                        <i class="fas fa-shopping-cart w-5 text-amber-400"></i> Procurement
-                                    </div>
-                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
-                                        <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
-                                    </div>
-                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
-                                        <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
-                                    </div>
-                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='administration.html'">
-                                        <i class="fas fa-user-shield w-5 text-amber-400"></i> Admin Panel
-                                    </div>
-                                    <hr class="border-indigo-500/20 my-1">
-                                    <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
-                                        <i class="fas fa-sign-out-alt w-5"></i> Logout
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            
-            <!-- Breadcrumb -->
-            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30">
-                <div class="flex items-center gap-2 text-sm font-medium">
-                    <i class="fas fa-home text-indigo-400 text-xs"></i>
-                    <span class="text-slate-400">Debts</span>
-                    <i class="fas fa-chevron-right text-xs text-slate-600"></i>
-                    <i class="fas fa-hand-holding-usd text-indigo-400 text-xs"></i>
-                    <span class="text-slate-200 font-semibold">Management</span>
-                </div>
-            </div>
-            
-            <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto p-5 sm:p-7 page-animation">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                    <div class="stat-card p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-slate-400 text-xs font-bold uppercase">Money Lent</span>
-                            <i class="fas fa-arrow-up text-green-400 text-lg"></i>
-                        </div>
-                        <div class="text-2xl font-bold" id="totalLent">D 0.000</div>
-                        <div class="text-xs text-slate-500 mt-1">To others</div>
-                    </div>
-                    <div class="stat-card p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-slate-400 text-xs font-bold uppercase">Money Borrowed</span>
-                            <i class="fas fa-arrow-down text-red-400 text-lg"></i>
-                        </div>
-                        <div class="text-2xl font-bold" id="totalBorrowed">D 0.000</div>
-                        <div class="text-xs text-slate-500 mt-1">From others</div>
-                    </div>
-                    <div class="stat-card p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-slate-400 text-xs font-bold uppercase">Net Position</span>
-                            <i class="fas fa-chart-line text-indigo-400 text-lg"></i>
-                        </div>
-                        <div class="text-2xl font-bold" id="netPosition">D 0.000</div>
-                        <div class="text-xs text-slate-500 mt-1">Lent - Borrowed</div>
-                    </div>
-                    <div class="stat-card p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-slate-400 text-xs font-bold uppercase">Overdue</span>
-                            <i class="fas fa-exclamation-triangle text-red-400 text-lg"></i>
-                        </div>
-                        <div class="text-2xl font-bold" id="overdueCount">0</div>
-                        <div class="text-xs text-slate-500 mt-1">Payments due</div>
-                    </div>
-                    <div class="stat-card p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-slate-400 text-xs font-bold uppercase">Total Debts</span>
-                            <i class="fas fa-clipboard-list text-indigo-400 text-lg"></i>
-                        </div>
-                        <div class="text-2xl font-bold" id="totalDebts">0</div>
-                        <div class="text-xs text-slate-500 mt-1">Active records</div>
-                    </div>
-                </div>
-                
-                <!-- Tabs -->
-                <div class="flex flex-wrap gap-2 mb-6 no-print">
-                    <button class="debt-tab active px-5 py-2.5 rounded-xl font-bold transition bg-indigo-600 text-white" data-tab="lent">
-                        <i class="fas fa-arrow-up mr-2"></i> Money Lent
-                    </button>
-                    <button class="debt-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="borrowed">
-                        <i class="fas fa-arrow-down mr-2"></i> Money Borrowed
-                    </button>
-                    <button class="debt-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="overdue">
-                        <i class="fas fa-exclamation-triangle mr-2"></i> Overdue
-                    </button>
-                    <button class="debt-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="analytics">
-                        <i class="fas fa-chart-line mr-2"></i> Analytics
-                    </button>
-                </div>
-                
-                <!-- ==================== MONEY LENT TAB ==================== -->
-                <div id="lentTab" class="debt-tab-content">
-                    <div class="glass-card p-6 mb-6">
-                        <h2 class="text-xl font-extrabold mb-5 flex items-center gap-2">
-                            <i class="fas fa-plus-circle text-indigo-400"></i> Add Money Lent
-                        </h2>
-                        <form id="lentForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Person Name *</label>
-                                <input type="text" id="lentPersonName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Full name" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
-                                <input type="number" id="lentAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.00" step="0.001" min="0.001" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Debt Category *</label>
-                                <select id="lentCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" required>
-                                    <option value="personal">👤 Personal Loan</option>
-                                    <option value="business">🏢 Business Partner</option>
-                                    <option value="family">👨‍👩‍👧 Family Member</option>
-                                    <option value="friend">👫 Friend</option>
-                                    <option value="other">📌 Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Due Date</label>
-                                <input type="date" id="lentDueDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Income Source</label>
-                                <select id="lentSource" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
-                                    <option value="salary">💰 Salary</option>
-                                    <option value="bonus">🎉 Bonus</option>
-                                    <option value="freelance">💻 Freelance</option>
-                                    <option value="investment">📈 Investment</option>
-                                    <option value="gift">🎁 Gift</option>
-                                    <option value="savings">🏦 Savings</option>
-                                    <option value="other">📌 Other</option>
-                                </select>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Notes</label>
-                                <input type="text" id="lentNotes" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Additional notes...">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Phone (Optional)</label>
-                                <input type="tel" id="lentPhone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Phone number">
-                            </div>
-                            <div class="flex items-end">
-                                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 py-2.5 rounded-xl font-bold transition">
-                                    <i class="fas fa-save mr-2"></i> Add Debt
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="glass-card p-6">
-                        <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
-                            <h2 class="text-xl font-extrabold flex items-center gap-2">
-                                <i class="fas fa-list text-indigo-400"></i> Money Lent List
-                            </h2>
-                            <div class="flex gap-2">
-                                <select id="lentFilterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
-                                    <option value="all">All Status</option>
-                                    <option value="paid">✅ Paid</option>
-                                    <option value="partial">🟡 Partial</option>
-                                    <option value="unpaid">🔴 Unpaid</option>
-                                    <option value="overdue">⚠️ Overdue</option>
-                                </select>
-                                <input type="text" id="lentSearch" placeholder="Search person..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm w-40">
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr>
-                                        <th>Person</th>
-                                        <th>Amount</th>
-                                        <th>Paid</th>
-                                        <th>Remaining</th>
-                                        <th>Due Date</th>
-                                        <th>Category</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="lentTableBody">
-                                    <tr><td colspan="8" class="text-center text-slate-400 py-8">Loading lent debts...</td</tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="lentPagination" class="flex justify-center gap-2 mt-4"></div>
-                    </div>
-                </div>
-                
-                <!-- ==================== MONEY BORROWED TAB ==================== -->
-                <div id="borrowedTab" class="debt-tab-content hidden">
-                    <div class="glass-card p-6 mb-6">
-                        <h2 class="text-xl font-extrabold mb-5 flex items-center gap-2">
-                            <i class="fas fa-plus-circle text-indigo-400"></i> Add Money Borrowed
-                        </h2>
-                        <form id="borrowedForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Creditor Name *</label>
-                                <input type="text" id="borrowedPersonName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Full name" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
-                                <input type="number" id="borrowedAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.00" step="0.001" min="0.001" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Debt Category *</label>
-                                <select id="borrowedCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" required>
-                                    <option value="bank">🏦 Bank Loan</option>
-                                    <option value="individual">👤 Individual/Friend</option>
-                                    <option value="supplier">📦 Supplier</option>
-                                    <option value="family">👨‍👩‍👧 Family Member</option>
-                                    <option value="other">📌 Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Due Date</label>
-                                <input type="date" id="borrowedDueDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Payment Method</label>
-                                <select id="borrowedMethod" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
-                                    <option value="cash">💰 Cash</option>
-                                    <option value="bank">🏦 Bank Transfer</option>
-                                    <option value="mobile">📱 Mobile Money</option>
-                                    <option value="check">📝 Cheque</option>
-                                    <option value="other">📌 Other</option>
-                                </select>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Notes</label>
-                                <input type="text" id="borrowedNotes" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Additional notes...">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-300 mb-2">Phone (Optional)</label>
-                                <input type="tel" id="borrowedPhone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="Phone number">
-                            </div>
-                            <div class="flex items-end">
-                                <button type="submit" class="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 py-2.5 rounded-xl font-bold transition">
-                                    <i class="fas fa-save mr-2"></i> Add Debt
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="glass-card p-6">
-                        <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
-                            <h2 class="text-xl font-extrabold flex items-center gap-2">
-                                <i class="fas fa-list text-indigo-400"></i> Money Borrowed List
-                            </h2>
-                            <div class="flex gap-2">
-                                <select id="borrowedFilterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
-                                    <option value="all">All Status</option>
-                                    <option value="paid">✅ Paid</option>
-                                    <option value="partial">🟡 Partial</option>
-                                    <option value="unpaid">🔴 Unpaid</option>
-                                    <option value="overdue">⚠️ Overdue</option>
-                                </select>
-                                <input type="text" id="borrowedSearch" placeholder="Search creditor..." class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm w-40">
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="data-table w-full">
-                                <thead>
-                                    <tr>
-                                        <th>Creditor</th>
-                                        <th>Amount</th>
-                                        <th>Paid</th>
-                                        <th>Remaining</th>
-                                        <th>Due Date</th>
-                                        <th>Category</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="borrowedTableBody">
-                                    <tr><td colspan="8" class="text-center text-slate-400 py-8">Loading borrowed debts...</td</tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="borrowedPagination" class="flex justify-center gap-2 mt-4"></div>
-                    </div>
-                </div>
-                
-                <!-- ==================== OVERDUE TAB ==================== -->
-                <div id="overdueTab" class="debt-tab-content hidden">
-                    <div class="glass-card p-6">
-                        <h2 class="text-xl font-extrabold mb-5 flex items-center gap-2">
-                            <i class="fas fa-exclamation-triangle text-red-400"></i> Overdue Debts
-                        </h2>
-                        <div id="overdueList" class="space-y-3 max-h-[500px] overflow-y-auto">
-                            <div class="text-center text-slate-400 py-8">No overdue debts</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- ==================== ANALYTICS TAB ==================== -->
-                <div id="analyticsTab" class="debt-tab-content hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        <div class="glass-card p-6">
-                            <h3 class="font-bold mb-4 flex items-center gap-2">
-                                <i class="fas fa-chart-pie text-indigo-400"></i> Debt Distribution
-                            </h3>
-                            <canvas id="debtChart" height="200"></canvas>
-                        </div>
-                        <div class="glass-card p-6">
-                            <h3 class="font-bold mb-4 flex items-center gap-2">
-                                <i class="fas fa-chart-line text-indigo-400"></i> Monthly Repayment Trend
-                            </h3>
-                            <canvas id="repaymentChart" height="200"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-card p-6">
-                        <h3 class="font-bold mb-4 flex items-center gap-2">
-                            <i class="fas fa-file-alt text-indigo-400"></i> Export Reports
-                        </h3>
-                        <div class="flex flex-wrap gap-3">
-                            <button id="exportDebtsCSV" class="bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 rounded-xl font-bold transition">
-                                <i class="fas fa-file-csv mr-2"></i> Export All Debts
-                            </button>
-                            <button id="exportDebtsPDF" class="bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-xl font-bold transition">
-                                <i class="fas fa-file-pdf mr-2"></i> Export Report
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-    
-    <!-- Add Payment Modal -->
-    <div id="paymentModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
-        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                    <i class="fas fa-money-bill-wave mr-2"></i> Record Payment
+                    Create Account
                 </h2>
-                <button onclick="closeModal('paymentModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                <button id="closeRegisterModal" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <form id="paymentForm">
-                <input type="hidden" id="paymentDebtId">
-                <input type="hidden" id="paymentType">
-                <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
-                    <input type="number" id="paymentAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" step="0.001" min="0.001" required>
+            <p class="text-slate-400 text-sm mb-6">Join MAYE System to manage your finances smartly</p>
+            
+            <form id="registerForm">
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" 
+                           id="regName" 
+                           class="form-input" 
+                           placeholder="Full Name"
+                           autocomplete="name"
+                           required>
                 </div>
-                <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Payment Date</label>
-                    <input type="date" id="paymentDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
+                
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" 
+                           id="regEmail" 
+                           class="form-input" 
+                           placeholder="Email address"
+                           autocomplete="email"
+                           required>
                 </div>
-                <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Payment Method</label>
-                    <select id="paymentMethod" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500">
-                        <option value="cash">💰 Cash</option>
-                        <option value="bank">🏦 Bank Transfer</option>
-                        <option value="mobile">📱 Mobile Money</option>
-                        <option value="check">📝 Cheque</option>
-                    </select>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" 
+                           id="regPassword" 
+                           class="form-input" 
+                           placeholder="Password (min. 6 characters)"
+                           minlength="6"
+                           autocomplete="new-password"
+                           required>
+                    <i class="fas fa-eye-slash password-toggle" id="toggleRegPassword"></i>
                 </div>
-                <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Notes</label>
-                    <textarea id="paymentNotes" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 resize-none" placeholder="Payment notes..."></textarea>
+                <div class="strength-meter">
+                    <div class="strength-fill" id="passwordStrengthFill"></div>
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-2.5 rounded-xl font-bold transition">
-                    Record Payment
+                <span class="strength-text text-slate-400" id="passwordStrengthText">Enter a strong password</span>
+                
+                <div class="input-group">
+                    <i class="fas fa-check-circle input-icon"></i>
+                    <input type="password" 
+                           id="regConfirmPassword" 
+                           class="form-input" 
+                           placeholder="Confirm Password"
+                           autocomplete="off"
+                           required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="termsCheckbox" class="checkbox-custom">
+                        <span class="text-sm text-slate-400">I agree to the <a href="#" class="text-indigo-400 hover:underline">Terms of Service</a> and <a href="#" class="text-indigo-400 hover:underline">Privacy Policy</a></span>
+                    </label>
+                </div>
+                
+                <button type="submit" id="registerBtn" class="btn-primary">
+                    <span id="registerBtnText">Create Account</span>
+                    <span id="registerSpinner" class="spinner hidden"></span>
+                </button>
+                
+                <button type="button" id="backToLoginBtn" class="btn-outline mt-3">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Sign In
                 </button>
             </form>
         </div>
     </div>
     
-    <!-- View Payment History Modal -->
-    <div id="paymentHistoryModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
-        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl max-h-[80vh] overflow-y-auto">
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                    <i class="fas fa-history mr-2"></i> Payment History
+                <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    Reset Password
                 </h2>
-                <button onclick="closeModal('paymentHistoryModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                <button id="closeForgotModal" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div id="paymentHistoryList" class="space-y-3">
-                <div class="text-center text-slate-400 py-4">No payment records</div>
+            <p class="text-slate-400 text-sm mb-6">Enter your email address and we'll send you a link to reset your password.</p>
+            
+            <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" 
+                       id="resetEmail" 
+                       class="form-input" 
+                       placeholder="Email address"
+                       required>
             </div>
+            
+            <button id="sendResetBtn" class="btn-primary">
+                <span id="resetBtnText">Send Reset Link</span>
+                <span id="resetSpinner" class="spinner hidden"></span>
+            </button>
+            
+            <button id="backToLoginFromReset" class="btn-outline mt-3">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Sign In
+            </button>
         </div>
     </div>
     
-    <!-- Premium Receipt Modal -->
-    <div id="receiptModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
-        <div class="receipt-premium">
-            <div class="receipt-header">
-                <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="MAYE Logo">
-                <h3>MAYE System</h3>
-                <p>Incungamutungo ry'Urugo</p>
+    <!-- Email Verification Alert Modal -->
+    <div id="verifyEmailModal" class="modal">
+        <div class="modal-content text-center">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-envelope text-amber-400 text-3xl"></i>
             </div>
-            <div id="receiptContent">
-                <!-- Dynamic receipt content will be injected here -->
-            </div>
-            <div class="receipt-footer">
-                <p>Thank you for using MAYE System</p>
-                <p>Confidential - Internal Record</p>
-            </div>
-            <div class="flex gap-2 mt-4 no-print">
-                <button id="printReceiptBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 py-2 rounded-lg font-bold text-sm transition text-white">
-                    <i class="fas fa-print mr-1"></i> Print Receipt
-                </button>
-                <button onclick="closeModal('receiptModal')" class="flex-1 bg-slate-600 hover:bg-slate-700 py-2 rounded-lg font-bold text-sm transition text-white">
-                    Close
-                </button>
-            </div>
+            <h2 class="text-2xl font-extrabold mb-2">Verify Your Email</h2>
+            <p class="text-slate-400 mb-4">We've sent a verification link to your email address.</p>
+            <p class="text-sm text-slate-500 mb-6">Please verify your email before logging in.</p>
+            <button id="resendVerificationBtn" class="btn-primary mb-3">Resend Verification Email</button>
+            <button id="closeVerifyModal" class="btn-outline">Back to Sign In</button>
         </div>
     </div>
     
-    <!-- Quick Add Floating Button -->
-    <button id="floatingAddBtn" class="floating-btn fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white text-xl z-10 md:hidden no-print">
-        <i class="fas fa-plus"></i>
-    </button>
-
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1015,58 +697,120 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        // Global state
-        let currentUser = null;
-        let userData = null;
-        let debts = [];
-        let lentDebts = [];
-        let borrowedDebts = [];
-        let currentCurrency = 'AED';
+        // ============================================
+        // DOM Elements
+        // ============================================
+        const loginForm = document.getElementById('loginForm');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginBtnText = document.getElementById('loginBtnText');
+        const loginSpinner = document.getElementById('loginSpinner');
+        const rememberMe = document.getElementById('rememberMe');
+        
+        const registerModal = document.getElementById('registerModal');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const closeRegisterModal = document.getElementById('closeRegisterModal');
+        const backToLoginBtn = document.getElementById('backToLoginBtn');
+        
+        const registerForm = document.getElementById('registerForm');
+        const regName = document.getElementById('regName');
+        const regEmail = document.getElementById('regEmail');
+        const regPassword = document.getElementById('regPassword');
+        const regConfirmPassword = document.getElementById('regConfirmPassword');
+        const termsCheckbox = document.getElementById('termsCheckbox');
+        const registerBtn = document.getElementById('registerBtn');
+        const registerBtnText = document.getElementById('registerBtnText');
+        const registerSpinner = document.getElementById('registerSpinner');
+        
+        const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+        const closeForgotModal = document.getElementById('closeForgotModal');
+        const resetEmail = document.getElementById('resetEmail');
+        const sendResetBtn = document.getElementById('sendResetBtn');
+        const resetBtnText = document.getElementById('resetBtnText');
+        const resetSpinner = document.getElementById('resetSpinner');
+        const backToLoginFromReset = document.getElementById('backToLoginFromReset');
+        
+        const verifyEmailModal = document.getElementById('verifyEmailModal');
+        const closeVerifyModal = document.getElementById('closeVerifyModal');
+        const resendVerificationBtn = document.getElementById('resendVerificationBtn');
+        
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const successMessage = document.getElementById('successMessage');
+        const successText = document.getElementById('successText');
+        
+        let pendingUserEmail = null;
         let currentTheme = 'dark';
-        let charts = { debtChart: null, repaymentChart: null };
-        
-        // Pagination
-        let lentCurrentPage = 1;
-        let borrowedCurrentPage = 1;
-        let itemsPerPage = 10;
-        
-        const currencies = {
-            USD: { symbol: '$', name: 'US Dollar' },
-            EUR: { symbol: '€', name: 'Euro' },
-            AED: { symbol: 'D', name: 'Dirham' },
-            RWF: { symbol: 'FRw', name: 'Rwandan Franc' }
-        };
-        
-        const navItems = [
-            { icon: 'fa-chart-line', text: 'Dashboard', page: 'dashboard.html', active: false },
-            { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
-            { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: false },
-            { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
-            { icon: 'fa-hand-holding-usd', text: 'Debts', page: 'debts.html', active: true },
-            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false },
-            { icon: 'fa-user-shield', text: 'Admin', page: 'administration.html', active: false }
-        ];
-        
-        const LOGO_URL = "https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png";
-        const COMPANY_NAME = "MAYE System";
-        const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
-        const CONTACT_EMAIL = "info@maye.rw";
-        const CONTACT_PHONE = "+250 788 000 000";
         
         // ============================================
-        // FORMATTING FUNCTIONS
+        // Theme Functions
         // ============================================
         
-        function formatMoney(amount) {
-            const symbol = currencies[currentCurrency]?.symbol || 'D';
-            const formatted = amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-            return `${symbol} ${formatted}`;
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i><span class="text-sm font-medium hidden sm:inline"> Light Mode</span>';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i><span class="text-sm font-medium hidden sm:inline"> Dark Mode</span>';
+            }
+            localStorage.setItem('maye_theme', theme);
+            currentTheme = theme;
+        }
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('maye_theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(prefersDark ? 'dark' : 'light');
+            }
+        }
+        
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+            const percentage = (strength / 4) * 100;
+            let text = '', color = '';
+            if (percentage === 0) { text = 'Very Weak'; color = '#EF4444'; }
+            else if (percentage <= 33) { text = 'Weak'; color = '#F59E0B'; }
+            else if (percentage <= 66) { text = 'Fair'; color = '#3B82F6'; }
+            else if (percentage < 100) { text = 'Good'; color = '#8B5CF6'; }
+            else { text = 'Strong'; color = '#22C55E'; }
+            return { percentage, text, color };
+        }
+        
+        // ============================================
+        // Helper Functions
+        // ============================================
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => {
+                errorMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            successText.textContent = message;
+            successMessage.classList.remove('hidden');
+            setTimeout(() => {
+                successMessage.classList.add('hidden');
+            }, 5000);
         }
         
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
             toast.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
             document.body.appendChild(toast);
             setTimeout(() => {
@@ -1075,1115 +819,524 @@
             }, 3000);
         }
         
-        function showLoading(show) {
-            const overlay = document.getElementById('loadingOverlay');
-            if (show) overlay.classList.add('active');
-            else overlay.classList.remove('active');
-        }
-        
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('flex');
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
+        function setLoginLoading(isLoading) {
+            if (isLoading) {
+                loginBtnText.classList.add('hidden');
+                loginSpinner.classList.remove('hidden');
+                loginBtn.disabled = true;
+            } else {
+                loginBtnText.classList.remove('hidden');
+                loginSpinner.classList.add('hidden');
+                loginBtn.disabled = false;
             }
         }
         
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
+        function setRegisterLoading(isLoading) {
+            if (isLoading) {
+                registerBtnText.classList.add('hidden');
+                registerSpinner.classList.remove('hidden');
+                registerBtn.disabled = true;
+            } else {
+                registerBtnText.classList.remove('hidden');
+                registerSpinner.classList.add('hidden');
+                registerBtn.disabled = false;
             }
         }
         
-        function getStatusBadge(status) {
-            const statusMap = {
-                'paid': 'status-paid',
-                'partial': 'status-partial',
-                'unpaid': 'status-unpaid',
-                'overdue': 'status-overdue'
-            };
-            const textMap = {
-                'paid': '✅ Paid',
-                'partial': '🟡 Partial',
-                'unpaid': '🔴 Unpaid',
-                'overdue': '⚠️ Overdue'
-            };
-            return `<span class="status-badge ${statusMap[status] || 'status-unpaid'}">${textMap[status] || status}</span>`;
+        function setResetLoading(isLoading) {
+            if (isLoading) {
+                resetBtnText.classList.add('hidden');
+                resetSpinner.classList.remove('hidden');
+                sendResetBtn.disabled = true;
+            } else {
+                resetBtnText.classList.remove('hidden');
+                resetSpinner.classList.add('hidden');
+                sendResetBtn.disabled = false;
+            }
         }
         
-        function calculateStatus(dueDate, paidAmount, totalAmount) {
-            if (paidAmount >= totalAmount) return 'paid';
-            if (dueDate && new Date(dueDate) < new Date() && paidAmount < totalAmount) return 'overdue';
-            if (paidAmount > 0 && paidAmount < totalAmount) return 'partial';
-            return 'unpaid';
+        function redirectToDashboard() {
+            // Record login history before redirect
+            const history = JSON.parse(localStorage.getItem('maye_login_history') || '[]');
+            history.unshift({
+                date: new Date().toLocaleString(),
+                device: navigator.userAgent.includes('Mobile') ? 'Mobile Device' : 'Desktop',
+                location: 'Login'
+            });
+            localStorage.setItem('maye_login_history', JSON.stringify(history.slice(0, 20)));
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
         }
         
-        function getCategoryDisplay(category, type) {
-            const categories = {
-                lent: {
-                    personal: '👤 Personal Loan',
-                    business: '🏢 Business Partner',
-                    family: '👨‍👩‍👧 Family Member',
-                    friend: '👫 Friend',
-                    other: '📌 Other'
-                },
-                borrowed: {
-                    bank: '🏦 Bank Loan',
-                    individual: '👤 Individual/Friend',
-                    supplier: '📦 Supplier',
-                    family: '👨‍👩‍👧 Family Member',
-                    other: '📌 Other'
+        function saveUserSession(user) {
+            localStorage.setItem('maye_user_session', JSON.stringify({
+                uid: user.uid,
+                email: user.email,
+                timestamp: Date.now()
+            }));
+        }
+        
+        function clearUserSession() {
+            localStorage.removeItem('maye_user_session');
+        }
+        
+        function loadSavedCredentials() {
+            const savedEmail = localStorage.getItem('maye_saved_email');
+            const savedPassword = localStorage.getItem('maye_saved_password');
+            if (savedEmail && savedPassword && rememberMe) {
+                loginEmail.value = savedEmail;
+                loginPassword.value = savedPassword;
+                rememberMe.checked = true;
+            }
+        }
+        
+        // ============================================
+        // LOGIN HANDLER
+        // ============================================
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value;
+            
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            setLoginLoading(true);
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                if (!user.emailVerified) {
+                    pendingUserEmail = email;
+                    await auth.signOut();
+                    setLoginLoading(false);
+                    verifyEmailModal.classList.add('active');
+                    showError('Please verify your email address before logging in.');
+                    return;
                 }
-            };
-            return categories[type]?.[category] || category || '—';
-        }
-        
-        function generateReceiptHTML(debt, paymentAmount = null, paymentDate = null, paymentMethod = null) {
-            const remaining = debt.amount - (debt.paidAmount || 0);
-            const status = calculateStatus(debt.dueDate, debt.paidAmount || 0, debt.amount);
-            const statusText = status === 'paid' ? 'PAID' : (status === 'partial' ? 'PARTIAL' : (status === 'overdue' ? 'OVERDUE' : 'PENDING'));
-            const statusColor = status === 'paid' ? '#22C55E' : (status === 'partial' ? '#F59E0B' : (status === 'overdue' ? '#EF4444' : '#64748b'));
-            
-            const categoryDisplay = getCategoryDisplay(debt.category, debt.type);
-            const receiptNumber = debt.id.slice(-8).toUpperCase();
-            const createdByName = debt.createdBy || userData?.fullName || currentUser?.email || 'System';
-            
-            return `
-                <div class="receipt-row">
-                    <span>Receipt No:</span>
-                    <span class="font-mono font-bold">${receiptNumber}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Date:</span>
-                    <span>${paymentDate || new Date().toLocaleDateString()}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Transaction Type:</span>
-                    <span class="font-bold">${debt.type === 'lent' ? 'Money Lent' : 'Money Borrowed'}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Person Name:</span>
-                    <span class="font-bold">${escapeHtml(debt.personName)}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Debt Category:</span>
-                    <span>${categoryDisplay}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Total Amount:</span>
-                    <span class="font-bold">${formatMoney(debt.amount)}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Paid Amount:</span>
-                    <span class="text-emerald-400 font-bold">${formatMoney(paymentAmount !== null ? paymentAmount : (debt.paidAmount || 0))}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Remaining Balance:</span>
-                    <span class="text-amber-400 font-bold">${formatMoney(paymentAmount !== null ? (debt.amount - (debt.paidAmount || 0) - paymentAmount) : remaining)}</span>
-                </div>
-                ${paymentMethod ? `<div class="receipt-row">
-                    <span>Payment Method:</span>
-                    <span>${paymentMethod}</span>
-                </div>` : ''}
-                ${debt.dueDate ? `<div class="receipt-row">
-                    <span>Due Date:</span>
-                    <span class="${status === 'overdue' ? 'text-red-400' : ''}">${debt.dueDate}</span>
-                </div>` : ''}
-                <div class="receipt-row">
-                    <span>Status:</span>
-                    <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Created By:</span>
-                    <span class="font-bold">${escapeHtml(createdByName)}</span>
-                </div>
-                ${debt.notes ? `<div class="receipt-row">
-                    <span>Notes:</span>
-                    <span class="truncate max-w-[220px]">${escapeHtml(debt.notes)}</span>
-                </div>` : ''}
-                <div class="receipt-row total">
-                    <span>Net Position:</span>
-                    <span>${debt.type === 'lent' ? 'Amount Receivable' : 'Amount Payable'}: ${formatMoney(paymentAmount !== null ? (debt.amount - (debt.paidAmount || 0) - paymentAmount) : remaining)}</span>
-                </div>
-            `;
-        }
-        
-        window.viewReceipt = (debtId) => {
-            const debt = debts.find(d => d.id === debtId);
-            if (!debt) return;
-            
-            document.getElementById('receiptContent').innerHTML = generateReceiptHTML(debt);
-            openModal('receiptModal');
-            
-            document.getElementById('printReceiptBtn').onclick = () => {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Debt Receipt - ${debt.id.slice(-8)}</title>
-                        <style>
-                            body { font-family: 'Inter', Arial, sans-serif; padding: 30px; background: #f8fafc; }
-                            .receipt { max-width: 450px; margin: 0 auto; background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-                            .receipt-header { text-align: center; border-bottom: 2px solid #4F46E5; padding-bottom: 15px; margin-bottom: 20px; }
-                            .receipt-header img { height: 60px; margin-bottom: 8px; }
-                            .receipt-header h3 { font-size: 20px; font-weight: 800; color: #4F46E5; margin: 5px 0; }
-                            .receipt-header p { font-size: 11px; color: #64748b; }
-                            .receipt-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-                            .receipt-row.total { border-top: 2px solid #4F46E5; border-bottom: none; font-weight: 800; font-size: 15px; margin-top: 12px; padding-top: 12px; }
-                            .receipt-footer { text-align: center; font-size: 10px; color: #94a3b8; margin-top: 20px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
-                            @media print {
-                                body { padding: 0; background: white; }
-                                .receipt { box-shadow: none; padding: 15px; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="receipt">
-                            <div class="receipt-header">
-                                <img src="${LOGO_URL}" alt="MAYE Logo">
-                                <h3>${COMPANY_NAME}</h3>
-                                <p>${COMPANY_SLOGAN}</p>
-                                <p>${CONTACT_EMAIL} | ${CONTACT_PHONE}</p>
-                            </div>
-                            ${generateReceiptHTML(debt)}
-                            <div class="receipt-footer">
-                                <p>Generated on: ${new Date().toLocaleString()}</p>
-                                <p>Confidential - MAYE System Internal Record</p>
-                            </div>
-                        </div>
-                        <script>window.onload = function() { window.print(); }<\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-            };
-        };
-        
-        window.viewPaymentReceipt = (debt, payment) => {
-            if (!debt || !payment) {
-                showToast('Unable to generate receipt', 'error');
-                return;
+                
+                console.log('✅ User logged in:', user.email);
+                
+                // Update user document
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    await db.collection('users').doc(user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastLoginDevice: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+                    });
+                }
+                
+                saveUserSession(user);
+                
+                if (rememberMe.checked) {
+                    localStorage.setItem('maye_saved_email', email);
+                    localStorage.setItem('maye_saved_password', password);
+                } else {
+                    localStorage.removeItem('maye_saved_email');
+                    localStorage.removeItem('maye_saved_password');
+                }
+                
+                showToast('Login successful! Redirecting...', 'success');
+                redirectToDashboard();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let errorMsg = 'Login failed. Please try again.';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMsg = 'No account found with this email. Please register first.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMsg = 'Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg = 'Invalid email format. Please enter a valid email.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMsg = 'This account has been disabled. Please contact support.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMsg = 'Too many failed attempts. Please try again later.';
+                        break;
+                    default:
+                        errorMsg = error.message;
+                }
+                showError(errorMsg);
+                setLoginLoading(false);
             }
-            
-            const receiptHtml = `
-                <div class="receipt-row">
-                    <span>Receipt No:</span>
-                    <span class="font-mono font-bold">${payment.id.slice(-8).toUpperCase()}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Date:</span>
-                    <span>${payment.paymentDate || new Date(payment.createdAt?.toDate()).toLocaleDateString()}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Transaction Type:</span>
-                    <span class="font-bold">${debt.type === 'lent' ? 'Debt Repayment Received' : 'Debt Payment Made'}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Person Name:</span>
-                    <span class="font-bold">${escapeHtml(debt.personName)}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Debt Category:</span>
-                    <span>${getCategoryDisplay(debt.category, debt.type)}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Payment Amount:</span>
-                    <span class="text-emerald-400 font-bold">${formatMoney(payment.amount)}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Payment Method:</span>
-                    <span>${payment.method || 'cash'}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Reference Debt:</span>
-                    <span class="font-mono text-xs">${debt.id.slice(-8).toUpperCase()}</span>
-                </div>
-                <div class="receipt-row">
-                    <span>Recorded By:</span>
-                    <span>${payment.recordedBy || '—'}</span>
-                </div>
-                <div class="receipt-footer">
-                    <p>Thank you for using MAYE System</p>
-                    <p>Confidential - Payment Record</p>
-                </div>
-            `;
-            
-            document.getElementById('receiptContent').innerHTML = receiptHtml;
-            openModal('receiptModal');
-            
-            document.getElementById('printReceiptBtn').onclick = () => {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Payment Receipt - ${payment.id.slice(-8)}</title>
-                        <style>
-                            body { font-family: 'Inter', Arial, sans-serif; padding: 30px; background: #f8fafc; }
-                            .receipt { max-width: 450px; margin: 0 auto; background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-                            .receipt-header { text-align: center; border-bottom: 2px solid #4F46E5; padding-bottom: 15px; margin-bottom: 20px; }
-                            .receipt-header img { height: 60px; margin-bottom: 8px; }
-                            .receipt-header h3 { font-size: 20px; font-weight: 800; color: #4F46E5; margin: 5px 0; }
-                            .receipt-header p { font-size: 11px; color: #64748b; }
-                            .receipt-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-                            .receipt-footer { text-align: center; font-size: 10px; color: #94a3b8; margin-top: 20px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
-                            @media print {
-                                body { padding: 0; background: white; }
-                                .receipt { box-shadow: none; padding: 15px; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="receipt">
-                            <div class="receipt-header">
-                                <img src="${LOGO_URL}" alt="MAYE Logo">
-                                <h3>${COMPANY_NAME}</h3>
-                                <p>${COMPANY_SLOGAN}</p>
-                                <p>${CONTACT_EMAIL} | ${CONTACT_PHONE}</p>
-                            </div>
-                            ${receiptHtml}
-                        </div>
-                        <script>window.onload = function() { window.print(); }<\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-            };
-        };
-        
-        // ============================================
-        // AUTHENTICATION & DATA LOADING
-        // ============================================
-        
-        auth.onAuthStateChanged(async (user) => {
-            if (!user || !user.emailVerified) {
-                window.location.href = 'index.html';
-                return;
-            }
-            currentUser = user;
-            await loadUserData();
-            await loadDebts();
-            renderSidebar();
-            setupEventListeners();
-            setupTabs();
-            updateStats();
-            renderLentTable();
-            renderBorrowedTable();
-            renderOverdueList();
-            initCharts();
         });
         
-        async function loadUserData() {
-            try {
-                const doc = await db.collection('users').doc(currentUser.uid).get();
-                if (doc.exists) {
-                    userData = doc.data();
-                    document.getElementById('userName').textContent = userData?.fullName || currentUser.email.split('@')[0];
-                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
-                    if (userData?.settings) {
-                        currentCurrency = userData.settings.currency || 'AED';
-                        currentTheme = userData.settings.theme || 'dark';
-                    }
-                    if (userData?.profilePicture) {
-                        document.getElementById('userAvatar').src = userData.profilePicture;
-                        document.getElementById('userAvatar').classList.remove('hidden');
-                        document.getElementById('userAvatarFallback').classList.add('hidden');
-                    }
-                }
-                if (currentTheme === 'light') document.body.classList.add('light-mode');
-                else document.body.classList.remove('light-mode');
-            } catch (error) {
-                console.error('Error loading user data:', error);
+        // ============================================
+        // REGISTER HANDLER
+        // ============================================
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = regName.value.trim();
+            const email = regEmail.value.trim();
+            const password = regPassword.value;
+            const confirmPassword = regConfirmPassword.value;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
             }
-        }
-        
-        async function loadDebts() {
-            showLoading(true);
-            try {
-                const snapshot = await db.collection('debts')
-                    .where('userId', '==', currentUser.uid)
-                    .orderBy('createdAt', 'desc')
-                    .get();
-                debts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                lentDebts = debts.filter(d => d.type === 'lent');
-                borrowedDebts = debts.filter(d => d.type === 'borrowed');
-                updateStats();
-                renderLentTable();
-                renderBorrowedTable();
-                renderOverdueList();
-                initCharts();
-            } catch (error) {
-                console.error('Error loading debts:', error);
-                showToast('Error loading debts', 'error');
-            } finally {
-                showLoading(false);
+            
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
             }
-        }
-        
-        async function loadPayments(debtId) {
-            try {
-                const snapshot = await db.collection('debtPayments')
-                    .where('debtId', '==', debtId)
-                    .orderBy('paymentDate', 'desc')
-                    .get();
-                return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            } catch (error) {
-                console.error('Error loading payments:', error);
-                return [];
+            
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
             }
-        }
-        
-        // ✅ INTEGRATION WITH INCOME.HTML - FIXED PERMISSION ISSUE
-        async function createIncomeFromRepayment(debt, amount, paymentDate, paymentMethod) {
+            
+            if (!termsCheckbox.checked) {
+                showError('Please agree to the Terms of Service and Privacy Policy');
+                return;
+            }
+            
+            setRegisterLoading(true);
+            
             try {
-                // Get current user's full name
-                const userName = userData?.fullName || currentUser.email.split('@')[0];
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
                 
-                const incomeData = {
-                    userId: currentUser.uid,
-                    amount: amount,
-                    category: 'debt-repayment',
-                    type: 'debt-repayment',
-                    source: debt.personName,
-                    date: paymentDate,
-                    account: 'cash',
-                    paymentMethod: paymentMethod,
-                    description: `Repayment for debt: ${debt.personName}. Original amount: ${formatMoney(debt.amount)}. Remaining: ${formatMoney(debt.amount - (debt.paidAmount || 0) - amount)}`,
-                    reference: `DEBT-${debt.id.slice(-8)}`,
-                    transactionType: 'income',
-                    status: 'completed',
-                    createdBy: userName,
+                console.log('✅ User registered:', user.email);
+                
+                await user.sendEmailVerification();
+                
+                await db.collection('users').doc(user.uid).set({
+                    fullName: name,
+                    email: email,
+                    profilePicture: `https://ui-avatars.com/api/?background=4F46E5&color=fff&bold=true&size=100&name=${encodeURIComponent(name)}`,
+                    role: 'user',
+                    settings: {
+                        currency: 'RWF',
+                        language: 'en',
+                        dateFormat: 'DD/MM/YYYY',
+                        timeFormat: '24h',
+                        theme: currentTheme,
+                        compactView: false,
+                        animations: true,
+                        emailNotifications: true,
+                        budgetAlerts: true,
+                        weeklyReports: false,
+                        budgetThreshold: 80,
+                        primaryColor: '#4F46E5',
+                        cardStyle: 'glass',
+                        inAppNotifications: true
+                    },
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    linkedDebtId: debt.id
-                };
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
                 
-                // Add to income collection
-                const docRef = await db.collection('income').add(incomeData);
-                console.log('✅ Income record created for debt repayment with ID:', docRef.id);
-                return true;
+                showSuccess('Account created successfully! Please check your email for verification.');
+                
+                registerModal.classList.remove('active');
+                pendingUserEmail = email;
+                verifyEmailModal.classList.add('active');
+                
+                setRegisterLoading(false);
+                
             } catch (error) {
-                console.error('❌ Error creating income record:', error);
-                // Don't throw - just log the error so payment can still be recorded
-                return false;
+                console.error('Registration error:', error);
+                
+                let errorMsg = 'Registration failed. Please try again.';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMsg = 'This email is already registered. Please sign in instead.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg = 'Invalid email format. Please enter a valid email.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMsg = 'Password is too weak. Please use at least 6 characters.';
+                        break;
+                    default:
+                        errorMsg = error.message;
+                }
+                showError(errorMsg);
+                setRegisterLoading(false);
             }
-        }
-        
-        function updateStats() {
-            const totalLent = lentDebts.reduce((sum, d) => sum + (d.amount || 0), 0);
-            const totalBorrowed = borrowedDebts.reduce((sum, d) => sum + (d.amount || 0), 0);
-            const netPosition = totalLent - totalBorrowed;
-            const overdueCount = debts.filter(d => {
-                const status = calculateStatus(d.dueDate, d.paidAmount || 0, d.amount);
-                return status === 'overdue';
-            }).length;
-            
-            document.getElementById('totalLent').innerHTML = formatMoney(totalLent);
-            document.getElementById('totalBorrowed').innerHTML = formatMoney(totalBorrowed);
-            document.getElementById('netPosition').innerHTML = formatMoney(netPosition);
-            document.getElementById('overdueCount').textContent = overdueCount;
-            document.getElementById('totalDebts').textContent = debts.length;
-        }
+        });
         
         // ============================================
-        // RENDER FUNCTIONS
+        // PASSWORD RESET HANDLER
         // ============================================
-        
-        function renderLentTable() {
-            const tbody = document.getElementById('lentTableBody');
-            const filterStatus = document.getElementById('lentFilterStatus')?.value || 'all';
-            const searchTermVal = document.getElementById('lentSearch')?.value.toLowerCase() || '';
+        sendResetBtn.addEventListener('click', async () => {
+            const email = resetEmail.value.trim();
             
-            let filtered = [...lentDebts];
-            if (filterStatus !== 'all') {
-                filtered = filtered.filter(d => {
-                    const status = calculateStatus(d.dueDate, d.paidAmount || 0, d.amount);
-                    return status === filterStatus;
-                });
-            }
-            if (searchTermVal) {
-                filtered = filtered.filter(d => d.personName?.toLowerCase().includes(searchTermVal));
-            }
-            
-            const start = (lentCurrentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageItems = filtered.slice(start, end);
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-slate-400 py-8">No lent debts found</td</tr>';
-                document.getElementById('lentPagination').innerHTML = '';
+            if (!email) {
+                showError('Please enter your email address');
                 return;
             }
             
-            tbody.innerHTML = pageItems.map(d => {
-                const paidAmount = d.paidAmount || 0;
-                const remainingAmount = d.amount - paidAmount;
-                const status = calculateStatus(d.dueDate, paidAmount, d.amount);
-                const categoryDisplay = getCategoryDisplay(d.category, d.type);
-                return `
-                    <tr class="border-b border-slate-700 hover:bg-slate-800/30">
-                        <td class="p-3" data-label="Person">
-                            <div class="font-bold">${escapeHtml(d.personName)}</div>
-                            <div class="text-xs text-slate-400">${d.phone || ''}</div>
-                        </td>
-                        <td class="p-3 font-bold" data-label="Amount">${formatMoney(d.amount)}</td>
-                        <td class="p-3 text-emerald-400" data-label="Paid">${formatMoney(paidAmount)}</td>
-                        <td class="p-3 text-amber-400" data-label="Remaining">${formatMoney(remainingAmount)}</td>
-                        <td class="p-3 ${d.dueDate && new Date(d.dueDate) < new Date() && status !== 'paid' ? 'text-red-400 font-bold' : 'text-slate-300'}" data-label="Due Date">${d.dueDate || '—'}</td>
-                        <td class="p-3" data-label="Category"><span class="px-2 py-1 bg-indigo-500/20 rounded-full text-xs">${categoryDisplay}</span></td>
-                        <td class="p-3" data-label="Status">${getStatusBadge(status)}</td>
-                        <td class="p-3" data-label="Actions">
-                            ${status !== 'paid' ? `<button onclick="recordPayment('${d.id}', 'lent')" class="text-emerald-400 hover:text-emerald-300 mr-2" title="Record Payment"><i class="fas fa-money-bill-wave"></i></button>` : ''}
-                            <button onclick="viewPaymentHistory('${d.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2" title="Payment History"><i class="fas fa-history"></i></button>
-                            <button onclick="viewReceipt('${d.id}')" class="text-cyan-400 hover:text-cyan-300 mr-2" title="View Receipt"><i class="fas fa-receipt"></i></button>
-                            <button onclick="editDebt('${d.id}')" class="text-amber-400 hover:text-amber-300 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteDebt('${d.id}')" class="text-red-400 hover:text-red-300" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                          </td>
-                      </tr>
-                `;
-            }).join('');
+            setResetLoading(true);
             
-            let paginationHtml = '';
-            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-                paginationHtml += `<button class="pagination-btn ${lentCurrentPage === i ? 'active' : ''}" onclick="goToLentPage(${i})">${i}</button>`;
-            }
-            if (totalPages > 5) {
-                paginationHtml += '<span class="px-2">...</span>';
-                paginationHtml += `<button class="pagination-btn" onclick="goToLentPage(${totalPages})">${totalPages}</button>`;
-            }
-            document.getElementById('lentPagination').innerHTML = paginationHtml;
-        }
-        
-        function renderBorrowedTable() {
-            const tbody = document.getElementById('borrowedTableBody');
-            const filterStatus = document.getElementById('borrowedFilterStatus')?.value || 'all';
-            const searchTermVal = document.getElementById('borrowedSearch')?.value.toLowerCase() || '';
-            
-            let filtered = [...borrowedDebts];
-            if (filterStatus !== 'all') {
-                filtered = filtered.filter(d => {
-                    const status = calculateStatus(d.dueDate, d.paidAmount || 0, d.amount);
-                    return status === filterStatus;
-                });
-            }
-            if (searchTermVal) {
-                filtered = filtered.filter(d => d.personName?.toLowerCase().includes(searchTermVal));
-            }
-            
-            const start = (borrowedCurrentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageItems = filtered.slice(start, end);
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-slate-400 py-8">No borrowed debts found</td</tr>';
-                document.getElementById('borrowedPagination').innerHTML = '';
-                return;
-            }
-            
-            tbody.innerHTML = pageItems.map(d => {
-                const paidAmount = d.paidAmount || 0;
-                const remainingAmount = d.amount - paidAmount;
-                const status = calculateStatus(d.dueDate, paidAmount, d.amount);
-                const categoryDisplay = getCategoryDisplay(d.category, d.type);
-                return `
-                    <tr class="border-b border-slate-700 hover:bg-slate-800/30">
-                        <td class="p-3" data-label="Creditor">
-                            <div class="font-bold">${escapeHtml(d.personName)}</div>
-                            <div class="text-xs text-slate-400">${d.phone || ''}</div>
-                        </td>
-                        <td class="p-3 font-bold" data-label="Amount">${formatMoney(d.amount)}</td>
-                        <td class="p-3 text-emerald-400" data-label="Paid">${formatMoney(paidAmount)}</td>
-                        <td class="p-3 text-amber-400" data-label="Remaining">${formatMoney(remainingAmount)}</td>
-                        <td class="p-3 ${d.dueDate && new Date(d.dueDate) < new Date() && status !== 'paid' ? 'text-red-400 font-bold' : 'text-slate-300'}" data-label="Due Date">${d.dueDate || '—'}</td>
-                        <td class="p-3" data-label="Category"><span class="px-2 py-1 bg-indigo-500/20 rounded-full text-xs">${categoryDisplay}</span></td>
-                        <td class="p-3" data-label="Status">${getStatusBadge(status)}</td>
-                        <td class="p-3" data-label="Actions">
-                            ${status !== 'paid' ? `<button onclick="recordPayment('${d.id}', 'borrowed')" class="text-emerald-400 hover:text-emerald-300 mr-2" title="Record Payment"><i class="fas fa-money-bill-wave"></i></button>` : ''}
-                            <button onclick="viewPaymentHistory('${d.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2" title="Payment History"><i class="fas fa-history"></i></button>
-                            <button onclick="viewReceipt('${d.id}')" class="text-cyan-400 hover:text-cyan-300 mr-2" title="View Receipt"><i class="fas fa-receipt"></i></button>
-                            <button onclick="editDebt('${d.id}')" class="text-amber-400 hover:text-amber-300 mr-2" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteDebt('${d.id}')" class="text-red-400 hover:text-red-300" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
-            let paginationHtml = '';
-            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-                paginationHtml += `<button class="pagination-btn ${borrowedCurrentPage === i ? 'active' : ''}" onclick="goToBorrowedPage(${i})">${i}</button>`;
-            }
-            if (totalPages > 5) {
-                paginationHtml += '<span class="px-2">...</span>';
-                paginationHtml += `<button class="pagination-btn" onclick="goToBorrowedPage(${totalPages})">${totalPages}</button>`;
-            }
-            document.getElementById('borrowedPagination').innerHTML = paginationHtml;
-        }
-        
-        function renderOverdueList() {
-            const container = document.getElementById('overdueList');
-            const overdue = debts.filter(d => calculateStatus(d.dueDate, d.paidAmount || 0, d.amount) === 'overdue');
-            
-            if (overdue.length === 0) {
-                container.innerHTML = '<div class="text-center text-slate-400 py-8"><i class="fas fa-check-circle text-3xl mb-3"></i><p>No overdue debts! Great job!</p></div>';
-                return;
-            }
-            
-            container.innerHTML = overdue.map(d => {
-                const remaining = d.amount - (d.paidAmount || 0);
-                const categoryDisplay = getCategoryDisplay(d.category, d.type);
-                return `
-                    <div class="debt-card" onclick="viewReceipt('${d.id}')">
-                        <div class="flex justify-between items-start flex-wrap gap-2">
-                            <div>
-                                <div class="font-bold">${escapeHtml(d.personName)}</div>
-                                <div class="text-xs text-slate-400">${d.type === 'lent' ? 'Money Lent' : 'Money Borrowed'} • ${categoryDisplay}</div>
-                            </div>
-                            ${getStatusBadge('overdue')}
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <div>
-                                <div class="text-sm">Remaining: <span class="font-bold text-red-400">${formatMoney(remaining)}</span></div>
-                                <div class="text-xs text-slate-400">Due: ${d.dueDate || 'No due date'}</div>
-                            </div>
-                            <button onclick="event.stopPropagation(); recordPayment('${d.id}', '${d.type}')" class="bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg text-sm font-bold">
-                                <i class="fas fa-money-bill-wave mr-1"></i> Pay Now
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function initCharts() {
-            const totalLent = lentDebts.reduce((s, d) => s + (d.amount || 0), 0);
-            const totalBorrowed = borrowedDebts.reduce((s, d) => s + (d.amount || 0), 0);
-            
-            const ctxDebt = document.getElementById('debtChart');
-            if (ctxDebt) {
-                if (charts.debtChart) charts.debtChart.destroy();
-                charts.debtChart = new Chart(ctxDebt, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Money Lent', 'Money Borrowed'],
-                        datasets: [{ data: [totalLent, totalBorrowed], backgroundColor: ['#22C55E', '#EF4444'] }]
-                    },
-                    options: { responsive: true, plugins: { legend: { labels: { color: '#94a3b8' } } } }
-                });
-            }
-            
-            const ctxRepayment = document.getElementById('repaymentChart');
-            if (ctxRepayment) {
-                if (charts.repaymentChart) charts.repaymentChart.destroy();
-                charts.repaymentChart = new Chart(ctxRepayment, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{ label: 'Repayments', data: [0, 0, 0, 0, 0, 0], borderColor: '#4F46E5', tension: 0.4, fill: true }]
-                    },
-                    options: { responsive: true, plugins: { legend: { labels: { color: '#94a3b8' } } } }
-                });
-            }
-        }
-        
-        // ============================================
-        // CRUD OPERATIONS
-        // ============================================
-        
-        async function addLentDebt(event) {
-            event.preventDefault();
-            const personName = document.getElementById('lentPersonName').value.trim();
-            const amount = parseFloat(document.getElementById('lentAmount').value);
-            const category = document.getElementById('lentCategory').value;
-            const dueDate = document.getElementById('lentDueDate').value;
-            const sourceIncome = document.getElementById('lentSource').value;
-            const notes = document.getElementById('lentNotes').value;
-            const phone = document.getElementById('lentPhone').value;
-            
-            if (!personName || !amount || amount <= 0) {
-                showToast('Please fill all required fields', 'error');
-                return;
-            }
-            
-            showLoading(true);
             try {
-                await db.collection('debts').add({
-                    userId: currentUser.uid,
-                    type: 'lent',
-                    personName: personName,
-                    amount: amount,
-                    paidAmount: 0,
-                    remainingAmount: amount,
-                    category: category,
-                    sourceIncome: sourceIncome,
-                    dueDate: dueDate || null,
-                    notes: notes,
-                    phone: phone,
-                    status: 'unpaid',
-                    createdBy: userData?.fullName || currentUser.email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast('Lent debt added successfully!', 'success');
-                document.getElementById('lentForm').reset();
-                await loadDebts();
+                await auth.sendPasswordResetEmail(email);
+                showSuccess(`Password reset link sent to ${email}. Please check your inbox.`);
+                setTimeout(() => {
+                    forgotPasswordModal.classList.remove('active');
+                    resetEmail.value = '';
+                }, 3000);
             } catch (error) {
-                console.error('Error adding lent debt:', error);
-                showToast('Error adding debt: ' + error.message, 'error');
+                console.error('Password reset error:', error);
+                let errorMsg = 'Failed to send reset email. Please try again.';
+                if (error.code === 'auth/user-not-found') {
+                    errorMsg = 'No account found with this email address.';
+                }
+                showError(errorMsg);
             } finally {
-                showLoading(false);
+                setResetLoading(false);
             }
-        }
+        });
         
-        async function addBorrowedDebt(event) {
-            event.preventDefault();
-            const personName = document.getElementById('borrowedPersonName').value.trim();
-            const amount = parseFloat(document.getElementById('borrowedAmount').value);
-            const category = document.getElementById('borrowedCategory').value;
-            const dueDate = document.getElementById('borrowedDueDate').value;
-            const paymentMethod = document.getElementById('borrowedMethod').value;
-            const notes = document.getElementById('borrowedNotes').value;
-            const phone = document.getElementById('borrowedPhone').value;
+        // ============================================
+        // SOCIAL LOGIN HANDLERS
+        // ============================================
+        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
             
-            if (!personName || !amount || amount <= 0) {
-                showToast('Please fill all required fields', 'error');
-                return;
-            }
-            
-            showLoading(true);
             try {
-                await db.collection('debts').add({
-                    userId: currentUser.uid,
-                    type: 'borrowed',
-                    personName: personName,
-                    amount: amount,
-                    paidAmount: 0,
-                    remainingAmount: amount,
-                    category: category,
-                    paymentMethod: paymentMethod,
-                    dueDate: dueDate || null,
-                    notes: notes,
-                    phone: phone,
-                    status: 'unpaid',
-                    createdBy: userData?.fullName || currentUser.email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast('Borrowed debt added successfully!', 'success');
-                document.getElementById('borrowedForm').reset();
-                await loadDebts();
-            } catch (error) {
-                console.error('Error adding borrowed debt:', error);
-                showToast('Error adding debt: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-        
-        window.recordPayment = (debtId, type) => {
-            const debt = debts.find(d => d.id === debtId);
-            if (!debt) return;
-            
-            const remaining = debt.amount - (debt.paidAmount || 0);
-            
-            document.getElementById('paymentDebtId').value = debtId;
-            document.getElementById('paymentType').value = type;
-            document.getElementById('paymentAmount').value = '';
-            document.getElementById('paymentAmount').placeholder = `Max: ${formatMoney(remaining)}`;
-            document.getElementById('paymentAmount').max = remaining;
-            document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('paymentMethod').value = 'cash';
-            document.getElementById('paymentNotes').value = '';
-            openModal('paymentModal');
-        };
-        
-        // ✅ SAVE PAYMENT WITH INCOME INTEGRATION - FIXED
-        async function savePayment(event) {
-            event.preventDefault();
-            const debtId = document.getElementById('paymentDebtId').value;
-            const amount = parseFloat(document.getElementById('paymentAmount').value);
-            const paymentDate = document.getElementById('paymentDate').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const notes = document.getElementById('paymentNotes').value;
-            
-            if (!amount || amount <= 0) {
-                showToast('Please enter a valid amount', 'error');
-                return;
-            }
-            
-            const debt = debts.find(d => d.id === debtId);
-            if (!debt) {
-                showToast('Debt not found', 'error');
-                return;
-            }
-            
-            const currentPaid = debt.paidAmount || 0;
-            const remaining = debt.amount - currentPaid;
-            
-            if (amount > remaining) {
-                showToast(`Payment amount cannot exceed remaining balance of ${formatMoney(remaining)}`, 'error');
-                return;
-            }
-            
-            const newPaidAmount = currentPaid + amount;
-            const newRemaining = debt.amount - newPaidAmount;
-            const newStatus = newRemaining <= 0 ? 'paid' : (newPaidAmount > 0 ? 'partial' : 'unpaid');
-            
-            showLoading(true);
-            try {
-                // 1. Update debt status
-                await db.collection('debts').doc(debtId).update({
-                    paidAmount: newPaidAmount,
-                    remainingAmount: newRemaining,
-                    status: newStatus,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
                 
-                // 2. Record payment in debtPayments
-                const paymentRef = await db.collection('debtPayments').add({
-                    debtId: debtId,
-                    amount: amount,
-                    paymentDate: paymentDate || new Date().toISOString().split('T')[0],
-                    method: paymentMethod,
-                    notes: notes,
-                    recordedBy: userData?.fullName || currentUser.email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                console.log('✅ Google login successful:', user.email);
                 
-                console.log('✅ Payment recorded with ID:', paymentRef.id);
-                
-                // 3. ✅ INTEGRATION WITH INCOME.HTML - FOR LENT DEBT (someone paying us back)
-                if (debt.type === 'lent') {
-                    const incomeCreated = await createIncomeFromRepayment(debt, amount, paymentDate, paymentMethod);
-                    if (incomeCreated) {
-                        showToast(`Payment of ${formatMoney(amount)} recorded! Income entry created in Income page.`, 'success');
-                    } else {
-                        showToast(`Payment of ${formatMoney(amount)} recorded!`, 'success');
-                    }
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (!userDoc.exists) {
+                    await db.collection('users').doc(user.uid).set({
+                        fullName: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        profilePicture: user.photoURL || `https://ui-avatars.com/api/?background=4F46E5&color=fff&bold=true&size=100&name=${encodeURIComponent(user.displayName || 'User')}`,
+                        role: 'user',
+                        settings: {
+                            currency: 'RWF',
+                            language: 'en',
+                            dateFormat: 'DD/MM/YYYY',
+                            timeFormat: '24h',
+                            theme: currentTheme,
+                            compactView: false,
+                            animations: true,
+                            emailNotifications: true,
+                            budgetAlerts: true,
+                            weeklyReports: false,
+                            budgetThreshold: 80,
+                            primaryColor: '#4F46E5',
+                            cardStyle: 'glass',
+                            inAppNotifications: true
+                        },
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 } else {
-                    showToast(`Payment of ${formatMoney(amount)} recorded!`, 'success');
+                    await db.collection('users').doc(user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 }
                 
-                closeModal('paymentModal');
-                await loadDebts();
+                saveUserSession(user);
+                showToast('Google login successful! Redirecting...', 'success');
+                redirectToDashboard();
+                
             } catch (error) {
-                console.error('Error recording payment:', error);
-                showToast('Error recording payment: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
+                console.error('Google login error:', error);
+                showError('Google login failed. Please try again.');
             }
-        }
+        });
         
-        window.viewPaymentHistory = async (debtId) => {
-            const debt = debts.find(d => d.id === debtId);
-            if (!debt) return;
+        document.getElementById('githubLoginBtn').addEventListener('click', async () => {
+            const provider = new firebase.auth.GithubAuthProvider();
             
-            const payments = await loadPayments(debtId);
-            const container = document.getElementById('paymentHistoryList');
-            
-            if (payments.length === 0) {
-                container.innerHTML = '<div class="text-center text-slate-400 py-4">No payment records</div>';
-            } else {
-                container.innerHTML = payments.map(p => `
-                    <div class="payment-item">
-                        <div class="flex justify-between items-center">
-                            <div class="font-bold text-emerald-400">${formatMoney(p.amount)}</div>
-                            <div class="text-xs text-slate-400">${p.paymentDate || '—'}</div>
-                        </div>
-                        <div class="flex justify-between items-center mt-1">
-                            <div class="text-xs text-slate-400">Method: ${p.method || 'cash'}</div>
-                            <div class="text-xs text-slate-400">By: ${escapeHtml(p.recordedBy) || '—'}</div>
-                        </div>
-                        ${p.notes ? `<div class="text-xs text-slate-500 mt-1">${escapeHtml(p.notes)}</div>` : ''}
-                        <div class="mt-2">
-                            <button onclick="event.stopPropagation(); viewPaymentReceipt(debt, ${JSON.stringify(p).replace(/"/g, '&quot;')})" class="text-cyan-400 hover:text-cyan-300 text-sm">
-                                <i class="fas fa-receipt mr-1"></i> View Receipt
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            openModal('paymentHistoryModal');
-            window.currentPaymentHistoryDebt = debt;
-        };
-        
-        window.editDebt = async (id) => {
-            const debt = debts.find(d => d.id === id);
-            if (!debt) return;
-            
-            const newAmount = prompt('Edit amount:', debt.amount);
-            if (newAmount && parseFloat(newAmount) > 0) {
-                showLoading(true);
-                try {
-                    const newAmountNum = parseFloat(newAmount);
-                    const paidAmount = debt.paidAmount || 0;
-                    const remainingAmount = newAmountNum - paidAmount;
-                    await db.collection('debts').doc(id).update({
-                        amount: newAmountNum,
-                        remainingAmount: remainingAmount,
-                        status: remainingAmount <= 0 ? 'paid' : (paidAmount > 0 ? 'partial' : 'unpaid'),
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+                
+                console.log('✅ GitHub login successful:', user.email);
+                
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (!userDoc.exists) {
+                    await db.collection('users').doc(user.uid).set({
+                        fullName: user.displayName || user.email?.split('@')[0] || 'GitHub User',
+                        email: user.email || 'no-email@github.com',
+                        profilePicture: user.photoURL || `https://ui-avatars.com/api/?background=4F46E5&color=fff&bold=true&size=100&name=GH`,
+                        role: 'user',
+                        settings: {
+                            currency: 'RWF',
+                            language: 'en',
+                            dateFormat: 'DD/MM/YYYY',
+                            timeFormat: '24h',
+                            theme: currentTheme,
+                            compactView: false,
+                            animations: true,
+                            emailNotifications: true,
+                            budgetAlerts: true,
+                            weeklyReports: false,
+                            budgetThreshold: 80,
+                            primaryColor: '#4F46E5',
+                            cardStyle: 'glass',
+                            inAppNotifications: true
+                        },
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    showToast('Debt updated!', 'success');
-                    await loadDebts();
-                } catch (error) {
-                    showToast('Error updating debt', 'error');
-                } finally {
-                    showLoading(false);
+                } else {
+                    await db.collection('users').doc(user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 }
+                
+                saveUserSession(user);
+                showToast('GitHub login successful! Redirecting...', 'success');
+                redirectToDashboard();
+                
+            } catch (error) {
+                console.error('GitHub login error:', error);
+                showError('GitHub login failed. Please try again.');
             }
-        };
-        
-        window.deleteDebt = async (id) => {
-            if (confirm('Delete this debt record? This will also delete all payment history.')) {
-                showLoading(true);
-                try {
-                    const payments = await db.collection('debtPayments').where('debtId', '==', id).get();
-                    const batch = db.batch();
-                    payments.docs.forEach(doc => batch.delete(doc.ref));
-                    batch.delete(db.collection('debts').doc(id));
-                    await batch.commit();
-                    showToast('Debt deleted!', 'success');
-                    await loadDebts();
-                } catch (error) {
-                    console.error('Error deleting debt:', error);
-                    showToast('Error deleting debt', 'error');
-                } finally {
-                    showLoading(false);
-                }
-            }
-        };
-        
-        // Export functions
-        async function exportDebtsToCSV() {
-            if (debts.length === 0) {
-                showToast('No data to export', 'warning');
-                return;
-            }
-            let csv = 'Type,Person,Amount,Paid,Remaining,Due Date,Category,Status,Notes,Phone\n';
-            debts.forEach(d => {
-                const status = calculateStatus(d.dueDate, d.paidAmount || 0, d.amount);
-                const categoryDisplay = getCategoryDisplay(d.category, d.type);
-                csv += `${d.type},${d.personName},${d.amount},${d.paidAmount || 0},${d.amount - (d.paidAmount || 0)},${d.dueDate || ''},${categoryDisplay},${status},${(d.notes || '').replace(/,/g, ';')},${d.phone || ''}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `debts-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('CSV exported!', 'success');
-        }
-        
-        async function exportDebtsToPDF() {
-            if (debts.length === 0) {
-                showToast('No data to export', 'warning');
-                return;
-            }
-            const totalLent = lentDebts.reduce((s, d) => s + d.amount, 0);
-            const totalBorrowed = borrowedDebts.reduce((s, d) => s + d.amount, 0);
-            const netPosition = totalLent - totalBorrowed;
-            
-            const printHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head><meta charset="UTF-8"><title>Debt Report</title>
-                <style>
-                    body { font-family: 'Inter', Arial, sans-serif; padding: 30px; background: white; }
-                    .header { text-align: center; border-bottom: 2px solid #4F46E5; padding-bottom: 15px; margin-bottom: 20px; }
-                    .header img { height: 60px; }
-                    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-                    .stat-box { background: #f8fafc; padding: 15px; text-align: center; border-radius: 12px; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                    th { background: #4F46E5; color: white; padding: 10px; text-align: left; font-size: 11px; }
-                    td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 11px; }
-                    .footer { text-align: center; font-size: 10px; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
-                </style>
-                </head>
-                <body>
-                    <div class="header"><img src="${LOGO_URL}"><h1>${COMPANY_NAME}</h1><p>Debt Management Report</p></div>
-                    <div class="stats">
-                        <div class="stat-box"><strong>Total Lent</strong><br>${formatMoney(totalLent)}</div>
-                        <div class="stat-box"><strong>Total Borrowed</strong><br>${formatMoney(totalBorrowed)}</div>
-                        <div class="stat-box"><strong>Net Position</strong><br>${formatMoney(netPosition)}</div>
-                    </div>
-                    <table><thead><tr><th>Type</th><th>Person</th><th>Category</th><th>Amount</th><th>Paid</th><th>Remaining</th><th>Due Date</th><th>Status</th></tr></thead>
-                    <tbody>${debts.map(d => {
-                        const status = calculateStatus(d.dueDate, d.paidAmount || 0, d.amount);
-                        const categoryDisplay = getCategoryDisplay(d.category, d.type);
-                        return `<td><td>${d.type === 'lent' ? 'Lent' : 'Borrowed'}</td><td>${d.personName}</td><td>${categoryDisplay}</td><td>${formatMoney(d.amount)}</td><td>${formatMoney(d.paidAmount || 0)}</td><td>${formatMoney(d.amount - (d.paidAmount || 0))}</td><td>${d.dueDate || '—'}</td><td>${status}</td>`;
-                    }).join('')}</tbody>
-                    </table>
-                    <div class="footer"><p>Generated on: ${new Date().toLocaleString()}</p><p>© ${new Date().getFullYear()} MAYE System - All rights reserved</p></div>
-                </body>
-                </html>
-            `;
-            const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `debts-report-${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
-            await html2pdf().set(opt).from(printHTML).save();
-            showToast('PDF exported!', 'success');
-        }
-        
-        function goToLentPage(page) { lentCurrentPage = page; renderLentTable(); }
-        function goToBorrowedPage(page) { borrowedCurrentPage = page; renderBorrowedTable(); }
+        });
         
         // ============================================
-        // UI SETUP
+        // PASSWORD STRENGTH METER
         // ============================================
+        regPassword.addEventListener('input', (e) => {
+            const { percentage, text, color } = checkPasswordStrength(e.target.value);
+            document.getElementById('passwordStrengthFill').style.width = `${percentage}%`;
+            document.getElementById('passwordStrengthFill').style.background = color;
+            document.getElementById('passwordStrengthText').textContent = text;
+            document.getElementById('passwordStrengthText').style.color = color;
+        });
         
-        function renderSidebar() {
-            const desktopNav = document.getElementById('sidebarNav');
-            const mobileNav = document.getElementById('mobileSidebarNav');
-            const navHtml = navItems.map(item => `
-                <div class="sidebar-nav-item ${item.active ? 'active' : ''}" onclick="window.location.href='${item.page}'">
-                    <i class="fas ${item.icon}"></i>
-                    <span class="nav-text font-semibold">${item.text}</span>
-                </div>
-            `).join('');
-            if (desktopNav) desktopNav.innerHTML = navHtml;
-            if (mobileNav) mobileNav.innerHTML = navHtml;
-        }
-        
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.debt-tab');
-            const contents = document.querySelectorAll('.debt-tab-content');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.dataset.tab;
-                    tabs.forEach(t => {
-                        t.classList.remove('active', 'bg-indigo-600', 'text-white');
-                        t.classList.add('bg-slate-800', 'text-slate-300');
-                    });
-                    tab.classList.add('active', 'bg-indigo-600', 'text-white');
-                    tab.classList.remove('bg-slate-800', 'text-slate-300');
-                    contents.forEach(content => content.classList.add('hidden'));
-                    document.getElementById(`${tabId}Tab`).classList.remove('hidden');
-                    if (tabId === 'analytics') initCharts();
-                });
-            });
-        }
-        
-        function setupEventListeners() {
-            document.getElementById('lentForm')?.addEventListener('submit', addLentDebt);
-            document.getElementById('borrowedForm')?.addEventListener('submit', addBorrowedDebt);
-            document.getElementById('paymentForm')?.addEventListener('submit', savePayment);
-            
-            document.getElementById('exportDebtsCSV')?.addEventListener('click', exportDebtsToCSV);
-            document.getElementById('exportDebtsPDF')?.addEventListener('click', exportDebtsToPDF);
-            
-            document.getElementById('lentFilterStatus')?.addEventListener('change', () => { lentCurrentPage = 1; renderLentTable(); });
-            document.getElementById('lentSearch')?.addEventListener('input', () => { lentCurrentPage = 1; renderLentTable(); });
-            document.getElementById('borrowedFilterStatus')?.addEventListener('change', () => { borrowedCurrentPage = 1; renderBorrowedTable(); });
-            document.getElementById('borrowedSearch')?.addEventListener('input', () => { borrowedCurrentPage = 1; renderBorrowedTable(); });
-            
-            document.getElementById('floatingAddBtn')?.addEventListener('click', () => {
-                document.querySelector('.debt-tab.active')?.click();
-            });
-            
-            // Sidebar toggle
-            let isCollapsed = false;
-            const toggleBtn = document.getElementById('toggleSidebarBtn');
-            const sidebar = document.getElementById('desktopSidebar');
-            const mainContent = document.getElementById('mainContent');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    isCollapsed = !isCollapsed;
-                    if (isCollapsed) {
-                        sidebar.classList.add('sidebar-collapsed');
-                        sidebar.classList.remove('sidebar-expanded');
-                        mainContent.style.marginLeft = '88px';
-                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'none');
-                        document.getElementById('sidebarLogoArea').style.display = 'none';
-                        toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        // ============================================
+        // RESEND VERIFICATION EMAIL
+        // ============================================
+        resendVerificationBtn.addEventListener('click', async () => {
+            try {
+                if (pendingUserEmail) {
+                    const user = auth.currentUser;
+                    if (user && !user.emailVerified) {
+                        await user.sendEmailVerification();
+                        showToast('Verification email resent! Please check your inbox.', 'success');
                     } else {
-                        sidebar.classList.remove('sidebar-collapsed');
-                        sidebar.classList.add('sidebar-expanded');
-                        mainContent.style.marginLeft = '290px';
-                        document.querySelectorAll('.nav-text').forEach(el => el.style.display = 'inline');
-                        document.getElementById('sidebarLogoArea').style.display = 'block';
-                        toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                        showError('Please try logging in first to resend verification.');
                     }
-                });
-            }
-            
-            // Mobile menu
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileSidebar = document.getElementById('mobileSidebar');
-            const mobileOverlay = document.getElementById('mobileMenuOverlay');
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', () => {
-                    if (mobileSidebar) mobileSidebar.style.transform = 'translateX(0)';
-                    if (mobileOverlay) mobileOverlay.classList.remove('hidden');
-                });
-            }
-            window.closeMobileMenu = () => {
-                if (mobileSidebar) mobileSidebar.style.transform = 'translateX(-100%)';
-                if (mobileOverlay) mobileOverlay.classList.add('hidden');
-            };
-            if (mobileOverlay) mobileOverlay.addEventListener('click', closeMobileMenu);
-            
-            // User dropdown
-            const userMenuBtn = document.getElementById('userMenuBtn');
-            const userDropdown = document.getElementById('userDropdown');
-            if (userMenuBtn) {
-                userMenuBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (userDropdown) userDropdown.classList.toggle('hidden');
-                });
-            }
-            document.addEventListener('click', () => {
-                if (userDropdown) userDropdown?.classList.add('hidden');
-            });
-            
-            // Theme toggle
-            const themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', async () => {
-                    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    await db.collection('users').doc(currentUser.uid).update({ 'settings.theme': currentTheme });
-                    if (currentTheme === 'light') document.body.classList.add('light-mode');
-                    else document.body.classList.remove('light-mode');
-                    themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-                });
-            }
-            
-            // Logout
-            const logoutBtns = ['logoutBtnSidebar', 'logoutBtnTopbar', 'logoutBtnMobile'];
-            logoutBtns.forEach(btnId => {
-                const btn = document.getElementById(btnId);
-                if (btn) {
-                    btn.addEventListener('click', async () => {
-                        showLoading(true);
-                        await auth.signOut();
-                        window.location.href = 'index.html';
-                    });
                 }
-            });
+            } catch (error) {
+                showError('Could not resend verification email. Please try again.');
+            }
+        });
+        
+        // ============================================
+        // MODAL CONTROLS
+        // ============================================
+        
+        showRegisterBtn.addEventListener('click', () => {
+            registerForm.reset();
+            termsCheckbox.checked = false;
+            document.getElementById('passwordStrengthFill').style.width = '0%';
+            document.getElementById('passwordStrengthText').textContent = 'Enter a strong password';
+            document.getElementById('passwordStrengthText').style.color = '';
+            errorMessage.classList.add('hidden');
+            registerModal.classList.add('active');
+        });
+        
+        function closeModals() {
+            registerModal.classList.remove('active');
+            forgotPasswordModal.classList.remove('active');
+            verifyEmailModal.classList.remove('active');
         }
         
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        closeRegisterModal.addEventListener('click', closeModals);
+        backToLoginBtn.addEventListener('click', closeModals);
         
-        // Make functions global
-        window.goToLentPage = goToLentPage;
-        window.goToBorrowedPage = goToBorrowedPage;
-        window.closeModal = closeModal;
-        window.recordPayment = recordPayment;
-        window.viewPaymentHistory = viewPaymentHistory;
-        window.viewReceipt = viewReceipt;
-        window.viewPaymentReceipt = viewPaymentReceipt;
-        window.editDebt = editDebt;
-        window.deleteDebt = deleteDebt;
+        forgotPasswordBtn.addEventListener('click', () => {
+            forgotPasswordModal.classList.add('active');
+        });
+        
+        closeForgotModal.addEventListener('click', closeModals);
+        backToLoginFromReset.addEventListener('click', closeModals);
+        closeVerifyModal.addEventListener('click', closeModals);
+        
+        registerModal.addEventListener('click', (e) => {
+            if (e.target === registerModal) closeModals();
+        });
+        
+        forgotPasswordModal.addEventListener('click', (e) => {
+            if (e.target === forgotPasswordModal) closeModals();
+        });
+        
+        verifyEmailModal.addEventListener('click', (e) => {
+            if (e.target === verifyEmailModal) closeModals();
+        });
+        
+        // ============================================
+        // PASSWORD TOGGLE FUNCTIONALITY
+        // ============================================
+        
+        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+        toggleLoginPassword.addEventListener('click', () => {
+            const type = loginPassword.type === 'password' ? 'text' : 'password';
+            loginPassword.type = type;
+            toggleLoginPassword.classList.toggle('fa-eye-slash');
+            toggleLoginPassword.classList.toggle('fa-eye');
+        });
+        
+        const toggleRegPassword = document.getElementById('toggleRegPassword');
+        toggleRegPassword.addEventListener('click', () => {
+            const type = regPassword.type === 'password' ? 'text' : 'password';
+            regPassword.type = type;
+            toggleRegPassword.classList.toggle('fa-eye-slash');
+            toggleRegPassword.classList.toggle('fa-eye');
+        });
+        
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
+        
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        
+        loginPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        // ============================================
+        // CHECK EXISTING SESSION
+        // ============================================
+        
+        auth.onAuthStateChanged((user) => {
+            if (user && user.emailVerified) {
+                console.log('✅ Existing session found, redirecting to dashboard...');
+                redirectToDashboard();
+            }
+        });
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        loadTheme();
+        loadSavedCredentials();
+        
+        console.log('✅ MAYE System Authentication Page (Advanced) initialized successfully');
+        console.log('📌 Features: Login, Register, Password Reset, Google/GitHub Login, Email Verification, Remember Me, Password Strength, Dark/Light Mode');
+        console.log('🔄 Redirect: After successful login/register → dashboard.html');
     </script>
 </body>
 </html>
