@@ -82,7 +82,16 @@
             border-left: 3px solid #4F46E5;
         }
         
-        /* Topbar */
+        .sidebar-nav-item.admin-link {
+            border-top: 1px solid rgba(79, 70, 229, 0.2);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        
+        .sidebar-nav-item.admin-link i {
+            color: #F59E0B;
+        }
+        
         .topbar-premium {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
@@ -110,7 +119,6 @@
             background: rgba(79, 70, 229, 0.15);
         }
         
-        /* Glass Card */
         .glass-card {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
@@ -127,7 +135,6 @@
             border-color: rgba(79, 70, 229, 0.5);
         }
         
-        /* Setting Card */
         .setting-card {
             background: rgba(30, 41, 59, 0.5);
             backdrop-filter: blur(8px);
@@ -140,7 +147,6 @@
             border-color: rgba(79, 70, 229, 0.3);
         }
         
-        /* Toggle Switch */
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -186,7 +192,6 @@
             transform: translateX(24px);
         }
         
-        /* Radio Group */
         .radio-group {
             display: flex;
             gap: 1rem;
@@ -213,7 +218,6 @@
             font-weight: bold;
         }
         
-        /* Color picker */
         .color-option {
             width: 40px;
             height: 40px;
@@ -232,7 +236,6 @@
             box-shadow: 0 0 0 2px #4F46E5;
         }
         
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -260,7 +263,6 @@
             to { opacity: 1; transform: translateX(0); }
         }
         
-        /* Loading */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -297,7 +299,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Dropdown */
         .dropdown-premium {
             background: rgba(30, 41, 59, 0.98);
             backdrop-filter: blur(12px);
@@ -306,7 +307,6 @@
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
         }
         
-        /* Modal */
         .modal-premium {
             background: rgba(15, 23, 42, 0.98);
             backdrop-filter: blur(16px);
@@ -314,7 +314,6 @@
             border-radius: 32px;
         }
         
-        /* Profile image */
         .profile-image {
             width: 100px;
             height: 100px;
@@ -324,7 +323,6 @@
             box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.4);
         }
         
-        /* Session item */
         .session-item {
             display: flex;
             justify-content: space-between;
@@ -337,34 +335,16 @@
             border-bottom: none;
         }
         
-        /* API Key item */
-        .api-key-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: rgba(51, 65, 85, 0.3);
-            border-radius: 12px;
-            transition: all 0.2s ease;
-        }
-        
-        .api-key-item:hover {
-            background: rgba(79, 70, 229, 0.1);
-        }
-        
-        /* Mobile menu */
         .mobile-menu-premium {
             background: rgba(15, 23, 42, 0.98);
             backdrop-filter: blur(16px);
             border-right: 1px solid rgba(79, 70, 229, 0.3);
         }
         
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #4F46E5; border-radius: 10px; }
         
-        /* Page animation */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -374,13 +354,11 @@
             animation: fadeInUp 0.5s ease-out;
         }
         
-        /* Danger zone */
         .danger-zone {
             border: 1px solid rgba(239, 68, 68, 0.3);
             background: rgba(239, 68, 68, 0.05);
         }
         
-        /* Progress bar */
         .progress-bar {
             height: 6px;
             background: #334155;
@@ -394,19 +372,6 @@
             transition: width 0.3s ease;
         }
         
-        /* Shortcut key */
-        .shortcut-key {
-            display: inline-block;
-            padding: 4px 8px;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        /* Light mode text */
         body.light-mode .text-slate-200 { color: #1e293b; }
         body.light-mode .text-slate-300 { color: #334155; }
         body.light-mode .text-slate-400 { color: #64748b; }
@@ -470,7 +435,17 @@
             </div>
             <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
             <div class="p-4 border-t border-indigo-500/20 mt-auto">
-                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <!-- Debts Link -->
+                <div class="sidebar-nav-item text-cyan-400 hover:bg-cyan-500/10" onclick="window.location.href='debts.html'">
+                    <i class="fas fa-hand-holding-usd w-5"></i>
+                    <span class="nav-text font-semibold">Debts</span>
+                </div>
+                <!-- Admin Link -->
+                <div class="sidebar-nav-item admin-link text-amber-400 hover:bg-amber-500/10" onclick="window.location.href='administration.html'">
+                    <i class="fas fa-user-shield w-5"></i>
+                    <span class="nav-text font-semibold">Admin Panel</span>
+                </div>
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10 mt-2">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="nav-text font-semibold">Logout</span>
                 </button>
@@ -509,7 +484,7 @@
                                 </div>
                                 <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
                             </button>
-                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-80 rounded-2xl hidden z-50 overflow-hidden">
                                 <div class="p-4 border-b border-indigo-500/20">
                                     <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
                                 </div>
@@ -525,6 +500,12 @@
                                     </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
                                         <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='debts.html'">
+                                        <i class="fas fa-hand-holding-usd w-5 text-cyan-400"></i> Debts
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='administration.html'">
+                                        <i class="fas fa-user-shield w-5 text-amber-400"></i> Admin Panel
                                     </div>
                                     <hr class="border-indigo-500/20 my-1">
                                     <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
@@ -669,7 +650,7 @@
                                 <i class="fas fa-dollar-sign text-indigo-400"></i> Currency Settings
                             </h2>
                             <div class="space-y-4">
-                                <p class="text-slate-400 text-sm">Select your preferred currency for all financial displays</p>
+                                <p class="text-slate-400 text-sm">Select your preferred currency for all financial displays across Income, Debts, Procurement, and Dashboard</p>
                                 <div class="radio-group">
                                     <label class="radio-option">
                                         <input type="radio" name="currencyMain" value="USD">
@@ -689,7 +670,7 @@
                                     </label>
                                 </div>
                                 <div class="mt-4 p-4 bg-slate-800/50 rounded-xl">
-                                    <p class="text-sm text-slate-400">Preview:</p>
+                                    <p class="text-sm text-slate-400">Preview (used in Income, Debts, Procurement, Dashboard):</p>
                                     <p class="text-2xl font-extrabold text-emerald-400" id="currencyMainPreview">FRw 1,000,000</p>
                                 </div>
                                 <button id="saveCurrencyBtn" class="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 px-6 py-2.5 rounded-xl font-bold transition">
@@ -946,7 +927,7 @@
                                     <div class="flex justify-between items-center flex-wrap gap-3">
                                         <div>
                                             <h3 class="font-bold text-red-400">Clear All Data</h3>
-                                            <p class="text-sm text-slate-400">Permanently delete all your income records</p>
+                                            <p class="text-sm text-slate-400">Permanently delete all your income, debts, procurement records</p>
                                         </div>
                                         <button id="clearAllDataBtn" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 px-5 py-2 rounded-xl font-bold">
                                             <i class="fas fa-trash-alt mr-2"></i> Clear Data
@@ -1026,7 +1007,7 @@
                 <i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i>
             </div>
             <h2 class="text-2xl font-extrabold mb-2">Delete Account Permanently?</h2>
-            <p class="text-slate-400 mb-4">This action cannot be undone. All your data will be permanently deleted.</p>
+            <p class="text-slate-400 mb-4">This action cannot be undone. All your income, debts, procurement data will be permanently deleted.</p>
             <div class="mb-4">
                 <p class="text-sm text-slate-300 mb-2">Type <span class="font-bold text-red-400">DELETE</span> to confirm</p>
                 <input type="text" id="deleteConfirmInput" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center font-mono outline-none focus:border-red-500" placeholder="DELETE">
@@ -1082,7 +1063,9 @@
             { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
             { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: false },
             { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
-            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: true }
+            { icon: 'fa-hand-holding-usd', text: 'Debts', page: 'debts.html', active: false },
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: true },
+            { icon: 'fa-user-shield', text: 'Admin', page: 'administration.html', active: false }
         ];
         
         const currencySymbols = {
@@ -1143,13 +1126,13 @@
         
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
-                window.location.href = 'index.html';
+                window.location.href = 'auth.html';
                 return;
             }
             
             if (!user.emailVerified) {
                 await auth.signOut();
-                window.location.href = 'index.html?verify=true';
+                window.location.href = 'auth.html?verify=true';
                 return;
             }
             
@@ -1431,6 +1414,133 @@
         }
         
         // ============================================
+        // DATA CLEAR FUNCTIONS (Integrated with other pages)
+        // ============================================
+        
+        async function clearAllData() {
+            if (confirm('WARNING: This will delete ALL your data across Income, Debts, Procurement, and Reports. This action cannot be undone! Continue?')) {
+                showLoading(true);
+                try {
+                    // Clear income records
+                    const incomesSnap = await db.collection('income').where('userId', '==', currentUser.uid).get();
+                    let batch = db.batch();
+                    let count = 0;
+                    for (const doc of incomesSnap.docs) {
+                        batch.delete(doc.ref);
+                        count++;
+                        if (count >= 499) {
+                            await batch.commit();
+                            batch = db.batch();
+                            count = 0;
+                        }
+                    }
+                    if (count > 0) await batch.commit();
+                    
+                    // Clear debts records
+                    const debtsSnap = await db.collection('debts').where('userId', '==', currentUser.uid).get();
+                    batch = db.batch();
+                    count = 0;
+                    for (const doc of debtsSnap.docs) {
+                        batch.delete(doc.ref);
+                        count++;
+                        if (count >= 499) {
+                            await batch.commit();
+                            batch = db.batch();
+                            count = 0;
+                        }
+                    }
+                    if (count > 0) await batch.commit();
+                    
+                    // Clear purchases records
+                    const purchasesSnap = await db.collection('purchases').where('userId', '==', currentUser.uid).get();
+                    batch = db.batch();
+                    count = 0;
+                    for (const doc of purchasesSnap.docs) {
+                        batch.delete(doc.ref);
+                        count++;
+                        if (count >= 499) {
+                            await batch.commit();
+                            batch = db.batch();
+                            count = 0;
+                        }
+                    }
+                    if (count > 0) await batch.commit();
+                    
+                    // Clear requisitions records
+                    const requisitionsSnap = await db.collection('requisitions').where('userId', '==', currentUser.uid).get();
+                    batch = db.batch();
+                    count = 0;
+                    for (const doc of requisitionsSnap.docs) {
+                        batch.delete(doc.ref);
+                        count++;
+                        if (count >= 499) {
+                            await batch.commit();
+                            batch = db.batch();
+                            count = 0;
+                        }
+                    }
+                    if (count > 0) await batch.commit();
+                    
+                    // Clear suppliers records
+                    const suppliersSnap = await db.collection('suppliers').where('userId', '==', currentUser.uid).get();
+                    batch = db.batch();
+                    count = 0;
+                    for (const doc of suppliersSnap.docs) {
+                        batch.delete(doc.ref);
+                        count++;
+                        if (count >= 499) {
+                            await batch.commit();
+                            batch = db.batch();
+                            count = 0;
+                        }
+                    }
+                    if (count > 0) await batch.commit();
+                    
+                    showToast('All data cleared successfully!', 'success');
+                } catch (error) {
+                    console.error('Error clearing data:', error);
+                    showToast('Error clearing data: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+        
+        function openDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.add('flex');
+            document.getElementById('deleteAccountModal').classList.remove('hidden');
+            document.getElementById('deleteConfirmInput').value = '';
+            document.getElementById('confirmDeleteAccountBtn').disabled = true;
+        }
+        
+        function closeDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.remove('flex');
+            document.getElementById('deleteAccountModal').classList.add('hidden');
+        }
+        
+        async function deleteAccount() {
+            showLoading(true);
+            try {
+                // Clear all user data first
+                await clearAllData();
+                
+                // Delete user document
+                await db.collection('users').doc(currentUser.uid).delete();
+                
+                // Delete user authentication account
+                await currentUser.delete();
+                
+                showToast('Account deleted successfully', 'success');
+                setTimeout(() => { window.location.href = 'auth.html'; }, 1500);
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                showToast('Error deleting account. Please re-authenticate.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // ============================================
         // SESSION & LOGIN HISTORY
         // ============================================
         
@@ -1459,57 +1569,6 @@
                 device: navigator.userAgent.includes('Mobile') ? 'Mobile Device' : 'Desktop'
             });
             localStorage.setItem('maye_login_history', JSON.stringify(history.slice(0, 20)));
-        }
-        
-        // ============================================
-        // DATA CLEAR & ACCOUNT DELETE
-        // ============================================
-        
-        async function clearAllData() {
-            if (confirm('WARNING: This will delete ALL your income records. This action cannot be undone! Continue?')) {
-                showLoading(true);
-                try {
-                    const incomesSnap = await db.collection('income').where('userId', '==', currentUser.uid).get();
-                    const batch = db.batch();
-                    incomesSnap.docs.forEach(doc => batch.delete(doc.ref));
-                    await batch.commit();
-                    showToast('All data cleared successfully!', 'success');
-                } catch (error) {
-                    showToast('Error clearing data', 'error');
-                } finally {
-                    showLoading(false);
-                }
-            }
-        }
-        
-        function openDeleteAccountModal() {
-            document.getElementById('deleteAccountModal').classList.add('flex');
-            document.getElementById('deleteAccountModal').classList.remove('hidden');
-            document.getElementById('deleteConfirmInput').value = '';
-            document.getElementById('confirmDeleteAccountBtn').disabled = true;
-        }
-        
-        function closeDeleteAccountModal() {
-            document.getElementById('deleteAccountModal').classList.remove('flex');
-            document.getElementById('deleteAccountModal').classList.add('hidden');
-        }
-        
-        async function deleteAccount() {
-            showLoading(true);
-            try {
-                const incomesSnap = await db.collection('income').where('userId', '==', currentUser.uid).get();
-                const batch = db.batch();
-                incomesSnap.docs.forEach(doc => batch.delete(doc.ref));
-                await batch.commit();
-                await db.collection('users').doc(currentUser.uid).delete();
-                await currentUser.delete();
-                showToast('Account deleted successfully', 'success');
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-            } catch (error) {
-                showToast('Error deleting account. Please re-authenticate.', 'error');
-            } finally {
-                showLoading(false);
-            }
         }
         
         // ============================================
@@ -1708,7 +1767,7 @@
                 if (confirm('This will log you out from all devices. Continue?')) {
                     localStorage.clear();
                     await auth.signOut();
-                    window.location.href = 'index.html';
+                    window.location.href = 'auth.html';
                 }
             });
             
@@ -1728,7 +1787,7 @@
                 if (confirm('Are you sure you want to deactivate your account? You can reactivate later.')) {
                     await saveUserSettings({ accountActive: false });
                     await auth.signOut();
-                    window.location.href = 'index.html';
+                    window.location.href = 'auth.html';
                 }
             });
             document.getElementById('confirmDeleteAccountBtn')?.addEventListener('click', deleteAccount);
@@ -1745,7 +1804,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'index.html';
+                        window.location.href = 'auth.html';
                     });
                 }
             });
@@ -1775,6 +1834,10 @@
             div.textContent = text;
             return div.innerHTML;
         }
+        
+        // Make functions global
+        window.closePasswordModal = closePasswordModal;
+        window.closeDeleteAccountModal = closeDeleteAccountModal;
     </script>
 </body>
 </html>
