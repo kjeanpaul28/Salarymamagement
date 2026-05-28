@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
     
-    <!-- Tailwind CSS - Development only -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Chart.js -->
@@ -85,7 +85,16 @@
             border-left: 3px solid #4F46E5;
         }
         
-        /* Topbar */
+        .sidebar-nav-item.admin-link {
+            border-top: 1px solid rgba(79, 70, 229, 0.2);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        
+        .sidebar-nav-item.admin-link i {
+            color: #F59E0B;
+        }
+        
         .topbar-premium {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
@@ -116,7 +125,6 @@
             background: rgba(79, 70, 229, 0.15);
         }
         
-        /* Glass Card */
         .glass-card {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
@@ -133,7 +141,6 @@
             border-color: rgba(79, 70, 229, 0.5);
         }
         
-        /* KPI Cards */
         .kpi-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
             backdrop-filter: blur(10px);
@@ -158,7 +165,14 @@
             color: transparent;
         }
         
-        /* Chart Container */
+        /* Light mode number visibility */
+        body.light-mode .kpi-value {
+            background: linear-gradient(135deg, #1e293b, #4F46E5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
         .chart-container {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(8px);
@@ -167,7 +181,6 @@
             padding: 1.25rem;
         }
         
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -194,7 +207,6 @@
             to { opacity: 1; transform: translateX(0); }
         }
         
-        /* Loading */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -231,7 +243,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Activity item */
         .activity-item {
             background: rgba(51, 65, 85, 0.3);
             border-radius: 16px;
@@ -245,7 +256,24 @@
             background: rgba(79, 70, 229, 0.08);
         }
         
-        /* Floating button */
+        .repayment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 16px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        
+        .repayment-item:hover {
+            background: rgba(79, 70, 229, 0.1);
+            border-color: rgba(79, 70, 229, 0.3);
+            transform: translateX(4px);
+        }
+        
         .floating-btn {
             background: linear-gradient(135deg, #4F46E5, #6366f1);
             box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
@@ -256,7 +284,6 @@
             transform: scale(1.1);
         }
         
-        /* Health meter */
         .health-meter {
             height: 8px;
             background: rgba(51, 65, 85, 0.5);
@@ -270,7 +297,6 @@
             transition: width 0.5s ease;
         }
         
-        /* Skeleton */
         .skeleton {
             background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
             background-size: 200% 100%;
@@ -283,29 +309,25 @@
             100% { background-position: -200% 0; }
         }
         
-        /* Page animation */
+        .page-animation {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .page-animation {
-            animation: fadeInUp 0.5s ease-out;
-        }
-        
-        /* Mobile menu */
         .mobile-menu-premium {
             background: rgba(15, 23, 42, 0.98);
             backdrop-filter: blur(16px);
             border-right: 1px solid rgba(79, 70, 229, 0.3);
         }
         
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #4F46E5; border-radius: 10px; }
         
-        /* Light mode text */
         body.light-mode .text-slate-200 { color: #1e293b; }
         body.light-mode .text-slate-300 { color: #334155; }
         body.light-mode .text-slate-400 { color: #64748b; }
@@ -313,6 +335,34 @@
         body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
         body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
         body.light-mode .bg-slate-900 { background-color: #ffffff; }
+        
+        .modal-premium {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 32px;
+        }
+        
+        body.light-mode .modal-premium {
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        /* Positive amount styling */
+        .amount-positive {
+            color: #22C55E;
+        }
+        
+        body.light-mode .amount-positive {
+            color: #15803D;
+        }
+        
+        .amount-negative {
+            color: #EF4444;
+        }
+        
+        body.light-mode .amount-negative {
+            color: #DC2626;
+        }
         
         @media (max-width: 768px) {
             .kpi-value { font-size: 1.5rem; }
@@ -368,7 +418,11 @@
             </div>
             <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
             <div class="p-4 border-t border-indigo-500/20 mt-auto">
-                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <div class="sidebar-nav-item admin-link text-amber-400 hover:bg-amber-500/10" onclick="window.location.href='administration.html'">
+                    <i class="fas fa-user-shield w-5"></i>
+                    <span class="nav-text font-semibold">Admin Panel</span>
+                </div>
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10 mt-2">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="nav-text font-semibold">Logout</span>
                 </button>
@@ -386,7 +440,7 @@
                         </button>
                         <div class="hidden md:flex items-center search-input px-4 py-2.5 min-w-[320px]">
                             <i class="fas fa-search text-slate-400 mr-3"></i>
-                            <input type="text" id="globalSearch" placeholder="Search income... (Ctrl+K)" class="bg-transparent outline-none text-sm flex-1 text-slate-200 font-medium">
+                            <input type="text" id="globalSearch" placeholder="Search... (Ctrl+K)" class="bg-transparent outline-none text-sm flex-1 text-slate-200 font-medium">
                             <kbd class="hidden sm:inline-block text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-lg font-mono">Ctrl+K</kbd>
                         </div>
                     </div>
@@ -408,7 +462,7 @@
                                 </div>
                                 <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
                             </button>
-                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-72 rounded-2xl hidden z-50 overflow-hidden">
                                 <div class="p-4 border-b border-indigo-500/20">
                                     <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
                                 </div>
@@ -422,8 +476,14 @@
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
                                         <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
                                     </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='debts.html'">
+                                        <i class="fas fa-hand-holding-usd w-5 text-cyan-400"></i> Debts
+                                    </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
                                         <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='administration.html'">
+                                        <i class="fas fa-user-shield w-5 text-amber-400"></i> Admin Panel
                                     </div>
                                     <hr class="border-indigo-500/20 my-1">
                                     <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
@@ -500,7 +560,7 @@
             <form id="addIncomeForm">
                 <div class="mb-4">
                     <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
-                    <input type="number" id="incomeAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white font-bold" placeholder="0.00" required>
+                    <input type="number" id="incomeAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white font-bold" placeholder="0.00" step="0.001" required>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-bold text-slate-300 mb-2">Type *</label>
@@ -510,11 +570,16 @@
                         <option value="freelance">💻 Freelance</option>
                         <option value="investment">📈 Investment</option>
                         <option value="gift">🎁 Gift</option>
+                        <option value="business">🏢 Business</option>
+                        <option value="commission">💵 Commission</option>
+                        <option value="sidehustle">💪 Side Hustle</option>
+                        <option value="otherincome">📌 Other Income</option>
+                        <option value="debt-repayment">💵 Debt Repayment</option>
                         <option value="other">📌 Other</option>
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Source/Category</label>
                     <input type="text" id="incomeCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Work, Side Hustle">
                 </div>
                 <div class="mb-4">
@@ -566,10 +631,22 @@
         let currentUser = null;
         let userData = null;
         let incomes = [];
+        let debtsList = [];
+        let debtPayments = [];
+        let purchasesList = [];
         let charts = { bar: null, line: null, pie: null };
-        let currentCurrency = 'RWF';
-        let currencySymbol = 'FRw';
+        let currentCurrency = 'AED';
+        let currencySymbol = 'D';
         let currentTheme = 'dark';
+        
+        // Financial tracking variables using CORRECT logic
+        let totalPayment = 0;      // Total new income (Salary + Other Income)
+        let totalSalary = 0;       // Only salary income
+        let totalOtherIncome = 0;  // Bonus, Gift, Business, Freelance, Commission, Side Hustle, Other Income
+        let totalExpenses = 0;     // From procurement purchases
+        let totalLentOut = 0;      // Money given to others
+        let totalDebtRecovery = 0; // Money recovered from lent (repayments received)
+        let currentBalance = 0;    // Available money after all transactions
         
         const currencies = {
             USD: { symbol: '$', name: 'US Dollar' },
@@ -585,8 +662,14 @@
             { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
             { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: false },
             { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
-            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false }
+            { icon: 'fa-hand-holding-usd', text: 'Debts', page: 'debts.html', active: false },
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false },
+            { icon: 'fa-user-shield', text: 'Admin', page: 'administration.html', active: false }
         ];
+        
+        const LOGO_URL = "https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png";
+        const COMPANY_NAME = "MAYE System";
+        const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
         
         // ============================================
         // UTILITY FUNCTIONS
@@ -594,14 +677,14 @@
         
         function formatMoney(amount) {
             if (amount === undefined || amount === null) amount = 0;
-            const symbol = currencies[currentCurrency]?.symbol || 'FRw';
-            if (currentCurrency === 'AED') return `${symbol} ${amount.toLocaleString()}`;
-            return `${symbol} ${amount.toLocaleString()}`;
+            const symbol = currencies[currentCurrency]?.symbol || 'D';
+            const formatted = amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+            return `${symbol} ${formatted}`;
         }
         
         function formatCompactMoney(amount) {
-            if (amount >= 1000000) return formatMoney(amount / 1000000) + 'M';
-            if (amount >= 1000) return formatMoney(amount / 1000) + 'K';
+            if (amount >= 1000000) return (amount / 1000000).toFixed(1) + 'M';
+            if (amount >= 1000) return (amount / 1000).toFixed(1) + 'K';
             return formatMoney(amount);
         }
         
@@ -636,22 +719,86 @@
         }
         
         // ============================================
-        // AUTHENTICATION
+        // CORRECT FINANCIAL CALCULATIONS
+        // ============================================
+        
+        function calculateFinancialStats() {
+            // Reset all counters
+            totalSalary = 0;
+            totalOtherIncome = 0;
+            totalExpenses = 0;
+            totalLentOut = 0;
+            totalDebtRecovery = 0;
+            
+            // Calculate from incomes collection
+            incomes.forEach(inc => {
+                const amount = parseFloat(inc.amount || 0);
+                const type = inc.type || inc.category || 'other';
+                
+                if (inc.transactionType === 'income' || (!inc.transactionType && inc.amount > 0)) {
+                    // Salary tracking
+                    if (type === 'salary') {
+                        totalSalary += amount;
+                    } 
+                    // Other income categories (new income)
+                    else if (['bonus', 'gift', 'business', 'freelance', 'investment', 'commission', 'sidehustle', 'otherincome'].includes(type)) {
+                        totalOtherIncome += amount;
+                    }
+                } 
+                // Expense tracking from income collection
+                else if (inc.transactionType === 'expense') {
+                    totalExpenses += amount;
+                }
+                // Lent money tracking
+                else if (inc.transactionType === 'lent') {
+                    totalLentOut += amount;
+                }
+                // Debt repayment tracking (recovery)
+                else if (inc.transactionType === 'debt-repayment') {
+                    totalDebtRecovery += amount;
+                }
+            });
+            
+            // Get expenses from procurement purchases
+            const procurementExpenses = purchasesList.reduce((sum, p) => sum + ((parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0)), 0);
+            if (procurementExpenses > totalExpenses) {
+                totalExpenses = procurementExpenses;
+            }
+            
+            // Get lent amounts from debts collection (as backup)
+            const debtLentAmount = debtsList.filter(d => d.type === 'lent').reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+            if (debtLentAmount > totalLentOut) totalLentOut = debtLentAmount;
+            
+            // Get recovery amounts from debts collection (as backup)
+            const debtPaidAmount = debtsList.filter(d => d.type === 'lent').reduce((sum, d) => sum + (parseFloat(d.paidAmount) || 0), 0);
+            if (debtPaidAmount > totalDebtRecovery) totalDebtRecovery = debtPaidAmount;
+            
+            // ✅ CORRECT TOTAL PAYMENT FORMULA
+            // Total Payment = Salary + Other Income (only new income, not debt recovery)
+            totalPayment = totalSalary + totalOtherIncome;
+            
+            // ✅ CORRECT CURRENT BALANCE FORMULA
+            // Current Balance = Total Payment - Expenses - Lent Out + Debt Recovery
+            currentBalance = totalPayment - totalExpenses - totalLentOut + totalDebtRecovery;
+        }
+        
+        // ============================================
+        // AUTHENTICATION & DATA LOADING
         // ============================================
         
         auth.onAuthStateChanged(async (user) => {
             console.log('🔐 Auth state changed:', user?.email);
             
             if (!user) {
-                console.log('❌ No user, redirecting to index.html');
-                window.location.href = 'index.html';
+                console.log('❌ No user, redirecting to auth.html');
+                window.location.href = 'auth.html';
                 return;
             }
             
             if (!user.emailVerified) {
                 console.log('⚠️ Email not verified');
                 await auth.signOut();
-                window.location.href = 'index.html?verify=true';
+                window.location.href = 'auth.html?verify=true';
                 return;
             }
             
@@ -659,10 +806,10 @@
             console.log('✅ User authenticated:', currentUser.email);
             
             await loadUserData();
-            await loadIncomes();
+            await loadAllData();
             renderSidebar();
             setupEventListeners();
-            setupRealtimeListener();
+            setupRealtimeListeners();
         });
         
         async function loadUserData() {
@@ -676,7 +823,7 @@
                     
                     if (userData?.settings?.currency) {
                         currentCurrency = userData.settings.currency;
-                        currencySymbol = currencies[currentCurrency]?.symbol || 'FRw';
+                        currencySymbol = currencies[currentCurrency]?.symbol || 'D';
                     }
                     if (userData?.settings?.theme) {
                         currentTheme = userData.settings.theme;
@@ -699,13 +846,32 @@
                     userData = {
                         fullName: currentUser.email.split('@')[0],
                         email: currentUser.email,
-                        settings: { currency: 'RWF', theme: 'dark' }
+                        settings: { currency: 'AED', theme: 'dark' }
                     };
                     await db.collection('users').doc(currentUser.uid).set(userData);
                 }
             } catch (error) {
                 console.error('❌ Error loading user data:', error);
                 showToast('Error loading user data: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadAllData() {
+            showLoading(true);
+            try {
+                await Promise.all([
+                    loadIncomes(),
+                    loadDebts(),
+                    loadDebtPayments(),
+                    loadPurchases()
+                ]);
+                calculateFinancialStats();
+                hideSkeletonAndRender();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                hideSkeletonAndRender();
+            } finally {
+                showLoading(false);
             }
         }
         
@@ -717,69 +883,127 @@
                 return;
             }
             
-            showLoading(true);
             try {
-                // Try with simple query first (no orderBy to avoid index requirement)
-                let query = db.collection('income').where('userId', '==', currentUser.uid);
+                const snapshot = await db.collection('income')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
                 
-                const snapshot = await query.get();
-                
-                console.log('📊 Query result:', snapshot.size, 'records found');
+                console.log('📊 Income query result:', snapshot.size, 'records found');
                 
                 incomes = snapshot.docs.map(doc => ({ 
                     id: doc.id, 
                     ...doc.data(), 
-                    amount: doc.data().amount || 0 
+                    amount: parseFloat(doc.data().amount) || 0 
                 }));
                 
-                // Sort manually instead of using orderBy
                 incomes.sort((a, b) => {
-                    if (a.timestamp && b.timestamp) {
-                        return b.timestamp - a.timestamp;
-                    }
+                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
+                    if (a.date && b.date) return new Date(b.date) - new Date(a.date);
                     return 0;
                 });
                 
                 console.log('💰 Processed incomes:', incomes.length);
                 
-                if (incomes.length === 0) {
-                    console.warn('⚠️ No income records found');
-                    showToast('No income data. Click + to add your first income!', 'info');
-                } else {
-                    const total = incomes.reduce((sum, inc) => sum + inc.amount, 0);
-                    console.log('💰 Total income:', total);
-                }
-                
-                hideSkeletonAndRender();
-                
             } catch (error) {
                 console.error('❌ Error loading incomes:', error);
                 console.error('Error details:', error.message);
-                
-                if (error.code === 'failed-precondition' && error.message.includes('index')) {
-                    console.warn('⚠️ Index required! Creating fallback query...');
-                    // Fallback: try without any ordering
-                    try {
-                        const fallbackSnapshot = await db.collection('income').where('userId', '==', currentUser.uid).get();
-                        incomes = fallbackSnapshot.docs.map(doc => ({ 
-                            id: doc.id, 
-                            ...doc.data(), 
-                            amount: doc.data().amount || 0 
-                        }));
-                        console.log('📊 Fallback query successful:', incomes.length, 'records');
-                        hideSkeletonAndRender();
-                    } catch (fallbackError) {
-                        console.error('❌ Fallback also failed:', fallbackError);
-                        showToast('Please create required index. Check console for link.', 'error');
-                        hideSkeletonAndRender();
-                    }
-                } else {
-                    showToast('Error loading data: ' + error.message, 'error');
-                    hideSkeletonAndRender();
-                }
-            } finally {
-                showLoading(false);
             }
+        }
+        
+        async function loadDebts() {
+            try {
+                const snapshot = await db.collection('debts')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                debtsList = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(),
+                    amount: parseFloat(doc.data().amount) || 0,
+                    paidAmount: parseFloat(doc.data().paidAmount) || 0
+                }));
+                console.log('📊 Debts loaded:', debtsList.length, 'records');
+            } catch (error) {
+                console.error('Error loading debts:', error);
+            }
+        }
+        
+        async function loadDebtPayments() {
+            try {
+                const snapshot = await db.collection('debtPayments').get();
+                debtPayments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('📊 Debt payments loaded:', debtPayments.length, 'records');
+            } catch (error) {
+                console.error('Error loading debt payments:', error);
+                debtPayments = [];
+            }
+        }
+        
+        async function loadPurchases() {
+            try {
+                const snapshot = await db.collection('purchases')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                purchasesList = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(),
+                    price: parseFloat(doc.data().price) || 0,
+                    quantity: parseFloat(doc.data().quantity) || 0
+                }));
+                console.log('📊 Purchases loaded:', purchasesList.length, 'records');
+            } catch (error) {
+                console.error('Error loading purchases:', error);
+            }
+        }
+        
+        function setupRealtimeListeners() {
+            if (!currentUser) return;
+            
+            db.collection('income')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    console.log('🔄 Real-time income update');
+                    loadIncomes().then(() => {
+                        calculateFinancialStats();
+                        if (document.getElementById('actualContent').style.display !== 'none') {
+                            renderDashboard();
+                        }
+                    });
+                }, (error) => console.error('❌ Income listener error:', error));
+            
+            db.collection('debts')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    console.log('🔄 Real-time debts update');
+                    loadDebts().then(() => {
+                        calculateFinancialStats();
+                        if (document.getElementById('actualContent').style.display !== 'none') {
+                            renderDashboard();
+                        }
+                    });
+                }, (error) => console.error('Debt listener error:', error));
+            
+            db.collection('debtPayments')
+                .onSnapshot(() => {
+                    console.log('🔄 Real-time debt payments update');
+                    loadDebtPayments().then(() => {
+                        calculateFinancialStats();
+                        if (document.getElementById('actualContent').style.display !== 'none') {
+                            renderDashboard();
+                        }
+                    });
+                }, (error) => console.error('Payment listener error:', error));
+            
+            db.collection('purchases')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    console.log('🔄 Real-time purchases update');
+                    loadPurchases().then(() => {
+                        calculateFinancialStats();
+                        if (document.getElementById('actualContent').style.display !== 'none') {
+                            renderDashboard();
+                        }
+                    });
+                }, (error) => console.error('Purchase listener error:', error));
         }
         
         function hideSkeletonAndRender() {
@@ -788,79 +1012,171 @@
             renderDashboard();
         }
         
-        // Real-time listener
-        function setupRealtimeListener() {
-            if (!currentUser) return;
-            
-            db.collection('income')
-                .where('userId', '==', currentUser.uid)
-                .onSnapshot((snapshot) => {
-                    console.log('🔄 Real-time update received, changes:', snapshot.docChanges().length);
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === 'added') {
-                            console.log('📝 Income added:', change.doc.data().amount);
-                            showToast('New income added!', 'success');
-                        } else if (change.type === 'modified') {
-                            console.log('✏️ Income modified');
-                            showToast('Income updated', 'info');
-                        } else if (change.type === 'removed') {
-                            console.log('🗑️ Income deleted');
-                            showToast('Income deleted', 'info');
-                        }
-                    });
-                    loadIncomes();
-                }, (error) => {
-                    console.error('❌ Realtime listener error:', error);
-                });
-        }
-        
         // ============================================
         // DASHBOARD RENDER
         // ============================================
         
         function renderDashboard() {
-            console.log('🎨 Rendering dashboard with', incomes.length, 'incomes');
+            console.log('🎨 Rendering dashboard with', incomes.length, 'incomes,', debtsList.length, 'debts');
+            console.log('📊 Financial Stats - Total Payment:', totalPayment, 'Current Balance:', currentBalance, 'Expenses:', totalExpenses, 'Lent Out:', totalLentOut, 'Debt Recovery:', totalDebtRecovery);
             
-            const totalIncome = incomes.reduce((sum, inc) => sum + (inc.amount || 0), 0);
-            const totalExpenses = totalIncome * 0.42;
-            const netBalance = totalIncome - totalExpenses;
-            const savingsRate = totalIncome > 0 ? ((netBalance / totalIncome) * 100).toFixed(1) : 0;
+            // Calculate additional stats
+            const monthlyIncome = incomes.filter(inc => {
+                if (inc.transactionType !== 'income' && !(!inc.transactionType && inc.amount > 0)) return false;
+                if (!inc.date) return false;
+                const now = new Date();
+                const incDate = new Date(inc.date);
+                return incDate.getMonth() === now.getMonth() && incDate.getFullYear() === now.getFullYear();
+            }).reduce((sum, inc) => sum + (inc.amount || 0), 0);
+            
+            // Calculate remaining debt
+            const lentRemaining = totalLentOut - totalDebtRecovery;
+            const netPosition = totalLentOut - totalDebtRecovery;
+            
+            // Calculate expected repayments (due this month)
+            const now = new Date();
+            const expectedRepayments = debtsList.filter(d => {
+                if (d.type !== 'lent') return false;
+                if (!d.dueDate) return false;
+                const dueDate = new Date(d.dueDate);
+                return dueDate.getMonth() === now.getMonth() && dueDate.getFullYear() === now.getFullYear() && (d.paidAmount || 0) < d.amount;
+            }).reduce((s, d) => s + (d.amount - (d.paidAmount || 0)), 0);
+            
+            // Calculate savings rate
+            const savingsRate = totalPayment > 0 ? ((currentBalance / totalPayment) * 100).toFixed(1) : 0;
+            
+            // Calculate monthly data for charts
             const monthlyData = calculateMonthlyData();
             const categoryData = calculateCategoryData();
             
             const html = `
+                <!-- KPI Cards Row 1 - Income Overview -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
-                    <div class="kpi-card p-5" onclick="openModal('addIncomeModal')">
+                    <div class="kpi-card p-5" onclick="window.location.href='income.html'">
                         <div class="flex justify-between items-start mb-3">
-                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Income</span>
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Payment</span>
                             <div class="w-11 h-11 bg-green-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-arrow-up text-green-400 text-xl"></i>
+                                <i class="fas fa-coins text-green-400 text-xl"></i>
                             </div>
                         </div>
-                        <div class="kpi-value text-3xl font-extrabold" id="kpi-income">${formatMoney(totalIncome)}</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">All time earnings</div>
+                        <div class="kpi-value text-3xl font-extrabold">${formatMoney(totalPayment)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">New income (Salary + Other)</div>
                     </div>
                     
-                    <div class="kpi-card p-5">
+                    <div class="kpi-card p-5" onclick="window.location.href='income.html'">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Current Balance</span>
+                            <div class="w-11 h-11 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-wallet text-emerald-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold ${currentBalance >= 0 ? 'amount-positive' : 'amount-negative'}">${formatMoney(currentBalance)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">After all transactions</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5" onclick="window.location.href='procurement.html'">
                         <div class="flex justify-between items-start mb-3">
                             <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Expenses</span>
                             <div class="w-11 h-11 bg-red-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-arrow-down text-red-400 text-xl"></i>
+                                <i class="fas fa-shopping-cart text-red-400 text-xl"></i>
                             </div>
                         </div>
-                        <div class="kpi-value text-3xl font-extrabold" id="kpi-expense">${formatMoney(totalExpenses)}</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">Estimated expenses</div>
+                        <div class="kpi-value text-3xl font-extrabold amount-negative">${formatMoney(totalExpenses)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">From procurement</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5" onclick="window.location.href='income.html'">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">This Month</span>
+                            <div class="w-11 h-11 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-calendar-alt text-indigo-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold">${formatMoney(monthlyIncome)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Current month earnings</div>
+                    </div>
+                </div>
+                
+                <!-- KPI Cards Row 2 - Debt Overview -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
+                    <div class="kpi-card p-5" onclick="window.location.href='debts.html'">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Money Lent Out</span>
+                            <div class="w-11 h-11 bg-blue-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-blue-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold">${formatMoney(totalLentOut)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Given to others</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5" onclick="window.location.href='debts.html'">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Debt Recovery</span>
+                            <div class="w-11 h-11 bg-cyan-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-money-bill-wave text-cyan-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold amount-positive">${formatMoney(totalDebtRecovery)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Repayments received (NOT new income)</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5" onclick="window.location.href='debts.html'">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Remaining Debt</span>
+                            <div class="w-11 h-11 bg-amber-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-hourglass-half text-amber-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold">${formatMoney(Math.max(0, lentRemaining))}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Yet to be repaid</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5" onclick="window.location.href='debts.html'">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Expected Repayments</span>
+                            <div class="w-11 h-11 bg-purple-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-purple-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold">${formatMoney(expectedRepayments)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Due this month</div>
+                    </div>
+                </div>
+                
+                <!-- KPI Cards Row 3 - Financial Health -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
+                    <div class="kpi-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Net Position</span>
+                            <div class="w-11 h-11 ${netPosition >= 0 ? 'bg-green-500/20' : 'bg-red-500/20'} rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line ${netPosition >= 0 ? 'text-green-400' : 'text-red-400'} text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold ${netPosition >= 0 ? 'amount-positive' : 'amount-negative'}">${formatMoney(netPosition)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Lent Out - Recovered</div>
                     </div>
                     
                     <div class="kpi-card p-5">
                         <div class="flex justify-between items-start mb-3">
-                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Net Balance</span>
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Other Income</span>
                             <div class="w-11 h-11 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-wallet text-indigo-400 text-xl"></i>
+                                <i class="fas fa-chart-line text-indigo-400 text-xl"></i>
                             </div>
                         </div>
-                        <div class="kpi-value text-3xl font-extrabold" id="kpi-balance">${formatMoney(netBalance)}</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">Income - Expenses</div>
+                        <div class="kpi-value text-3xl font-extrabold amount-positive">${formatMoney(totalOtherIncome)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Bonus, Gift, Business, etc.</div>
+                    </div>
+                    
+                    <div class="kpi-card p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Net Cash Flow</span>
+                            <div class="w-11 h-11 bg-teal-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-teal-400 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-3xl font-extrabold ${currentBalance >= 0 ? 'amount-positive' : 'amount-negative'}">${formatMoney(currentBalance)}</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Available balance</div>
                     </div>
                     
                     <div class="kpi-card p-5">
@@ -870,11 +1186,25 @@
                                 <i class="fas fa-piggy-bank text-amber-400 text-xl"></i>
                             </div>
                         </div>
-                        <div class="kpi-value text-3xl font-extrabold" id="kpi-savings">${savingsRate}%</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">Of total income</div>
+                        <div class="kpi-value text-3xl font-extrabold">${savingsRate}%</div>
+                        <div class="text-xs text-slate-500 mt-2 font-medium">Of total payment</div>
                     </div>
                 </div>
                 
+                <!-- Upcoming Repayments Widget -->
+                <div class="glass-card p-5 mb-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-extrabold text-lg flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-indigo-400"></i> Upcoming Repayments
+                        </h3>
+                        <a href="debts.html" class="text-indigo-400 text-sm hover:underline transition">View All Debts →</a>
+                    </div>
+                    <div id="upcomingRepayments" class="space-y-2 max-h-56 overflow-y-auto">
+                        ${renderUpcomingRepaymentsHTML()}
+                    </div>
+                </div>
+                
+                <!-- Charts Row -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-7">
                     <div class="chart-container">
                         <div class="flex justify-between items-center mb-4">
@@ -905,14 +1235,14 @@
                             <h3 class="font-bold text-lg">Today's Summary</h3>
                             <i class="fas fa-calendar-day text-slate-500"></i>
                         </div>
-                        <div id="todaySummary" class="space-y-3"></div>
+                        <div id="todaySummary" class="space-y-3">${renderTodaySummaryHTML()}</div>
                     </div>
                     <div class="chart-container">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-lg">Financial Health</h3>
                             <i class="fas fa-heartbeat text-slate-500"></i>
                         </div>
-                        <div id="healthMeter"></div>
+                        <div id="healthMeter">${renderHealthMeterHTML(parseFloat(savingsRate))}</div>
                     </div>
                 </div>
                 
@@ -926,7 +1256,9 @@
                             <p class="text-xs text-slate-400 font-medium">Powered by real-time analysis</p>
                         </div>
                     </div>
-                    <div id="aiInsights" class="space-y-3 text-sm"></div>
+                    <div id="aiInsights" class="space-y-3 text-sm">
+                        ${renderAIInsightsHTML()}
+                    </div>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -942,11 +1274,17 @@
                             <button onclick="window.location.href='income.html'" class="flex items-center justify-center gap-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 font-bold py-3.5 rounded-xl transition">
                                 <i class="fas fa-list"></i> View All Income
                             </button>
+                            <button onclick="window.location.href='debts.html'" class="flex items-center justify-center gap-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 font-bold py-3.5 rounded-xl transition">
+                                <i class="fas fa-hand-holding-usd"></i> Manage Debts
+                            </button>
                             <button onclick="window.location.href='reports.html'" class="flex items-center justify-center gap-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 font-bold py-3.5 rounded-xl transition">
                                 <i class="fas fa-chart-line"></i> Generate Report
                             </button>
                             <button id="refreshDataBtn" class="flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 font-bold py-3.5 rounded-xl transition">
                                 <i class="fas fa-sync-alt"></i> Refresh Data
+                            </button>
+                            <button onclick="window.location.href='procurement.html'" class="flex items-center justify-center gap-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 font-bold py-3.5 rounded-xl transition">
+                                <i class="fas fa-shopping-cart"></i> Procurement
                             </button>
                         </div>
                     </div>
@@ -961,7 +1299,9 @@
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                         </div>
-                        <div id="activityFeed" class="space-y-3 max-h-80 overflow-y-auto pr-2"></div>
+                        <div id="activityFeed" class="space-y-3 max-h-80 overflow-y-auto pr-2">
+                            ${renderActivityFeedHTML()}
+                        </div>
                     </div>
                 </div>
             `;
@@ -970,16 +1310,209 @@
             
             setTimeout(() => {
                 initCharts(monthlyData, categoryData);
-                renderTodaySummary();
-                renderHealthMeter(parseFloat(savingsRate));
-                renderAIInsights(totalIncome, totalExpenses, netBalance, savingsRate);
-                renderActivityFeed();
                 
                 document.getElementById('refreshDataBtn')?.addEventListener('click', () => {
                     showToast('Refreshing data...', 'info');
-                    loadIncomes();
+                    loadAllData();
+                });
+                document.getElementById('refreshActivityBtn')?.addEventListener('click', () => {
+                    showToast('Refreshing activity...', 'info');
+                    const activityDiv = document.getElementById('activityFeed');
+                    if (activityDiv) activityDiv.innerHTML = renderActivityFeedHTML();
                 });
             }, 100);
+        }
+        
+        function renderUpcomingRepaymentsHTML() {
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            
+            const upcoming = debtsList.filter(d => 
+                d.type === 'lent' && 
+                d.dueDate && 
+                new Date(d.dueDate) >= today && 
+                new Date(d.dueDate) <= nextWeek &&
+                (d.paidAmount || 0) < d.amount
+            );
+            
+            if (upcoming.length === 0) {
+                return '<div class="text-center text-slate-400 py-4">No upcoming repayments this week</div>';
+            }
+            
+            return upcoming.map(d => {
+                const remaining = d.amount - (d.paidAmount || 0);
+                const daysUntil = Math.ceil((new Date(d.dueDate) - today) / (1000 * 60 * 60 * 24));
+                return `
+                    <div class="repayment-item" onclick="window.location.href='debts.html'">
+                        <div>
+                            <div class="font-bold text-white">${escapeHtml(d.personName)}</div>
+                            <div class="text-xs text-slate-400">Due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-emerald-400">${formatMoney(remaining)}</div>
+                            <div class="text-xs text-slate-400">Due: ${d.dueDate}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderTodaySummaryHTML() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayIncomes = incomes.filter(inc => inc.date === today && (inc.transactionType === 'income' || !inc.transactionType));
+            const totalToday = todayIncomes.reduce((s, inc) => s + (inc.amount || 0), 0);
+            const topSource = todayIncomes.length > 0 ? (todayIncomes[0].type || todayIncomes[0].category || 'income') : 'none';
+            
+            return `
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-coins text-green-400 mr-2"></i>Today's Income</span>
+                        <span class="font-extrabold text-green-400 text-lg">${formatMoney(totalToday)}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-list mr-2"></i>Transactions</span>
+                        <span class="font-bold">${todayIncomes.length} records</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <span class="text-slate-400 font-medium"><i class="fas fa-tag mr-2"></i>Top Source</span>
+                        <span class="font-bold text-indigo-400">${topSource.charAt(0).toUpperCase() + topSource.slice(1)}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderHealthMeterHTML(savingsRate) {
+            let status = '', color = '', message = '';
+            if (savingsRate >= 30) { status = 'Excellent'; color = '#22C55E'; message = 'Outstanding! Keep up the great work!'; }
+            else if (savingsRate >= 20) { status = 'Good'; color = '#F59E0B'; message = 'You\'re on the right track!'; }
+            else if (savingsRate >= 10) { status = 'Fair'; color = '#3B82F6'; message = 'Room for improvement.'; }
+            else { status = 'Needs Attention'; color = '#EF4444'; message = 'Consider reducing expenses.'; }
+            
+            return `
+                <div class="text-center">
+                    <div class="text-5xl font-extrabold mb-3" style="color: ${color}">${savingsRate}%</div>
+                    <div class="health-meter mb-3">
+                        <div class="health-fill" style="width: ${Math.min(savingsRate, 100)}%; background: ${color}"></div>
+                    </div>
+                    <div class="font-bold text-xl mb-1" style="color: ${color}">${status}</div>
+                    <p class="text-xs text-slate-400 font-medium">${message}</p>
+                    <div class="mt-3 text-xs text-slate-500 font-medium">
+                        <i class="fas fa-info-circle mr-1"></i> Target: 20%+ savings rate
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderAIInsightsHTML() {
+            const insights = [];
+            
+            if (totalPayment === 0 && totalSalary === 0) {
+                insights.push('📌 <span class="text-yellow-400 font-bold">No income recorded yet.</span> Start by adding your first income entry!');
+            } else {
+                if (totalPayment > 0) {
+                    insights.push(`📊 Total new income: <strong class="text-emerald-400">${formatMoney(totalPayment)}</strong> (Salary + Other Income).`);
+                    if (totalOtherIncome > 0) {
+                        insights.push(`💰 Other income (Bonus, Gift, Business, etc.): <strong class="text-purple-400">${formatMoney(totalOtherIncome)}</strong>.`);
+                    }
+                }
+                
+                if (totalExpenses > 0) {
+                    const expensePercentage = totalPayment > 0 ? (totalExpenses / totalPayment) * 100 : 0;
+                    insights.push(`📦 Your total expenses are <strong class="text-red-400">${formatMoney(totalExpenses)}</strong> (${expensePercentage.toFixed(1)}% of income).`);
+                    if (currentBalance < 0) {
+                        insights.push(`⚠️ <strong class="text-red-400">Warning:</strong> Your expenses exceed your income! Consider reducing purchases.`);
+                    }
+                }
+                
+                if (totalLentOut > 0) {
+                    insights.push(`📤 You have lent out <strong class="text-blue-400">${formatMoney(totalLentOut)}</strong>. This money is not available until repaid.`);
+                }
+                
+                if (totalDebtRecovery > 0) {
+                    insights.push(`💰 You have recovered <strong class="text-cyan-400">${formatMoney(totalDebtRecovery)}</strong> from lent money. This increases your current balance.`);
+                }
+                
+                const remainingDebt = totalLentOut - totalDebtRecovery;
+                if (remainingDebt > 0) {
+                    insights.push(`📊 Remaining debt to recover: <strong class="text-amber-400">${formatMoney(remainingDebt)}</strong>.`);
+                }
+            }
+            
+            if (insights.length === 0) {
+                insights.push('✨ <span class="text-green-400 font-bold">Great job!</span> Your finances look healthy.');
+            }
+            
+            return insights.map(i => `
+                <div class="flex items-start gap-3 p-3 bg-slate-800/40 rounded-xl">
+                    <div class="text-xl">${i.split(' ')[0]}</div>
+                    <div class="font-medium">${i.substring(i.indexOf(' ') + 1)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderActivityFeedHTML() {
+            const recentTransactions = [...incomes].sort((a, b) => {
+                if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
+                return 0;
+            }).slice(0, 10);
+            
+            if (recentTransactions.length === 0) {
+                return `
+                    <div class="text-center text-slate-400 py-8">
+                        <i class="fas fa-inbox text-4xl mb-3 opacity-50"></i>
+                        <p class="font-medium">No transactions yet</p>
+                        <button onclick="openModal('addIncomeModal')" class="mt-3 text-indigo-400 text-sm font-bold hover:underline">Add your first transaction →</button>
+                    </div>
+                `;
+            }
+            
+            return recentTransactions.map(t => {
+                const typeName = t.transactionType === 'income' ? (t.type || t.category || 'Income') : t.transactionType;
+                let displayType = '';
+                let icon = '';
+                let colorClass = '';
+                
+                if (t.transactionType === 'income') {
+                    displayType = typeName === 'debt-repayment' ? 'Debt Repayment' : typeName.charAt(0).toUpperCase() + typeName.slice(1);
+                    icon = 'fa-plus-circle';
+                    colorClass = 'text-green-400';
+                } else if (t.transactionType === 'expense') {
+                    displayType = 'Expense';
+                    icon = 'fa-shopping-cart';
+                    colorClass = 'text-red-400';
+                } else if (t.transactionType === 'lent') {
+                    displayType = 'Money Lent';
+                    icon = 'fa-hand-holding-usd';
+                    colorClass = 'text-blue-400';
+                } else if (t.transactionType === 'debt-repayment') {
+                    displayType = 'Debt Repayment';
+                    icon = 'fa-money-bill-wave';
+                    colorClass = 'text-cyan-400';
+                } else {
+                    displayType = typeName;
+                    icon = 'fa-plus-circle';
+                    colorClass = 'text-green-400';
+                }
+                
+                const amountColor = t.transactionType === 'expense' ? 'amount-negative' : 'amount-positive';
+                const amountSign = t.transactionType === 'expense' ? '-' : '+';
+                
+                return `
+                    <div class="activity-item flex justify-between items-center" onclick="window.location.href='income.html'">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 ${colorClass.replace('text', 'bg')}/20 rounded-xl flex items-center justify-center">
+                                <i class="fas ${icon} ${colorClass}"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">${displayType}</div>
+                                <div class="text-xs text-slate-400 font-medium">${t.date || new Date().toISOString().split('T')[0]}</div>
+                            </div>
+                        </div>
+                        <div class="font-extrabold ${amountColor}">${amountSign}${formatMoney(t.amount)}</div>
+                    </div>
+                `;
+            }).join('');
         }
         
         function calculateMonthlyData() {
@@ -990,6 +1523,7 @@
                 const monthName = monthNames[date.getMonth()];
                 const monthIncome = incomes.filter(inc => {
                     if (!inc.date) return false;
+                    if (inc.transactionType !== 'income' && inc.transactionType !== undefined) return false;
                     const incDate = new Date(inc.date);
                     return incDate.getMonth() === date.getMonth() && incDate.getFullYear() === date.getFullYear();
                 }).reduce((sum, inc) => sum + (inc.amount || 0), 0);
@@ -1001,7 +1535,8 @@
         function calculateCategoryData() {
             const categories = {};
             incomes.forEach(inc => {
-                const type = inc.type || 'other';
+                if (inc.transactionType !== 'income' && inc.transactionType !== undefined) return;
+                const type = inc.type || inc.category || 'other';
                 if (!categories[type]) categories[type] = 0;
                 categories[type] += inc.amount || 0;
             });
@@ -1052,129 +1587,17 @@
                 }
             });
             
+            const categoryLabels = Object.keys(categoryData).map(l => l.charAt(0).toUpperCase() + l.slice(1));
+            const categoryColors = ['#4F46E5', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899', '#14B8A6'];
+            
             charts.pie = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(categoryData).map(l => l.charAt(0).toUpperCase() + l.slice(1)),
-                    datasets: [{ data: Object.values(categoryData), backgroundColor: ['#4F46E5', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'], borderWidth: 0 }]
+                    labels: categoryLabels,
+                    datasets: [{ data: Object.values(categoryData), backgroundColor: categoryColors.slice(0, categoryLabels.length), borderWidth: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: textColor } } } }
             });
-        }
-        
-        function renderTodaySummary() {
-            const today = new Date().toISOString().split('T')[0];
-            const todayIncomes = incomes.filter(inc => inc.date === today);
-            const totalToday = todayIncomes.reduce((s, inc) => s + (inc.amount || 0), 0);
-            const topSource = todayIncomes.length > 0 ? todayIncomes[0].type || 'income' : 'none';
-            
-            document.getElementById('todaySummary').innerHTML = `
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
-                        <span class="text-slate-400 font-medium"><i class="fas fa-coins text-green-400 mr-2"></i>Today's Income</span>
-                        <span class="font-extrabold text-green-400 text-lg">${formatMoney(totalToday)}</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-slate-700">
-                        <span class="text-slate-400 font-medium"><i class="fas fa-list mr-2"></i>Transactions</span>
-                        <span class="font-bold">${todayIncomes.length} records</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2">
-                        <span class="text-slate-400 font-medium"><i class="fas fa-tag mr-2"></i>Top Source</span>
-                        <span class="font-bold text-indigo-400">${topSource.charAt(0).toUpperCase() + topSource.slice(1)}</span>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function renderHealthMeter(savingsRate) {
-            let status = '', color = '', message = '';
-            if (savingsRate >= 30) { status = 'Excellent'; color = '#22C55E'; message = 'Outstanding! Keep up the great work!'; }
-            else if (savingsRate >= 20) { status = 'Good'; color = '#F59E0B'; message = 'You\'re on the right track!'; }
-            else if (savingsRate >= 10) { status = 'Fair'; color = '#3B82F6'; message = 'Room for improvement.'; }
-            else { status = 'Needs Attention'; color = '#EF4444'; message = 'Consider reducing expenses.'; }
-            
-            document.getElementById('healthMeter').innerHTML = `
-                <div class="text-center">
-                    <div class="text-5xl font-extrabold mb-3" style="color: ${color}">${savingsRate}%</div>
-                    <div class="health-meter mb-3">
-                        <div class="health-fill" style="width: ${Math.min(savingsRate, 100)}%; background: ${color}"></div>
-                    </div>
-                    <div class="font-bold text-xl mb-1" style="color: ${color}">${status}</div>
-                    <p class="text-xs text-slate-400 font-medium">${message}</p>
-                    <div class="mt-3 text-xs text-slate-500 font-medium">
-                        <i class="fas fa-info-circle mr-1"></i> Target: 20%+ savings rate
-                    </div>
-                </div>
-            `;
-        }
-        
-        function renderAIInsights(totalIncome, totalExpenses, netBalance, savingsRate) {
-            const insights = [];
-            if (totalIncome === 0) {
-                insights.push('📌 <span class="text-yellow-400 font-bold">No income recorded yet.</span> Start by adding your first income entry!');
-            } else {
-                if (savingsRate < 15) insights.push('💰 <span class="text-yellow-400 font-bold">Savings Alert:</span> Your savings rate is below 15%. Try to save at least 20% of your income.');
-                else if (savingsRate > 30) insights.push('🎯 <span class="text-green-400 font-bold">Excellent!</span> You\'re saving over 30% of your income.');
-                if (totalExpenses > totalIncome * 0.5) insights.push('📊 <span class="text-orange-400 font-bold">Expense Analysis:</span> Your expenses are high (over 50% of income).');
-                const topCategory = Object.entries(calculateCategoryData()).sort((a, b) => b[1] - a[1])[0];
-                if (topCategory) insights.push(`🎯 <span class="text-blue-400 font-bold">Top Income Source:</span> ${topCategory[0]}`);
-            }
-            if (insights.length === 0) insights.push('✨ <span class="text-green-400 font-bold">Great job!</span> Your finances look healthy.');
-            
-            document.getElementById('aiInsights').innerHTML = insights.map(i => `
-                <div class="flex items-start gap-3 p-3 bg-slate-800/40 rounded-xl">
-                    <div class="text-xl">${i.split(' ')[0]}</div>
-                    <div class="font-medium">${i.substring(i.indexOf(' ') + 1)}</div>
-                </div>
-            `).join('');
-        }
-        
-        function renderActivityFeed() {
-            const recentIncomes = incomes.slice(0, 8);
-            if (recentIncomes.length === 0) {
-                document.getElementById('activityFeed').innerHTML = `
-                    <div class="text-center text-slate-400 py-8">
-                        <i class="fas fa-inbox text-4xl mb-3 opacity-50"></i>
-                        <p class="font-medium">No income records yet</p>
-                        <button onclick="openModal('addIncomeModal')" class="mt-3 text-indigo-400 text-sm font-bold hover:underline">Add your first income →</button>
-                    </div>
-                `;
-                return;
-            }
-            
-            document.getElementById('activityFeed').innerHTML = recentIncomes.map(inc => `
-                <div class="activity-item flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-plus-circle text-green-400"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold">${inc.type ? inc.type.charAt(0).toUpperCase() + inc.type.slice(1) : 'Income'}</div>
-                            <div class="text-xs text-slate-400 font-medium">${inc.date || new Date().toISOString().split('T')[0]}</div>
-                        </div>
-                    </div>
-                    <div class="font-extrabold text-green-400">+${formatMoney(inc.amount)}</div>
-                </div>
-            `).join('');
-        }
-        
-        // ============================================
-        // SIDEBAR RENDER
-        // ============================================
-        
-        function renderSidebar() {
-            const desktopNav = document.getElementById('sidebarNav');
-            const mobileNav = document.getElementById('mobileSidebarNav');
-            
-            const navHtml = navItems.map(item => `
-                <div class="sidebar-nav-item ${item.active ? 'active' : ''}" onclick="window.location.href='${item.page}'">
-                    <i class="fas ${item.icon}"></i>
-                    <span class="nav-text font-semibold">${item.text}</span>
-                </div>
-            `).join('');
-            
-            if (desktopNav) desktopNav.innerHTML = navHtml;
-            if (mobileNav) mobileNav.innerHTML = navHtml;
         }
         
         // ============================================
@@ -1203,13 +1626,16 @@
                     category: category || type,
                     date: date,
                     description: description,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    transactionType: 'income',
+                    createdBy: userData?.fullName || currentUser.email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
                 showToast('Income added successfully!', 'success');
                 closeModal('addIncomeModal');
                 document.getElementById('addIncomeForm').reset();
-                await loadIncomes();
+                await loadAllData();
                 
             } catch (error) {
                 console.error('Error adding income:', error);
@@ -1217,6 +1643,25 @@
             } finally {
                 showLoading(false);
             }
+        }
+        
+        // ============================================
+        // SIDEBAR RENDER
+        // ============================================
+        
+        function renderSidebar() {
+            const desktopNav = document.getElementById('sidebarNav');
+            const mobileNav = document.getElementById('mobileSidebarNav');
+            
+            const navHtml = navItems.map(item => `
+                <div class="sidebar-nav-item ${item.active ? 'active' : ''}" onclick="window.location.href='${item.page}'">
+                    <i class="fas ${item.icon}"></i>
+                    <span class="nav-text font-semibold">${item.text}</span>
+                </div>
+            `).join('');
+            
+            if (desktopNav) desktopNav.innerHTML = navHtml;
+            if (mobileNav) mobileNav.innerHTML = navHtml;
         }
         
         // ============================================
@@ -1304,22 +1749,15 @@
                         });
                     }
                     showToast(`Switched to ${currentTheme} mode`, 'success');
+                    if (document.getElementById('actualContent').style.display !== 'none') {
+                        renderDashboard();
+                    }
                 });
             }
             
             // Floating add button
             const floatingBtn = document.getElementById('floatingAddBtn');
             if (floatingBtn) floatingBtn.addEventListener('click', () => openModal('addIncomeModal'));
-            
-            // Refresh activity
-            const refreshBtn = document.getElementById('refreshActivityBtn');
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', async () => {
-                    showToast('Refreshing data...', 'info');
-                    await loadIncomes();
-                    showToast('Data refreshed', 'success');
-                });
-            }
             
             // Logout
             const logoutBtns = ['logoutBtnSidebar', 'logoutBtnTopbar', 'logoutBtnMobile'];
@@ -1329,7 +1767,7 @@
                     btn.addEventListener('click', async () => {
                         showLoading(true);
                         await auth.signOut();
-                        window.location.href = 'index.html';
+                        window.location.href = 'auth.html';
                     });
                 }
             });
@@ -1342,9 +1780,12 @@
             const commands = [
                 { name: 'Add Income', action: () => openModal('addIncomeModal'), icon: 'fa-plus-circle' },
                 { name: 'Go to Income', action: () => window.location.href = 'income.html', icon: 'fa-money-bill-wave' },
+                { name: 'Go to Debts', action: () => window.location.href = 'debts.html', icon: 'fa-hand-holding-usd' },
+                { name: 'Go to Procurement', action: () => window.location.href = 'procurement.html', icon: 'fa-shopping-cart' },
                 { name: 'Go to Reports', action: () => window.location.href = 'reports.html', icon: 'fa-chart-pie' },
                 { name: 'Go to Settings', action: () => window.location.href = 'settings.html', icon: 'fa-cog' },
-                { name: 'Refresh Dashboard', action: () => loadIncomes(), icon: 'fa-sync-alt' }
+                { name: 'Go to Admin', action: () => window.location.href = 'administration.html', icon: 'fa-user-shield' },
+                { name: 'Refresh Dashboard', action: () => loadAllData(), icon: 'fa-sync-alt' }
             ];
             
             document.addEventListener('keydown', (e) => {
@@ -1379,6 +1820,13 @@
                     </div>
                 `).join('');
             }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // Make functions global
