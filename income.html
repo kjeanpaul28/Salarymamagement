@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Income Management - MAYE System | Advanced Earnings Tracker</title>
+    <title>MAYE Income Management | Advanced Financial System</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
@@ -14,6 +14,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
+    <!-- html2pdf for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -21,7 +24,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
         
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
@@ -29,7 +34,9 @@
             transition: background 0.3s ease;
         }
         
-        body.light-mode { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); }
+        body.light-mode {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
         
         /* Sidebar Premium */
         .sidebar-premium {
@@ -42,7 +49,6 @@
         
         body.light-mode .sidebar-premium {
             background: rgba(255, 255, 255, 0.95);
-            border-right: 1px solid rgba(79, 70, 229, 0.2);
         }
         
         .sidebar {
@@ -82,6 +88,17 @@
             border-left: 3px solid #4F46E5;
         }
         
+        /* Admin badge */
+        .sidebar-nav-item.admin-link {
+            border-top: 1px solid rgba(79, 70, 229, 0.2);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        
+        .sidebar-nav-item.admin-link i {
+            color: #F59E0B;
+        }
+        
         /* Topbar */
         .topbar-premium {
             background: rgba(15, 23, 42, 0.85);
@@ -90,7 +107,9 @@
             transition: all 0.3s ease;
         }
         
-        body.light-mode .topbar-premium { background: rgba(255, 255, 255, 0.85); }
+        body.light-mode .topbar-premium {
+            background: rgba(255, 255, 255, 0.85);
+        }
         
         .search-input {
             background: rgba(51, 65, 85, 0.6);
@@ -120,31 +139,81 @@
             transition: all 0.3s ease;
         }
         
-        body.light-mode .glass-card { background: rgba(255, 255, 255, 0.7); }
-        .glass-card:hover { border-color: rgba(79, 70, 229, 0.5); }
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+        }
         
-        /* Stat Card */
+        .glass-card:hover {
+            border-color: rgba(79, 70, 229, 0.5);
+        }
+        
+        /* Stat Card - Enhanced for Light Mode */
         .stat-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(30, 41, 59, 0.8));
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(79, 70, 229, 0.25);
+            border: 1px solid rgba(79, 70, 229, 0.3);
             border-radius: 28px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.light-mode .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .stat-card:hover::before {
+            left: 100%;
         }
         
         .stat-card:hover {
             transform: translateY(-4px);
             border-color: #4F46E5;
+            box-shadow: 0 15px 30px -12px rgba(79, 70, 229, 0.4);
         }
         
+        /* Stat Value - Enhanced Visibility */
         .stat-value {
             font-size: 2rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff, #c7d2fe);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        }
+        
+        body.light-mode .stat-value {
+            color: #1e293b !important;
+        }
+        
+        /* Positive amount - Light mode visibility */
+        .amount-positive {
+            font-weight: 800;
+            color: #22C55E;
+        }
+        
+        body.light-mode .amount-positive {
+            color: #15803D;
+        }
+        
+        /* Negative amount - Light mode visibility */
+        .amount-negative {
+            font-weight: 800;
+            color: #EF4444;
+        }
+        
+        body.light-mode .amount-negative {
+            color: #DC2626;
         }
         
         /* Type Badges */
@@ -156,39 +225,93 @@
             display: inline-block;
         }
         
-        .type-salary { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .type-bonus { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .type-freelance { background: rgba(139, 92, 246, 0.2); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3); }
-        .type-investment { background: rgba(6, 182, 212, 0.2); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
-        .type-gift { background: rgba(236, 72, 153, 0.2); color: #EC4899; border: 1px solid rgba(236, 72, 153, 0.3); }
-        .type-other { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+        .type-salary { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .type-bonus { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .type-freelance { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1)); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .type-investment { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.1)); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
+        .type-business { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)); color: #A855F7; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .type-gift { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.1)); color: #EC4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+        .type-commission { background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(20, 184, 166, 0.1)); color: #14B8A6; border: 1px solid rgba(20, 184, 166, 0.3); }
+        .type-sidehustle { background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.1)); color: #FB923C; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .type-otherincome { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)); color: #A855F7; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .type-debt-repayment { background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(34, 197, 94, 0.15)); color: #10B981; border: 1px solid rgba(34, 197, 94, 0.4); }
+        .type-expense { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1)); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .type-lent { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1)); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .type-other { background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.1)); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
         
-        /* Status Badge */
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 60px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            display: inline-block;
+        /* Thermal Receipt Style */
+        .thermal-receipt {
+            max-width: 320px;
+            margin: 0 auto;
+            background: white;
+            color: #000;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            font-size: 11px;
+            padding: 20px 15px;
+            border-radius: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .status-pending { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .status-approved { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
         
-        /* Tag */
-        .tag {
-            display: inline-block;
-            padding: 2px 8px;
-            background: rgba(79, 70, 229, 0.15);
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            margin-right: 4px;
-            margin-bottom: 4px;
+        .thermal-receipt .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .thermal-receipt .receipt-header img {
+            height: 45px;
+            margin-bottom: 5px;
+        }
+        
+        .thermal-receipt .receipt-header h2 {
+            font-size: 14px;
+            margin: 5px 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .thermal-receipt .receipt-header p {
+            margin: 2px 0;
+            font-size: 9px;
+            color: #555;
+        }
+        
+        .thermal-receipt .receipt-divider {
+            border-top: 1px dashed #333;
+            margin: 8px 0;
+        }
+        
+        .thermal-receipt .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 3px 0;
+        }
+        
+        .thermal-receipt .receipt-row.total {
+            border-top: 1px dashed #333;
+            padding-top: 8px;
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .thermal-receipt .receipt-footer {
+            text-align: center;
+            border-top: 1px dashed #333;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-size: 8px;
+            color: #666;
         }
         
         /* Table */
-        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
         .data-table th {
             text-align: left;
             padding: 1rem;
@@ -200,12 +323,21 @@
             color: #94a3b8;
             border-bottom: 1px solid rgba(79, 70, 229, 0.2);
         }
+        
+        body.light-mode .data-table th {
+            background: rgba(241, 245, 249, 0.8);
+            color: #475569;
+        }
+        
         .data-table td {
             padding: 1rem;
             border-bottom: 1px solid rgba(79, 70, 229, 0.1);
             font-weight: 500;
         }
-        .data-table tr:hover td { background: rgba(79, 70, 229, 0.05); }
+        
+        .data-table tr:hover td {
+            background: rgba(79, 70, 229, 0.05);
+        }
         
         .table-actions {
             display: flex;
@@ -213,7 +345,16 @@
             opacity: 0.6;
             transition: opacity 0.2s ease;
         }
-        tr:hover .table-actions { opacity: 1; }
+        
+        tr:hover .table-actions {
+            opacity: 1;
+        }
+        
+        /* Bold amount in table */
+        .amount-bold {
+            font-weight: 800;
+            font-size: 1rem;
+        }
         
         /* Pagination */
         .pagination-btn {
@@ -224,8 +365,16 @@
             cursor: pointer;
             background: rgba(51, 65, 85, 0.5);
         }
-        .pagination-btn:hover { background: rgba(79, 70, 229, 0.2); color: #818cf8; }
-        .pagination-btn.active { background: #4F46E5; color: white; }
+        
+        .pagination-btn:hover {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818cf8;
+        }
+        
+        .pagination-btn.active {
+            background: #4F46E5;
+            color: white;
+        }
         
         /* Modal */
         .modal-premium {
@@ -233,6 +382,10 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(79, 70, 229, 0.3);
             border-radius: 32px;
+        }
+        
+        body.light-mode .modal-premium {
+            background: rgba(255, 255, 255, 0.98);
         }
         
         /* Toast */
@@ -252,9 +405,11 @@
             gap: 0.75rem;
             font-weight: 600;
         }
+        
         .toast.success { background: rgba(34, 197, 94, 0.9); }
         .toast.error { background: rgba(239, 68, 68, 0.9); }
         .toast.info { background: rgba(59, 130, 246, 0.9); }
+        .toast.warning { background: rgba(245, 158, 11, 0.9); }
         
         @keyframes slideInRight {
             from { opacity: 0; transform: translateX(100px); }
@@ -278,7 +433,11 @@
             opacity: 0;
             transition: all 0.3s;
         }
-        .loading-overlay.active { visibility: visible; opacity: 1; }
+        
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
         
         .spinner-premium {
             width: 55px;
@@ -289,7 +448,10 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         
         /* Floating button */
         .floating-btn {
@@ -297,7 +459,10 @@
             box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.5);
             transition: all 0.25s ease;
         }
-        .floating-btn:hover { transform: scale(1.1); }
+        
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
         
         /* Mobile menu */
         .mobile-menu-premium {
@@ -316,16 +481,53 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .page-animation { animation: fadeInUp 0.5s ease-out; }
         
-        @media (max-width: 768px) {
-            .data-table thead { display: none; }
-            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
-            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
-            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
+        .page-animation {
+            animation: fadeInUp 0.5s ease-out;
         }
         
-        /* Light mode text */
+        /* AI Insight Card */
+        .ai-insight-card {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.05));
+            border-radius: 20px;
+            padding: 1rem;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+        }
+        
+        /* Repayment item */
+        .repayment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 16px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        
+        .repayment-item:hover {
+            background: rgba(79, 70, 229, 0.1);
+            border-color: rgba(79, 70, 229, 0.3);
+            transform: translateX(4px);
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 6px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Light mode text improvements */
         body.light-mode .text-slate-200 { color: #1e293b; }
         body.light-mode .text-slate-300 { color: #334155; }
         body.light-mode .text-slate-400 { color: #64748b; }
@@ -333,6 +535,69 @@
         body.light-mode .bg-slate-800 { background-color: #f1f5f9; }
         body.light-mode .bg-slate-800\/50 { background-color: #f8fafc; }
         body.light-mode .bg-slate-900 { background-color: #ffffff; }
+        
+        /* Light mode specific number visibility */
+        body.light-mode .stat-card .text-2xl {
+            color: #1e293b !important;
+        }
+        
+        body.light-mode .stat-value {
+            color: #1e293b !important;
+        }
+        
+        /* Print styles for thermal receipt */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .thermal-receipt, .thermal-receipt * {
+                visibility: visible;
+            }
+            .thermal-receipt {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto;
+                padding: 15px;
+                box-shadow: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        /* Trend indicator */
+        .trend-up { color: #22C55E; }
+        .trend-down { color: #EF4444; }
+        
+        @media (max-width: 768px) {
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 16px; }
+            .data-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1); }
+            .data-table td::before { content: attr(data-label); font-weight: 700; color: #94a3b8; margin-right: 1rem; }
+            .stat-value { font-size: 1.5rem; }
+        }
+        
+        /* Category specific cards */
+        .income-category-card {
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 16px;
+            padding: 0.75rem;
+            transition: all 0.2s ease;
+        }
+        
+        body.light-mode .income-category-card {
+            background: rgba(241, 245, 249, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -375,7 +640,7 @@
                     </div>
                     <div id="sidebarLogoArea">
                         <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">MAYE</span>
-                        <span class="font-bold text-xs text-slate-400 block">Income Manager</span>
+                        <span class="font-bold text-xs text-slate-400 block">Income</span>
                     </div>
                 </div>
                 <button id="toggleSidebarBtn" class="text-slate-400 hover:text-indigo-400 transition-all p-1.5 rounded-lg hover:bg-indigo-500/10">
@@ -384,7 +649,11 @@
             </div>
             <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
             <div class="p-4 border-t border-indigo-500/20 mt-auto">
-                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <div class="sidebar-nav-item admin-link text-amber-400 hover:bg-amber-500/10" onclick="window.location.href='administration.html'">
+                    <i class="fas fa-user-shield w-5"></i>
+                    <span class="nav-text font-semibold">Admin Panel</span>
+                </div>
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10 mt-2">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="nav-text font-semibold">Logout</span>
                 </button>
@@ -423,7 +692,7 @@
                                 </div>
                                 <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
                             </button>
-                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-72 rounded-2xl hidden z-50 overflow-hidden">
                                 <div class="p-4 border-b border-indigo-500/20">
                                     <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
                                 </div>
@@ -431,14 +700,23 @@
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='dashboard.html'">
                                         <i class="fas fa-chart-line w-5 text-indigo-400"></i> Dashboard
                                     </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='income.html'">
+                                        <i class="fas fa-money-bill-wave w-5 text-emerald-400"></i> Income
+                                    </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='procurement.html'">
                                         <i class="fas fa-shopping-cart w-5 text-amber-400"></i> Procurement
                                     </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
                                         <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
                                     </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='debts.html'">
+                                        <i class="fas fa-hand-holding-usd w-5 text-cyan-400"></i> Debts
+                                    </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
                                         <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
+                                    </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='administration.html'">
+                                        <i class="fas fa-user-shield w-5 text-amber-400"></i> Admin Panel
                                     </div>
                                     <hr class="border-indigo-500/20 my-1">
                                     <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
@@ -458,67 +736,254 @@
             </header>
             
             <!-- Breadcrumb -->
-            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30">
+            <div class="px-5 sm:px-7 py-3 border-b border-indigo-500/10 bg-slate-900/30 no-print">
                 <div class="flex items-center gap-2 text-sm font-medium">
                     <i class="fas fa-home text-indigo-400 text-xs"></i>
                     <span class="text-slate-400">Income</span>
                     <i class="fas fa-chevron-right text-xs text-slate-600"></i>
-                    <i class="fas fa-money-bill-wave text-indigo-400 text-xs"></i>
+                    <i class="fas fa-chart-line text-indigo-400 text-xs"></i>
                     <span class="text-slate-200 font-semibold">Management</span>
                 </div>
             </div>
             
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto p-5 sm:p-7 page-animation">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
-                    <div class="stat-card p-5">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Total Income</span>
-                            <div class="w-11 h-11 bg-green-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-coins text-green-400 text-xl"></i>
+                <!-- Main Stats Cards Row 1 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Payment</span>
+                            <div class="w-10 h-10 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-coins text-green-400 text-lg"></i>
                             </div>
                         </div>
-                        <div class="stat-value text-3xl" id="statTotalIncome">FRw 0</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">All time earnings</div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statTotalPayment">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Salary + Other Income + Gifts + Bonuses + Business</div>
                     </div>
-                    
-                    <div class="stat-card p-5">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">This Month</span>
-                            <div class="w-11 h-11 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-calendar-alt text-indigo-400 text-xl"></i>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Current Balance</span>
+                            <div class="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-wallet text-emerald-400 text-lg"></i>
                             </div>
                         </div>
-                        <div class="stat-value text-3xl" id="statMonthlyIncome">FRw 0</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">Current month</div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statCurrentBalance">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">After all transactions</div>
                     </div>
-                    
-                    <div class="stat-card p-5">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Average</span>
-                            <div class="w-11 h-11 bg-amber-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-chart-line text-amber-400 text-xl"></i>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Expenses</span>
+                            <div class="w-10 h-10 bg-red-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-red-400 text-lg"></i>
                             </div>
                         </div>
-                        <div class="stat-value text-3xl" id="statAverageIncome">FRw 0</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">Per transaction</div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statTotalExpenses">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">From procurement</div>
                     </div>
-                    
-                    <div class="stat-card p-5">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="text-slate-400 text-sm font-bold uppercase tracking-wider">Transactions</span>
-                            <div class="w-11 h-11 bg-purple-500/20 rounded-2xl flex items-center justify-center">
-                                <i class="fas fa-list-ul text-purple-400 text-xl"></i>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">This Month</span>
+                            <div class="w-10 h-10 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-calendar-alt text-indigo-400 text-lg"></i>
                             </div>
                         </div>
-                        <div class="stat-value text-3xl" id="statTransactionCount">0</div>
-                        <div class="text-xs text-slate-500 mt-2 font-medium">Total entries</div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statMonthlyIncome">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Current month earnings</div>
+                    </div>
+                </div>
+                
+                <!-- Financial Health Cards Row 2 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Money Lent Out</span>
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-blue-400 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statMoneyLentOut">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Given to others</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Debt Recovery</span>
+                            <div class="w-10 h-10 bg-cyan-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-money-bill-wave text-cyan-400 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statDebtRecovery">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Repayments received (NOT new income)</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Other Income</span>
+                            <div class="w-10 h-10 bg-purple-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-purple-400 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statOtherIncome">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Bonus, Gift, Business, etc.</div>
+                    </div>
+                    <div class="stat-card p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Net Cash Flow</span>
+                            <div class="w-10 h-10 bg-amber-500/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-amber-400 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value text-2xl font-extrabold text-white" id="statNetCashFlow">D 0.000</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Income - Expenses</div>
+                    </div>
+                </div>
+                
+                <!-- Income Categories Section -->
+                <div class="glass-card p-5 mb-7">
+                    <h3 class="font-extrabold text-lg mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-indigo-400"></i> Income Breakdown
+                        <span class="text-xs text-slate-400 ml-2">By category</span>
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Salary</div>
+                            <div class="font-bold text-emerald-400" id="catSalary">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Bonus</div>
+                            <div class="font-bold text-emerald-400" id="catBonus">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Gift</div>
+                            <div class="font-bold text-emerald-400" id="catGift">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Business</div>
+                            <div class="font-bold text-emerald-400" id="catBusiness">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Freelance</div>
+                            <div class="font-bold text-emerald-400" id="catFreelance">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Investment</div>
+                            <div class="font-bold text-emerald-400" id="catInvestment">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Commission</div>
+                            <div class="font-bold text-emerald-400" id="catCommission">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Side Hustle</div>
+                            <div class="font-bold text-emerald-400" id="catSideHustle">D 0.000</div>
+                        </div>
+                        <div class="income-category-card text-center">
+                            <div class="text-xs text-slate-400">Other Income</div>
+                            <div class="font-bold text-emerald-400" id="catOtherIncome">D 0.000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recovery Summary Card -->
+                <div class="glass-card p-5 mb-7" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.05)); border-left: 4px solid #06B6D4;">
+                    <div class="flex items-center justify-between flex-wrap gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-cyan-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-cyan-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">💰 Debt Recovery Summary</h3>
+                                <p class="text-xs text-slate-400">Money recovered from lent/borrowed - DOES NOT affect Total Payment</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="text-right">
+                                <div class="text-xs text-slate-400">Total Lent Out</div>
+                                <div class="font-bold text-blue-400 text-lg" id="recoveryTotalLent">D 0.000</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-slate-400">Total Recovered</div>
+                                <div class="font-bold text-emerald-400 text-lg" id="recoveryTotalRecovered">D 0.000</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-slate-400">Remaining Debt</div>
+                                <div class="font-bold text-amber-400 text-xl" id="recoveryRemaining">D 0.000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-fill bg-cyan-500" id="recoveryProgressBar" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2" id="recoveryInfoMessage">These amounts are cash recoveries, not new income. They increase Current Balance only.</p>
+                </div>
+                
+                <!-- Current Balance Card -->
+                <div class="glass-card p-5 mb-7" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.05)); border-left: 4px solid #4F46E5;">
+                    <div class="flex items-center justify-between flex-wrap gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 bg-indigo-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-chart-line text-indigo-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-xl">💰 Current Balance</h3>
+                                <p class="text-xs text-slate-400">Formula: (Salary + Other Income) - Expenses - Lent Out + Debt Recovery</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400">Your Available Money</div>
+                            <div class="font-black text-4xl tracking-tight" id="currentBalanceDisplay">D 0.000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-7">
+                    <div class="glass-card p-5">
+                        <h3 class="font-extrabold text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-indigo-400"></i> Income Trend
+                            <span class="text-xs text-slate-400 ml-2">Last 6 months</span>
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="incomeTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="glass-card p-5">
+                        <h3 class="font-extrabold text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-pie text-indigo-400"></i> Income Distribution
+                            <span class="text-xs text-slate-400 ml-2">By category</span>
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="incomeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Repayments Widget -->
+                <div class="glass-card p-5 mb-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-extrabold text-lg flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-indigo-400"></i> Upcoming Repayments
+                        </h3>
+                        <a href="debts.html" class="text-indigo-400 text-sm hover:underline transition">View All Debts →</a>
+                    </div>
+                    <div id="upcomingRepayments" class="space-y-2 max-h-48 overflow-y-auto">
+                        <div class="text-center text-slate-400 py-4">Loading upcoming repayments...</div>
+                    </div>
+                </div>
+                
+                <!-- AI Insights Panel -->
+                <div class="ai-insight-card mb-7">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-lg"></i>
+                        </div>
+                        <h3 class="font-extrabold text-lg">AI Financial Insights</h3>
+                    </div>
+                    <div id="aiInsightsPanel" class="space-y-2 text-sm">
+                        <div class="text-slate-400">Analyzing your financial patterns...</div>
                     </div>
                 </div>
                 
                 <!-- Filters Bar -->
-                <div class="glass-card p-4 mb-6">
+                <div class="glass-card p-4 mb-6 no-print">
                     <div class="flex flex-wrap gap-3 items-center justify-between">
                         <div class="flex flex-wrap gap-2">
                             <button class="filter-btn active px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="all">All</button>
@@ -526,9 +991,13 @@
                             <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="bonus">🎉 Bonus</button>
                             <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="freelance">💻 Freelance</button>
                             <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="investment">📈 Investment</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="business">🏢 Business</button>
                             <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="gift">🎁 Gift</button>
-                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="other">📌 Other</button>
-                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="umusanzu">🤝 Umusanzu</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="commission">💰 Commission</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="sidehustle">💪 Side Hustle</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="otherincome">📌 Other Income</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="debt-repayment">💵 Debt Repayment</button>
+                            <button class="filter-btn px-4 py-2 rounded-xl text-sm font-bold transition" data-filter="expense">📦 Expense</button>
                         </div>
                         <div class="flex gap-2">
                             <select id="sortSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-medium">
@@ -537,18 +1006,13 @@
                                 <option value="amount_desc">💰 Highest Amount</option>
                                 <option value="amount_asc">💰 Lowest Amount</option>
                             </select>
-                            <select id="statusFilterSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-medium">
-                                <option value="all">All Status</option>
-                                <option value="pending">⏳ Pending</option>
-                                <option value="approved">✅ Approved</option>
-                                <option value="rejected">❌ Rejected</option>
-                            </select>
                             <select id="dateRangeSelect" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-medium">
                                 <option value="all">All Time</option>
                                 <option value="this_month">This Month</option>
                                 <option value="last_month">Last Month</option>
                                 <option value="this_year">This Year</option>
                                 <option value="last_3months">Last 3 Months</option>
+                                <option value="last_6months">Last 6 Months</option>
                             </select>
                             <button id="refreshBtn" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-xl font-bold transition">
                                 <i class="fas fa-sync-alt"></i>
@@ -557,19 +1021,22 @@
                     </div>
                 </div>
                 
-                <!-- Income Table -->
+                <!-- Financial Records Table -->
                 <div class="glass-card overflow-hidden">
                     <div class="p-5 border-b border-indigo-500/20 flex justify-between items-center flex-wrap gap-3">
                         <div>
-                            <h2 class="text-xl font-extrabold tracking-tight">Income Records</h2>
-                            <p class="text-xs text-slate-400 mt-1">Manage all your earnings in one place</p>
+                            <h2 class="text-xl font-extrabold tracking-tight">Financial Records</h2>
+                            <p class="text-xs text-slate-400 mt-1">All transactions with thermal receipt support</p>
                         </div>
-                        <div class="flex gap-2">
-                            <button id="exportBtn" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 px-4 py-2 rounded-xl font-bold transition">
+                        <div class="flex gap-2 no-print">
+                            <button id="exportBtn" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 px-5 py-2.5 rounded-xl font-bold transition">
                                 <i class="fas fa-download"></i> Export
                             </button>
+                            <button id="thermalReceiptBtn" class="bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 px-5 py-2.5 rounded-xl font-bold transition">
+                                <i class="fas fa-receipt"></i> Thermal Receipt
+                            </button>
                             <button id="addIncomeBtnTable" class="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20 flex items-center gap-2">
-                                <i class="fas fa-plus-circle"></i> Add Income
+                                <i class="fas fa-plus-circle"></i> Add Transaction
                             </button>
                         </div>
                     </div>
@@ -580,11 +1047,11 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Type</th>
-                                    <th>Source/Contributor</th>
+                                    <th>Source/Person</th>
                                     <th>Amount</th>
                                     <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Description</th>
+                                    <th>Account</th>
+                                    <th>Receipt</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -592,7 +1059,7 @@
                                 <tr>
                                     <td colspan="8" class="text-center text-slate-400 py-12">
                                         <i class="fas fa-inbox text-4xl mb-3 opacity-50 block"></i>
-                                        No income records yet
+                                        No records yet
                                     </td>
                                 </tr>
                             </tbody>
@@ -611,12 +1078,12 @@
         </div>
     </div>
     
-    <!-- Add/Edit Income Modal -->
+    <!-- Add Transaction Modal -->
     <div id="incomeModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
         <div class="modal-premium w-[90%] max-w-lg p-6 rounded-3xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5">
                 <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent flex items-center gap-2">
-                    <i class="fas fa-plus-circle text-indigo-400"></i> <span id="modalTitle">Add Income</span>
+                    <i class="fas fa-plus-circle text-indigo-400"></i> <span id="modalTitle">Add Transaction</span>
                 </h2>
                 <button onclick="closeIncomeModal()" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
                     <i class="fas fa-times text-xl"></i>
@@ -625,74 +1092,116 @@
             <form id="incomeForm">
                 <input type="hidden" id="editIncomeId">
                 
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Transaction Type *</label>
+                    <select id="transactionType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium" required>
+                        <option value="income">💰 Income</option>
+                        <option value="expense">📦 Expense (Purchase, Procurement)</option>
+                        <option value="debt-repayment">💵 Debt Repayment (Received)</option>
+                        <option value="lent">📤 Money Lent (Given to someone)</option>
+                    </select>
+                </div>
+                
+                <div id="incomeTypeSection" class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Income Category *</label>
+                    <select id="incomeType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
+                        <option value="salary">💰 Salary</option>
+                        <option value="bonus">🎉 Bonus</option>
+                        <option value="freelance">💻 Freelance</option>
+                        <option value="investment">📈 Investment</option>
+                        <option value="business">🏢 Business</option>
+                        <option value="gift">🎁 Gift</option>
+                        <option value="commission">💵 Commission</option>
+                        <option value="sidehustle">💪 Side Hustle</option>
+                        <option value="otherincome">📌 Other Income</option>
+                    </select>
+                </div>
+                
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Amount *</label>
-                        <input type="number" id="incomeAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white font-bold" placeholder="0.00" required>
+                        <input type="number" id="transactionAmount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-white font-bold" placeholder="0.00" step="0.001" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="block text-sm font-bold text-slate-300 mb-2">Type *</label>
-                        <select id="incomeType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
-                            <option value="salary">💰 Salary</option>
-                            <option value="bonus">🎉 Bonus</option>
-                            <option value="freelance">💻 Freelance</option>
-                            <option value="investment">📈 Investment</option>
-                            <option value="gift">🎁 Gift</option>
-                            <option value="umusanzu">🤝 Umusanzu (Contribution)</option>
-                            <option value="other">📌 Other</option>
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Date</label>
+                        <input type="date" id="transactionDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white">
+                    </div>
+                </div>
+                
+                <div id="personSection" class="mb-4 hidden">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Person Name *</label>
+                    <input type="text" id="personName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., John Doe">
+                </div>
+                
+                <div id="sourceSection" class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Source/Item *</label>
+                    <input type="text" id="transactionSource" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Company Name, Item Name">
+                </div>
+                
+                <div id="debtDueDateSection" class="mb-4 hidden">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Due Date (Optional)</label>
+                    <input type="date" id="debtDueDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Account/Wallet</label>
+                    <select id="transactionAccount" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
+                        <option value="cash">💰 Cash</option>
+                        <option value="bank">🏦 Bank Account</option>
+                        <option value="mobile">📱 Mobile Money</option>
+                        <option value="other">📌 Other</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Reference/Invoice No.</label>
+                        <input type="text" id="transactionReference" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="Optional">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Payment Method</label>
+                        <select id="transactionPaymentMethod" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
+                            <option value="cash">💵 Cash</option>
+                            <option value="bank_transfer">🏦 Bank Transfer</option>
+                            <option value="mobile_money">📱 Mobile Money</option>
+                            <option value="check">📝 Cheque</option>
+                            <option value="card">💳 Card</option>
                         </select>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="mb-3">
-                        <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
-                        <input type="text" id="incomeCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Work, Side Hustle">
-                    </div>
-                    <div class="mb-3">
-                        <label class="block text-sm font-bold text-slate-300 mb-2">Source</label>
-                        <input type="text" id="incomeSource" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="e.g., Company X, Client Y">
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="mb-3">
-                        <label class="block text-sm font-bold text-slate-300 mb-2">Contributor</label>
-                        <input type="text" id="incomeContributor" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="Person who contributed">
-                    </div>
-                    <div class="mb-3">
-                        <label class="block text-sm font-bold text-slate-300 mb-2">Status</label>
-                        <select id="incomeStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 text-slate-200 font-medium">
-                            <option value="approved">✅ Approved</option>
-                            <option value="pending">⏳ Pending</option>
-                            <option value="rejected">❌ Rejected</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Date</label>
-                    <input type="date" id="incomeDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white">
-                </div>
-                
-                <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Tags</label>
-                    <input type="text" id="incomeTags" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white" placeholder="monthly, bonus, special (comma separated)">
-                    <div id="tagSuggestions" class="flex flex-wrap gap-1 mt-2"></div>
-                </div>
-                
-                <div class="mb-3">
+                <div class="mb-4">
                     <label class="block text-sm font-bold text-slate-300 mb-2">Description</label>
-                    <textarea id="incomeDescription" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white resize-none" placeholder="Additional notes about this income..."></textarea>
+                    <textarea id="transactionDescription" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-white resize-none" placeholder="Additional notes..."></textarea>
                 </div>
                 
                 <div class="flex gap-3 mt-6">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-3 rounded-xl font-bold transition shadow-lg shadow-indigo-500/20">
-                        <i class="fas fa-save mr-2"></i> Save
+                        <i class="fas fa-save mr-2"></i> Save Transaction
                     </button>
                     <button type="button" onclick="closeIncomeModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+    
+    <!-- Thermal Receipt Modal -->
+    <div id="thermalReceiptModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[95%] max-w-md p-4 rounded-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-xl font-extrabold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent flex items-center gap-2">
+                    <i class="fas fa-receipt"></i> Thermal Receipt
+                </h2>
+                <div class="flex gap-2">
+                    <button id="printThermalReceiptBtn" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-3 py-1.5 rounded-lg text-sm font-bold transition">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button onclick="closeModal('thermalReceiptModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="thermalReceiptContent" class="thermal-receipt"></div>
         </div>
     </div>
     
@@ -702,44 +1211,12 @@
             <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-trash-alt text-red-400 text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-extrabold mb-2">Delete Income?</h2>
-            <p class="text-slate-400 mb-6">This action cannot be undone. This income record will be permanently removed.</p>
+            <h2 class="text-2xl font-extrabold mb-2">Delete Transaction?</h2>
+            <p class="text-slate-400 mb-6">This action cannot be undone. This record will be permanently removed.</p>
             <div class="flex gap-3">
                 <button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold transition">Delete</button>
                 <button onclick="closeDeleteModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">Cancel</button>
             </div>
-        </div>
-    </div>
-    
-    <!-- Update Status Modal -->
-    <div id="updateStatusModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
-        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                    <i class="fas fa-edit mr-2"></i> Update Status
-                </h2>
-                <button onclick="closeModal('updateStatusModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <form id="updateStatusForm">
-                <input type="hidden" id="statusIncomeId">
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">New Status</label>
-                    <select id="newStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500">
-                        <option value="pending">⏳ Pending</option>
-                        <option value="approved">✅ Approved</option>
-                        <option value="rejected">❌ Rejected</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Comments / Reason</label>
-                    <textarea id="statusComments" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-indigo-500" placeholder="Add comments about this status change..."></textarea>
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-3 rounded-xl font-bold transition">
-                    Update Status
-                </button>
-            </form>
         </div>
     </div>
     
@@ -753,6 +1230,9 @@
                 <button id="exportCSVBtn" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2">
                     <i class="fas fa-file-csv"></i> Export as CSV
                 </button>
+                <button id="exportPDFBtn" class="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2">
+                    <i class="fas fa-file-pdf"></i> Export as PDF
+                </button>
                 <button id="exportJSONBtn" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-600 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2">
                     <i class="fas fa-code"></i> Export as JSON
                 </button>
@@ -762,7 +1242,7 @@
     </div>
     
     <!-- Quick Add Floating Button -->
-    <button id="floatingAddBtn" class="floating-btn fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white text-xl z-10 md:hidden">
+    <button id="floatingAddBtn" class="floating-btn fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white text-xl z-10 md:hidden no-print">
         <i class="fas fa-plus"></i>
     </button>
 
@@ -788,21 +1268,49 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        // Global state
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
         let currentUser = null;
-        let allIncomes = [];
-        let filteredIncomes = [];
+        let userData = null;
+        let allTransactions = [];
+        let filteredTransactions = [];
+        let debtsList = [];
+        let purchasesList = [];
         let currentFilter = 'all';
-        let currentStatusFilter = 'all';
         let currentSort = 'date_desc';
         let currentDateRange = 'all';
         let currentSearch = '';
         let currentPage = 1;
         let itemsPerPage = 10;
         let deleteId = null;
-        let currentCurrency = 'RWF';
+        let currentCurrency = 'AED';
         let currentTheme = 'dark';
-        let currencySymbol = 'FRw';
+        
+        // Financial tracking variables
+        let totalSalaryAmount = 0;
+        let totalOtherIncomeAmount = 0;      // Bonus, Gift, Business, Freelance, Commission, Side Hustle, Other Income
+        let totalBonusAmount = 0;
+        let totalGiftAmount = 0;
+        let totalBusinessAmount = 0;
+        let totalFreelanceAmount = 0;
+        let totalInvestmentAmount = 0;
+        let totalCommissionAmount = 0;
+        let totalSideHustleAmount = 0;
+        let totalOtherIncomeCategoryAmount = 0;
+        
+        let totalExpensesAmount = 0;
+        let totalLentAmount = 0;
+        let totalDebtRecoveryAmount = 0;     // Repayments received
+        let totalPayment = 0;                 // NEW: Only new income, not debt recovery
+        let currentBalance = 0;
+        
+        // Charts
+        let trendChart = null;
+        let distributionChart = null;
+        
+        // Income categories list
+        const incomeCategories = ['salary', 'bonus', 'gift', 'business', 'freelance', 'investment', 'commission', 'sidehustle', 'otherincome'];
         
         const currencies = {
             USD: { symbol: '$', name: 'US Dollar' },
@@ -813,7 +1321,15 @@
         
         const typeClasses = {
             salary: 'type-salary', bonus: 'type-bonus', freelance: 'type-freelance',
-            investment: 'type-investment', gift: 'type-gift', umusanzu: 'type-freelance', other: 'type-other'
+            investment: 'type-investment', business: 'type-business', gift: 'type-gift',
+            commission: 'type-commission', sidehustle: 'type-sidehustle', otherincome: 'type-otherincome',
+            'debt-repayment': 'type-debt-repayment', expense: 'type-expense', lent: 'type-lent', other: 'type-other'
+        };
+        
+        const categoryIcons = {
+            salary: '💰', bonus: '🎉', freelance: '💻', investment: '📈',
+            business: '🏢', gift: '🎁', commission: '💵', sidehustle: '💪',
+            otherincome: '📌', 'debt-repayment': '💵', expense: '📦', lent: '📤', other: '📌'
         };
         
         const navItems = [
@@ -821,19 +1337,25 @@
             { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: true },
             { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: false },
             { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
-            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false }
+            { icon: 'fa-hand-holding-usd', text: 'Debts', page: 'debts.html', active: false },
+            { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false },
+            { icon: 'fa-user-shield', text: 'Admin', page: 'administration.html', active: false }
         ];
         
-        const commonTags = ['monthly', 'bonus', 'salary', 'freelance', 'investment', 'extra', 'one-time', 'recurring', 'side-hustle', 'overtime', 'umusanzu', 'contribution'];
+        const LOGO_URL = "https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png";
+        const COMPANY_NAME = "MAYE System";
+        const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
+        const CONTACT_EMAIL = "info@maye.rw";
+        const CONTACT_PHONE = "+250 788 000 000";
         
         // ============================================
         // UTILITY FUNCTIONS
         // ============================================
         
         function formatMoney(amount) {
-            const symbol = currencies[currentCurrency]?.symbol || 'FRw';
-            if (currentCurrency === 'AED') return `${symbol} ${amount.toLocaleString()}`;
-            return `${symbol} ${amount.toLocaleString()}`;
+            const symbol = currencies[currentCurrency]?.symbol || 'D';
+            const formatted = amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+            return `${symbol} ${formatted}`;
         }
         
         function showToast(message, type = 'info') {
@@ -861,31 +1383,40 @@
         }
         
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('flex');
-            document.getElementById(modalId).classList.add('hidden');
-            document.body.style.overflow = '';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
         }
         
         function openIncomeModal(editMode = false, data = null) {
             if (editMode && data) {
-                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Income';
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Transaction';
                 document.getElementById('editIncomeId').value = data.id;
-                document.getElementById('incomeAmount').value = data.amount;
-                document.getElementById('incomeType').value = data.type || 'other';
-                document.getElementById('incomeCategory').value = data.category || '';
-                document.getElementById('incomeSource').value = data.source || '';
-                document.getElementById('incomeContributor').value = data.contributor || '';
-                document.getElementById('incomeStatus').value = data.status || 'approved';
-                document.getElementById('incomeDate').value = data.date || new Date().toISOString().split('T')[0];
-                document.getElementById('incomeTags').value = (data.tags || []).join(', ');
-                document.getElementById('incomeDescription').value = data.description || '';
+                document.getElementById('transactionType').value = data.transactionType || 'income';
+                document.getElementById('incomeType').value = data.type || 'salary';
+                document.getElementById('transactionAmount').value = data.amount;
+                document.getElementById('transactionDate').value = data.date || new Date().toISOString().split('T')[0];
+                document.getElementById('personName').value = data.personName || '';
+                document.getElementById('transactionSource').value = data.source || '';
+                document.getElementById('debtDueDate').value = data.dueDate || '';
+                document.getElementById('transactionAccount').value = data.account || 'cash';
+                document.getElementById('transactionReference').value = data.reference || '';
+                document.getElementById('transactionPaymentMethod').value = data.paymentMethod || 'cash';
+                document.getElementById('transactionDescription').value = data.description || '';
             } else {
-                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add Income';
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add Transaction';
                 document.getElementById('editIncomeId').value = '';
                 document.getElementById('incomeForm').reset();
-                document.getElementById('incomeDate').value = new Date().toISOString().split('T')[0];
-                document.getElementById('incomeStatus').value = 'approved';
+                document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('transactionType').value = 'income';
+                document.getElementById('incomeType').value = 'salary';
+                document.getElementById('transactionAccount').value = 'cash';
+                document.getElementById('transactionPaymentMethod').value = 'cash';
             }
+            toggleFormFields();
             openModal('incomeModal');
         }
         
@@ -893,25 +1424,45 @@
         function openDeleteModal(id) { deleteId = id; openModal('deleteModal'); }
         function closeDeleteModal() { closeModal('deleteModal'); deleteId = null; }
         
-        function openUpdateStatusModal(id) {
-            document.getElementById('statusIncomeId').value = id;
-            document.getElementById('newStatus').value = 'approved';
-            document.getElementById('statusComments').value = '';
-            openModal('updateStatusModal');
+        function toggleFormFields() {
+            const transType = document.getElementById('transactionType').value;
+            const personSection = document.getElementById('personSection');
+            const sourceSection = document.getElementById('sourceSection');
+            const incomeTypeSection = document.getElementById('incomeTypeSection');
+            const debtDueDateSection = document.getElementById('debtDueDateSection');
+            
+            if (transType === 'lent') {
+                personSection.classList.remove('hidden');
+                sourceSection.classList.add('hidden');
+                incomeTypeSection.classList.add('hidden');
+                debtDueDateSection.classList.remove('hidden');
+            } else if (transType === 'debt-repayment') {
+                personSection.classList.remove('hidden');
+                sourceSection.classList.add('hidden');
+                incomeTypeSection.classList.add('hidden');
+                debtDueDateSection.classList.add('hidden');
+            } else if (transType === 'expense') {
+                personSection.classList.add('hidden');
+                sourceSection.classList.remove('hidden');
+                incomeTypeSection.classList.add('hidden');
+                debtDueDateSection.classList.add('hidden');
+            } else {
+                personSection.classList.add('hidden');
+                sourceSection.classList.remove('hidden');
+                incomeTypeSection.classList.remove('hidden');
+                debtDueDateSection.classList.add('hidden');
+            }
         }
         
-        function getStatusBadge(status) {
-            const statusMap = {
-                'pending': 'status-pending',
-                'approved': 'status-approved',
-                'rejected': 'status-rejected'
-            };
-            const textMap = {
-                'pending': '⏳ Pending',
-                'approved': '✅ Approved',
-                'rejected': '❌ Rejected'
-            };
-            return `<span class="status-badge ${statusMap[status] || 'status-pending'}">${textMap[status] || status}</span>`;
+        function getTransactionTag(transaction) {
+            if (transaction.transactionType === 'lent') {
+                return `<span class="debt-tag"><i class="fas fa-arrow-up text-blue-400"></i> Lent</span>`;
+            } else if (transaction.transactionType === 'debt-repayment') {
+                return `<span class="debt-tag"><i class="fas fa-arrow-down text-green-400"></i> Repayment</span>`;
+            } else if (transaction.transactionType === 'expense') {
+                return `<span class="debt-tag"><i class="fas fa-arrow-down text-red-400"></i> Expense</span>`;
+            }
+            return '';
         }
         
         function generateIncomeId() {
@@ -919,42 +1470,367 @@
             return `INC${String(random).padStart(4, '0')}`;
         }
         
+        // ============================================
+        // CORE FINANCIAL CALCULATIONS - CORRECTED!
+        // ============================================
+        
+        function isNewIncomeCategory(category) {
+            const newIncomeCategories = ['bonus', 'gift', 'business', 'freelance', 'investment', 'commission', 'sidehustle', 'otherincome'];
+            return newIncomeCategories.includes(category);
+        }
+        
+        function calculateFinancialStats() {
+            // Reset all counters
+            totalSalaryAmount = 0;
+            totalBonusAmount = 0;
+            totalGiftAmount = 0;
+            totalBusinessAmount = 0;
+            totalFreelanceAmount = 0;
+            totalInvestmentAmount = 0;
+            totalCommissionAmount = 0;
+            totalSideHustleAmount = 0;
+            totalOtherIncomeCategoryAmount = 0;
+            totalExpensesAmount = 0;
+            totalLentAmount = 0;
+            totalDebtRecoveryAmount = 0;
+            
+            // Calculate all income categories from income transactions only
+            allTransactions.forEach(t => {
+                const amount = parseFloat(t.amount || 0);
+                if (t.transactionType === 'income') {
+                    const category = t.type || t.category || 'other';
+                    switch (category) {
+                        case 'salary': totalSalaryAmount += amount; break;
+                        case 'bonus': totalBonusAmount += amount; break;
+                        case 'gift': totalGiftAmount += amount; break;
+                        case 'business': totalBusinessAmount += amount; break;
+                        case 'freelance': totalFreelanceAmount += amount; break;
+                        case 'investment': totalInvestmentAmount += amount; break;
+                        case 'commission': totalCommissionAmount += amount; break;
+                        case 'sidehustle': totalSideHustleAmount += amount; break;
+                        case 'otherincome': totalOtherIncomeCategoryAmount += amount; break;
+                        default: break;
+                    }
+                } else if (t.transactionType === 'expense') {
+                    totalExpensesAmount += amount;
+                } else if (t.transactionType === 'lent') {
+                    totalLentAmount += amount;
+                } else if (t.transactionType === 'debt-repayment') {
+                    totalDebtRecoveryAmount += amount;
+                }
+            });
+            
+            // Get expenses from procurement purchases (as backup)
+            const procurementExpenses = purchasesList.reduce((sum, p) => sum + ((parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0)), 0);
+            if (procurementExpenses > totalExpensesAmount) {
+                totalExpensesAmount = procurementExpenses;
+            }
+            
+            // Also check debts collection for lent amounts (as backup)
+            const debtLentAmount = debtsList.filter(d => d.type === 'lent').reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+            if (debtLentAmount > totalLentAmount) totalLentAmount = debtLentAmount;
+            
+            // Check debt paid amounts for recovery
+            const debtPaidAmount = debtsList.filter(d => d.type === 'lent').reduce((sum, d) => sum + (parseFloat(d.paidAmount) || 0), 0);
+            if (debtPaidAmount > totalDebtRecoveryAmount) totalDebtRecoveryAmount = debtPaidAmount;
+            
+            // Calculate Total Other Income (all non-salary income categories)
+            totalOtherIncomeAmount = totalBonusAmount + totalGiftAmount + totalBusinessAmount + totalFreelanceAmount + totalInvestmentAmount + totalCommissionAmount + totalSideHustleAmount + totalOtherIncomeCategoryAmount;
+            
+            // ✅ CORRECT TOTAL PAYMENT FORMULA
+            // Total Payment = Salary + Other Income (Gift + Bonus + Business + Freelance + Commission + Side Hustle + Investment + Other Income)
+            totalPayment = totalSalaryAmount + totalOtherIncomeAmount;
+            
+            // ✅ CORRECT CURRENT BALANCE FORMULA
+            // Current Balance = (Salary + Other Income) - Expenses - Lent Out + Debt Recovery
+            currentBalance = totalPayment - totalExpensesAmount - totalLentAmount + totalDebtRecoveryAmount;
+        }
+        
+        function updateAllStats() {
+            calculateFinancialStats();
+            
+            // Calculate monthly income (for this month only)
+            const monthlyIncome = allTransactions.filter(t => {
+                if (t.transactionType !== 'income') return false;
+                if (!t.date) return false;
+                const now = new Date();
+                const transDate = new Date(t.date);
+                return transDate.getMonth() === now.getMonth() && transDate.getFullYear() === now.getFullYear();
+            }).reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+            
+            // Calculate net cash flow
+            const totalIncomeFromAll = allTransactions.filter(t => t.transactionType === 'income').reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+            const netCashFlow = totalIncomeFromAll - totalExpensesAmount;
+            
+            // Update main stat cards
+            document.getElementById('statTotalPayment').innerHTML = formatMoney(totalPayment);
+            document.getElementById('statCurrentBalance').innerHTML = formatMoney(currentBalance);
+            document.getElementById('statTotalExpenses').innerHTML = formatMoney(totalExpensesAmount);
+            document.getElementById('statMonthlyIncome').innerHTML = formatMoney(monthlyIncome);
+            document.getElementById('statMoneyLentOut').innerHTML = formatMoney(totalLentAmount);
+            document.getElementById('statDebtRecovery').innerHTML = formatMoney(totalDebtRecoveryAmount);
+            document.getElementById('statOtherIncome').innerHTML = formatMoney(totalOtherIncomeAmount);
+            document.getElementById('statNetCashFlow').innerHTML = formatMoney(netCashFlow);
+            
+            // Update Current Balance Display with color based on value
+            const balanceElement = document.getElementById('currentBalanceDisplay');
+            if (balanceElement) {
+                if (currentBalance >= 0) {
+                    balanceElement.innerHTML = formatMoney(currentBalance);
+                    balanceElement.className = 'font-black text-4xl tracking-tight text-emerald-400';
+                } else {
+                    balanceElement.innerHTML = `-${formatMoney(Math.abs(currentBalance))}`;
+                    balanceElement.className = 'font-black text-4xl tracking-tight text-red-400';
+                }
+            }
+            
+            // Update income breakdown categories
+            document.getElementById('catSalary').innerHTML = formatMoney(totalSalaryAmount);
+            document.getElementById('catBonus').innerHTML = formatMoney(totalBonusAmount);
+            document.getElementById('catGift').innerHTML = formatMoney(totalGiftAmount);
+            document.getElementById('catBusiness').innerHTML = formatMoney(totalBusinessAmount);
+            document.getElementById('catFreelance').innerHTML = formatMoney(totalFreelanceAmount);
+            document.getElementById('catInvestment').innerHTML = formatMoney(totalInvestmentAmount);
+            document.getElementById('catCommission').innerHTML = formatMoney(totalCommissionAmount);
+            document.getElementById('catSideHustle').innerHTML = formatMoney(totalSideHustleAmount);
+            document.getElementById('catOtherIncome').innerHTML = formatMoney(totalOtherIncomeCategoryAmount);
+            
+            // Update recovery summary card
+            const totalLentForRecovery = totalLentAmount;
+            const totalRecovered = totalDebtRecoveryAmount;
+            const remainingDebt = Math.max(0, totalLentForRecovery - totalRecovered);
+            const recoveryPercentage = totalLentForRecovery > 0 ? (totalRecovered / totalLentForRecovery) * 100 : 0;
+            
+            document.getElementById('recoveryTotalLent').innerHTML = formatMoney(totalLentForRecovery);
+            document.getElementById('recoveryTotalRecovered').innerHTML = formatMoney(totalRecovered);
+            document.getElementById('recoveryRemaining').innerHTML = formatMoney(remainingDebt);
+            document.getElementById('recoveryProgressBar').style.width = `${Math.min(recoveryPercentage, 100)}%`;
+            
+            const recoveryMsg = document.getElementById('recoveryInfoMessage');
+            if (totalLentForRecovery === 0) {
+                recoveryMsg.innerHTML = 'No money lent out yet. This section tracks cash recoveries from lent money.';
+            } else if (totalRecovered === 0) {
+                recoveryMsg.innerHTML = `⚠️ You have lent ${formatMoney(totalLentForRecovery)} but no repayments received yet. These are cash recoveries, not new income.`;
+            } else {
+                recoveryMsg.innerHTML = `✅ You have recovered ${formatMoney(totalRecovered)} out of ${formatMoney(totalLentForRecovery)} lent (${recoveryPercentage.toFixed(1)}%). These are cash recoveries, not new income.`;
+            }
+        }
+        
+        function generateThermalReceipt(transaction = null) {
+            if (transaction) {
+                const typeName = transaction.transactionType === 'income' ? (transaction.type || 'Income') : transaction.transactionType;
+                const typeDisplay = typeName === 'debt-repayment' ? 'Debt Repayment' : (typeName === 'expense' ? 'Expense' : (typeName === 'lent' ? 'Money Lent' : (typeName.charAt(0).toUpperCase() + typeName.slice(1))));
+                const receiptNumber = transaction.incomeId || transaction.id.slice(-8).toUpperCase();
+                const createdByName = transaction.createdBy || userData?.fullName || currentUser?.email || 'System';
+                const amountColor = transaction.transactionType === 'expense' ? '#EF4444' : (transaction.transactionType === 'lent' ? '#3B82F6' : '#22C55E');
+                const amountPrefix = transaction.transactionType === 'expense' ? '-' : (transaction.transactionType === 'lent' ? '📤 ' : (transaction.transactionType === 'debt-repayment' ? '💰 ' : '+'));
+                
+                return `
+                    <div class="receipt-header">
+                        <img src="${LOGO_URL}" alt="MAYE Logo">
+                        <h2>${COMPANY_NAME}</h2>
+                        <p>${COMPANY_SLOGAN}</p>
+                        <p>${CONTACT_EMAIL}</p>
+                        <p>${CONTACT_PHONE}</p>
+                        <div class="receipt-divider"></div>
+                        <p><strong>${typeDisplay.toUpperCase()} RECEIPT</strong></p>
+                        <p>${new Date().toLocaleDateString()} | ${new Date().toLocaleTimeString()}</p>
+                        <div class="receipt-divider"></div>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Receipt No:</span>
+                        <span class="font-mono">${receiptNumber}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Date:</span>
+                        <span>${transaction.date || '—'}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Type:</span>
+                        <span>${typeDisplay}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Source/Item:</span>
+                        <span>${escapeHtml(transaction.source) || escapeHtml(transaction.personName) || '—'}</span>
+                    </div>
+                    <div class="receipt-row total">
+                        <span>Amount:</span>
+                        <span style="color: ${amountColor}">${amountPrefix}${formatMoney(transaction.amount)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Account:</span>
+                        <span>${transaction.account || 'cash'}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Payment Method:</span>
+                        <span>${transaction.paymentMethod || 'cash'}</span>
+                    </div>
+                    ${transaction.reference ? `<div class="receipt-row">
+                        <span>Reference:</span>
+                        <span>${escapeHtml(transaction.reference)}</span>
+                    </div>` : ''}
+                    ${transaction.description ? `<div class="receipt-row">
+                        <span>Description:</span>
+                        <span>${escapeHtml(transaction.description)}</span>
+                    </div>` : ''}
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-row">
+                        <span>Created By:</span>
+                        <span class="font-bold">${escapeHtml(createdByName)}</span>
+                    </div>
+                    <div class="receipt-footer">
+                        <p>Thank you for using MAYE System!</p>
+                        <p>This is a computer generated receipt</p>
+                        <p>© ${new Date().getFullYear()} MAYE - All rights reserved</p>
+                    </div>
+                `;
+            } else {
+                // Summary receipt for all filtered transactions
+                const totalIncome = filteredTransactions.filter(t => t.transactionType === 'income').reduce((s, t) => s + t.amount, 0);
+                const totalSalary = filteredTransactions.filter(t => t.transactionType === 'income' && (t.type === 'salary' || t.category === 'salary')).reduce((s, t) => s + t.amount, 0);
+                const totalOther = totalIncome - totalSalary;
+                const totalExpensesSum = filteredTransactions.filter(t => t.transactionType === 'expense').reduce((s, t) => s + t.amount, 0);
+                const totalLentSum = filteredTransactions.filter(t => t.transactionType === 'lent').reduce((s, t) => s + t.amount, 0);
+                const totalRepaymentsSum = filteredTransactions.filter(t => t.transactionType === 'debt-repayment').reduce((s, t) => s + t.amount, 0);
+                const netBalance = totalSalary + totalOther - totalExpensesSum - totalLentSum + totalRepaymentsSum;
+                
+                return `
+                    <div class="receipt-header">
+                        <img src="${LOGO_URL}" alt="MAYE Logo">
+                        <h2>${COMPANY_NAME}</h2>
+                        <p>${COMPANY_SLOGAN}</p>
+                        <p>${CONTACT_EMAIL}</p>
+                        <p>${CONTACT_PHONE}</p>
+                        <div class="receipt-divider"></div>
+                        <p><strong>FINANCIAL SUMMARY RECEIPT</strong></p>
+                        <p>${new Date().toLocaleDateString()} | ${new Date().toLocaleTimeString()}</p>
+                        <div class="receipt-divider"></div>
+                    </div>
+                    <div class="receipt-row total">
+                        <span>Total Payment (New Income):</span>
+                        <span style="color: #22C55E">+${formatMoney(totalSalary + totalOther)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>├─ Salary:</span>
+                        <span>${formatMoney(totalSalary)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>├─ Other Income:</span>
+                        <span>${formatMoney(totalOther)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>├─ Lent Out:</span>
+                        <span style="color: #3B82F6">📤 ${formatMoney(totalLentSum)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>├─ Debt Recovery:</span>
+                        <span style="color: #10B981">💰 ${formatMoney(totalRepaymentsSum)}</span>
+                    </div>
+                    <div class="receipt-row total">
+                        <span>Total Expenses:</span>
+                        <span style="color: #EF4444">-${formatMoney(totalExpensesSum)}</span>
+                    </div>
+                    <div class="receipt-row total" style="border-top: 2px dashed #333; margin-top: 10px; padding-top: 10px;">
+                        <span>Current Balance:</span>
+                        <span style="color: ${netBalance >= 0 ? '#22C55E' : '#EF4444'}">${formatMoney(netBalance)}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Records Count:</span>
+                        <span>${filteredTransactions.length}</span>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-footer">
+                        <p>Period: ${document.getElementById('dateRangeSelect').options[document.getElementById('dateRangeSelect').selectedIndex]?.text || 'All Time'}</p>
+                        <p>Generated by: ${userData?.fullName || currentUser?.email}</p>
+                        <p>© ${new Date().getFullYear()} MAYE - All rights reserved</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function showThermalReceipt(transaction = null) {
+            const receiptHtml = generateThermalReceipt(transaction);
+            document.getElementById('thermalReceiptContent').innerHTML = receiptHtml;
+            openModal('thermalReceiptModal');
+        }
+        
+        function printThermalReceipt() {
+            const receiptContent = document.getElementById('thermalReceiptContent').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>MAYE Thermal Receipt</title>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: 'Courier New', 'Fira Code', monospace; font-size: 11px; padding: 20px; background: white; }
+                        .thermal-receipt { max-width: 320px; margin: 0 auto; }
+                        .receipt-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+                        .receipt-header img { height: 45px; margin-bottom: 5px; }
+                        .receipt-header h2 { font-size: 14px; margin: 5px 0; }
+                        .receipt-divider { border-top: 1px dashed #000; margin: 8px 0; }
+                        .receipt-row { display: flex; justify-content: space-between; margin: 5px 0; }
+                        .receipt-row.total { border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px; font-weight: bold; font-size: 13px; }
+                        .receipt-footer { text-align: center; border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; font-size: 8px; }
+                        @media print {
+                            body { padding: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="thermal-receipt">${receiptContent}</div>
+                    <script>window.onload = function() { window.print(); setTimeout(function() { window.close(); }, 500); }<\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+        
         // Date range filter
-        function applyDateRange(incomes, range) {
+        function applyDateRange(transactions, range) {
             const now = new Date();
             const currentYear = now.getFullYear();
             const currentMonth = now.getMonth();
             
             switch(range) {
                 case 'this_month':
-                    return incomes.filter(inc => {
-                        if (!inc.date) return false;
-                        const d = new Date(inc.date);
+                    return transactions.filter(t => {
+                        if (!t.date) return false;
+                        const d = new Date(t.date);
                         return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
                     });
                 case 'last_month':
-                    return incomes.filter(inc => {
-                        if (!inc.date) return false;
-                        const d = new Date(inc.date);
+                    return transactions.filter(t => {
+                        if (!t.date) return false;
+                        const d = new Date(t.date);
                         const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
                         const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
                         return d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear;
                     });
                 case 'this_year':
-                    return incomes.filter(inc => {
-                        if (!inc.date) return false;
-                        const d = new Date(inc.date);
+                    return transactions.filter(t => {
+                        if (!t.date) return false;
+                        const d = new Date(t.date);
                         return d.getFullYear() === currentYear;
                     });
                 case 'last_3months':
                     const threeMonthsAgo = new Date();
                     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-                    return incomes.filter(inc => {
-                        if (!inc.date) return false;
-                        return new Date(inc.date) >= threeMonthsAgo;
+                    return transactions.filter(t => {
+                        if (!t.date) return false;
+                        return new Date(t.date) >= threeMonthsAgo;
+                    });
+                case 'last_6months':
+                    const sixMonthsAgo = new Date();
+                    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                    return transactions.filter(t => {
+                        if (!t.date) return false;
+                        return new Date(t.date) >= sixMonthsAgo;
                     });
                 default:
-                    return incomes;
+                    return transactions;
             }
         }
         
@@ -967,30 +1843,29 @@
                 window.location.href = 'index.html';
                 return;
             }
-            
             currentUser = user;
             await loadUserSettings();
-            await loadIncomes();
+            await loadTransactions();
+            await loadDebts();
+            await loadPurchases();
             renderSidebar();
             setupEventListeners();
-            setupRealtimeListener();
-            renderTagSuggestions();
+            setupRealtimeListeners();
         });
         
         async function loadUserSettings() {
             try {
                 const doc = await db.collection('users').doc(currentUser.uid).get();
                 if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('userName').textContent = data.fullName || currentUser.email.split('@')[0];
+                    userData = doc.data();
+                    document.getElementById('userName').textContent = userData.fullName || currentUser.email.split('@')[0];
                     document.getElementById('userEmailDisplay').textContent = currentUser.email;
-                    if (data.settings) {
-                        currentCurrency = data.settings.currency || 'RWF';
-                        currentTheme = data.settings.theme || 'dark';
-                        currencySymbol = currencies[currentCurrency]?.symbol || 'FRw';
+                    if (userData.settings) {
+                        currentCurrency = userData.settings.currency || 'AED';
+                        currentTheme = userData.settings.theme || 'dark';
                     }
-                    if (data.profilePicture) {
-                        document.getElementById('userAvatar').src = data.profilePicture;
+                    if (userData.profilePicture) {
+                        document.getElementById('userAvatar').src = userData.profilePicture;
                         document.getElementById('userAvatar').classList.remove('hidden');
                         document.getElementById('userAvatarFallback').classList.add('hidden');
                     }
@@ -1002,49 +1877,278 @@
             }
         }
         
-        async function loadIncomes() {
+        async function loadTransactions() {
             showLoading(true);
             try {
-                // Simple query without orderBy to avoid index requirement
                 const snapshot = await db.collection('income')
                     .where('userId', '==', currentUser.uid)
                     .get();
-                    
-                allIncomes = snapshot.docs.map(doc => ({ 
+                allTransactions = snapshot.docs.map(doc => ({ 
                     id: doc.id, 
                     ...doc.data(), 
-                    amount: doc.data().amount || 0, 
-                    tags: doc.data().tags || [],
-                    description: doc.data().description || '',
-                    status: doc.data().status || 'approved',
-                    source: doc.data().source || '',
-                    contributor: doc.data().contributor || '',
-                    incomeId: doc.data().incomeId || `INC${String(doc.id).slice(-4).toUpperCase()}`
+                    amount: parseFloat(doc.data().amount) || 0,
+                    transactionType: doc.data().transactionType || 'income',
+                    personName: doc.data().personName || '',
+                    dueDate: doc.data().dueDate || '',
+                    account: doc.data().account || 'cash',
+                    reference: doc.data().reference || '',
+                    paymentMethod: doc.data().paymentMethod || 'cash'
                 }));
-                
-                // Sort manually
-                allIncomes.sort((a, b) => {
-                    if (a.timestamp && b.timestamp) return b.timestamp - a.timestamp;
-                    if (a.date && b.date) return new Date(b.date) - new Date(a.date);
+                allTransactions.sort((a, b) => {
+                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
                     return 0;
                 });
-                
                 applyFiltersAndRender();
+                updateAllStats();
+                loadUpcomingRepayments();
+                updateAIInsights();
+                updateCharts();
             } catch (error) {
-                console.error('Error loading incomes:', error);
-                showToast('Error loading income data: ' + error.message, 'error');
+                console.error('Error loading transactions:', error);
+                showToast('Error loading data: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
         
-        function setupRealtimeListener() {
+        async function loadDebts() {
+            try {
+                const snapshot = await db.collection('debts')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                debtsList = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(),
+                    amount: parseFloat(doc.data().amount) || 0,
+                    paidAmount: parseFloat(doc.data().paidAmount) || 0
+                }));
+                updateAllStats();
+                loadUpcomingRepayments();
+                updateAIInsights();
+                updateCharts();
+            } catch (error) {
+                console.error('Error loading debts:', error);
+            }
+        }
+        
+        async function loadPurchases() {
+            try {
+                const snapshot = await db.collection('purchases')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                purchasesList = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(),
+                    price: parseFloat(doc.data().price) || 0,
+                    quantity: parseFloat(doc.data().quantity) || 0
+                }));
+                updateAllStats();
+            } catch (error) {
+                console.error('Error loading purchases:', error);
+            }
+        }
+        
+        function setupRealtimeListeners() {
             if (!currentUser) return;
+            
             db.collection('income')
                 .where('userId', '==', currentUser.uid)
                 .onSnapshot(() => {
-                    loadIncomes();
-                }, (error) => console.error('Realtime listener error:', error));
+                    loadTransactions();
+                    updateAllStats();
+                }, (error) => console.error('Realtime error:', error));
+            
+            db.collection('debts')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    loadDebts();
+                    updateAllStats();
+                    loadUpcomingRepayments();
+                }, (error) => console.error('Realtime debt error:', error));
+            
+            db.collection('purchases')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    loadPurchases();
+                    updateAllStats();
+                }, (error) => console.error('Realtime purchase error:', error));
+        }
+        
+        async function loadUpcomingRepayments() {
+            const container = document.getElementById('upcomingRepayments');
+            if (!container) return;
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            
+            const upcoming = debtsList.filter(d => 
+                d.type === 'lent' && 
+                d.dueDate && 
+                new Date(d.dueDate) >= today && 
+                new Date(d.dueDate) <= nextWeek &&
+                (parseFloat(d.paidAmount) || 0) < parseFloat(d.amount || 0)
+            );
+            
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="text-center text-slate-400 py-4">No upcoming repayments this week</div>';
+                return;
+            }
+            
+            container.innerHTML = upcoming.map(d => {
+                const remaining = (parseFloat(d.amount) || 0) - (parseFloat(d.paidAmount) || 0);
+                const daysUntil = Math.ceil((new Date(d.dueDate) - today) / (1000 * 60 * 60 * 24));
+                return `
+                    <div class="repayment-item" onclick="window.location.href='debts.html'">
+                        <div>
+                            <div class="font-bold text-white">${escapeHtml(d.personName)}</div>
+                            <div class="text-xs text-slate-400">Due in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-emerald-400">${formatMoney(remaining)}</div>
+                            <div class="text-xs text-slate-400">Due: ${d.dueDate}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateAIInsights() {
+            const totalIncome = allTransactions.filter(t => t.transactionType === 'income').reduce((s, t) => s + t.amount, 0);
+            const totalExpenses = allTransactions.filter(t => t.transactionType === 'expense').reduce((s, t) => s + t.amount, 0);
+            const totalLent = allTransactions.filter(t => t.transactionType === 'lent').reduce((s, t) => s + t.amount, 0);
+            const totalRepayments = allTransactions.filter(t => t.transactionType === 'debt-repayment').reduce((s, t) => s + t.amount, 0);
+            const expectedRepayments = debtsList.filter(d => d.type === 'lent').reduce((s, d) => s + (parseFloat(d.amount || 0) - (parseFloat(d.paidAmount) || 0)), 0);
+            const netBalance = totalPayment - totalExpenses - totalLent + totalRepayments;
+            const avgIncome = allTransactions.filter(t => t.transactionType === 'income').length > 0 ? totalIncome / allTransactions.filter(t => t.transactionType === 'income').length : 0;
+            
+            let insights = [];
+            
+            if (totalPayment > 0) {
+                insights.push(`📊 Total new income: <strong class="text-emerald-400">${formatMoney(totalPayment)}</strong> (Salary + Other Income).`);
+                if (totalOtherIncomeAmount > 0) {
+                    insights.push(`💰 Other income (Bonus, Gift, Business, etc.): <strong class="text-purple-400">${formatMoney(totalOtherIncomeAmount)}</strong>.`);
+                }
+            }
+            
+            if (totalExpenses > 0) {
+                const expensePercentage = totalPayment > 0 ? (totalExpenses / totalPayment) * 100 : 0;
+                insights.push(`📦 Your total expenses are <strong class="text-red-400">${formatMoney(totalExpenses)}</strong> (${expensePercentage.toFixed(1)}% of income).`);
+                if (netBalance < 0) {
+                    insights.push(`⚠️ <strong class="text-red-400">Warning:</strong> Your expenses exceed your income! Consider reducing purchases.`);
+                }
+            }
+            
+            if (totalLent > 0) {
+                insights.push(`📤 You have lent out <strong class="text-blue-400">${formatMoney(totalLent)}</strong>. This money is not available until repaid.`);
+            }
+            
+            if (totalRepayments > 0) {
+                insights.push(`💰 You have recovered <strong class="text-cyan-400">${formatMoney(totalRepayments)}</strong> from lent money. This increases your current balance.`);
+            }
+            
+            if (expectedRepayments > 0) {
+                insights.push(`📅 You are expecting <strong class="text-emerald-400">${formatMoney(expectedRepayments)}</strong> in upcoming repayments.`);
+            }
+            
+            if (totalIncome === 0 && totalPayment === 0) {
+                insights.push(`📌 No income recorded yet. Start by adding your first income!`);
+            }
+            
+            if (avgIncome > 0 && totalIncome > 0) {
+                insights.push(`📈 Your average income per transaction is <strong class="text-indigo-400">${formatMoney(avgIncome)}</strong>.`);
+            }
+            
+            if (insights.length === 0) {
+                insights.push(`✨ Your finances look healthy! Keep tracking your income.`);
+            }
+            
+            document.getElementById('aiInsightsPanel').innerHTML = insights.map(i => `<div class="flex items-start gap-2 p-2"><i class="fas fa-lightbulb text-yellow-400 mt-0.5 text-sm"></i><span>${i}</span></div>`).join('');
+        }
+        
+        function updateCharts() {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyData = new Array(6).fill(0);
+            const now = new Date();
+            
+            allTransactions.forEach(inc => {
+                if (inc.date && inc.transactionType === 'income') {
+                    const d = new Date(inc.date);
+                    const monthDiff = (now.getMonth() + 12 - d.getMonth()) % 12;
+                    if (monthDiff < 6 && d.getFullYear() === now.getFullYear() || (monthDiff < 6 && d.getFullYear() === now.getFullYear() - 1 && d.getMonth() > now.getMonth())) {
+                        const idx = 5 - monthDiff;
+                        if (idx >= 0 && idx < 6) monthlyData[idx] += parseFloat(inc.amount);
+                    }
+                }
+            });
+            
+            const last6Months = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                last6Months.push(months[d.getMonth()]);
+            }
+            
+            const ctxTrend = document.getElementById('incomeTrendChart')?.getContext('2d');
+            if (ctxTrend) {
+                if (trendChart) trendChart.destroy();
+                trendChart = new Chart(ctxTrend, {
+                    type: 'line',
+                    data: {
+                        labels: last6Months,
+                        datasets: [{
+                            label: 'Income',
+                            data: monthlyData,
+                            borderColor: '#4F46E5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#818cf8',
+                            pointBorderColor: '#4F46E5'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#94a3b8' } }
+                        },
+                        scales: {
+                            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+            }
+            
+            const categories = ['salary', 'bonus', 'gift', 'business', 'freelance', 'investment', 'commission', 'sidehustle', 'otherincome', 'debt-repayment', 'expense', 'lent'];
+            const categoryData = categories.map(cat => 
+                allTransactions.filter(t => (t.type === cat || t.category === cat)).reduce((s, t) => s + (parseFloat(t.amount) || 0), 0)
+            );
+            const categoryNames = ['Salary', 'Bonus', 'Gift', 'Business', 'Freelance', 'Investment', 'Commission', 'Side Hustle', 'Other Income', 'Debt Repayment', 'Expenses', 'Lent'];
+            const categoryColors = ['#22C55E', '#F59E0B', '#EC4899', '#A855F7', '#8B5CF6', '#06B6D4', '#14B8A6', '#FB923C', '#A855F7', '#10B981', '#EF4444', '#3B82F6'];
+            
+            const ctxDist = document.getElementById('incomeDistributionChart')?.getContext('2d');
+            if (ctxDist) {
+                if (distributionChart) distributionChart.destroy();
+                distributionChart = new Chart(ctxDist, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryNames,
+                        datasets: [{
+                            data: categoryData,
+                            backgroundColor: categoryColors,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
         }
         
         // ============================================
@@ -1052,27 +2156,30 @@
         // ============================================
         
         function applyFiltersAndRender() {
-            let result = [...allIncomes];
+            let result = [...allTransactions];
             
             if (currentFilter !== 'all') {
-                result = result.filter(inc => inc.type === currentFilter);
-            }
-            
-            if (currentStatusFilter !== 'all') {
-                result = result.filter(inc => inc.status === currentStatusFilter);
+                if (currentFilter === 'expense') {
+                    result = result.filter(t => t.transactionType === 'expense');
+                } else if (currentFilter === 'debt-repayment') {
+                    result = result.filter(t => t.transactionType === 'debt-repayment');
+                } else if (currentFilter === 'lent') {
+                    result = result.filter(t => t.transactionType === 'lent');
+                } else {
+                    result = result.filter(t => t.type === currentFilter || t.category === currentFilter);
+                }
             }
             
             result = applyDateRange(result, currentDateRange);
             
             if (currentSearch) {
                 const searchLower = currentSearch.toLowerCase();
-                result = result.filter(inc => 
-                    (inc.type && inc.type.toLowerCase().includes(searchLower)) ||
-                    (inc.category && inc.category.toLowerCase().includes(searchLower)) ||
-                    (inc.source && inc.source.toLowerCase().includes(searchLower)) ||
-                    (inc.contributor && inc.contributor.toLowerCase().includes(searchLower)) ||
-                    (inc.description && inc.description.toLowerCase().includes(searchLower)) ||
-                    (inc.tags && inc.tags.some(t => t.toLowerCase().includes(searchLower)))
+                result = result.filter(t => 
+                    (t.type && t.type.toLowerCase().includes(searchLower)) ||
+                    (t.category && t.category.toLowerCase().includes(searchLower)) ||
+                    (t.source && t.source.toLowerCase().includes(searchLower)) ||
+                    (t.personName && t.personName.toLowerCase().includes(searchLower)) ||
+                    (t.description && t.description.toLowerCase().includes(searchLower))
                 );
             }
             
@@ -1091,32 +2198,19 @@
                     break;
             }
             
-            filteredIncomes = result;
-            updateStats();
+            filteredTransactions = result;
             renderTable();
-        }
-        
-        function updateStats() {
-            const totalIncome = allIncomes.reduce((sum, inc) => sum + (inc.amount || 0), 0);
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            const monthlyIncome = allIncomes.filter(inc => inc.date && inc.date.startsWith(currentMonth)).reduce((sum, inc) => sum + inc.amount, 0);
-            const averageIncome = allIncomes.length > 0 ? totalIncome / allIncomes.length : 0;
-            
-            document.getElementById('statTotalIncome').innerHTML = formatMoney(totalIncome);
-            document.getElementById('statMonthlyIncome').innerHTML = formatMoney(monthlyIncome);
-            document.getElementById('statAverageIncome').innerHTML = formatMoney(averageIncome);
-            document.getElementById('statTransactionCount').innerHTML = allIncomes.length;
         }
         
         function renderTable() {
             const tbody = document.getElementById('incomeTableBody');
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
-            const pageItems = filteredIncomes.slice(start, end);
-            const totalRecords = filteredIncomes.length;
+            const pageItems = filteredTransactions.slice(start, end);
+            const totalRecords = filteredTransactions.length;
             
             if (pageItems.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-slate-400 py-12"><i class="fas fa-inbox text-4xl mb-3 opacity-50 block"></i>No income records found</td></tr>`;
+                tbody.innerHTML = `<td><td colspan="8" class="text-center text-slate-400 py-12"><i class="fas fa-inbox text-4xl mb-3 opacity-50 block"></i>No records found</td></tr>`;
                 document.getElementById('showingStart').textContent = '0';
                 document.getElementById('showingEnd').textContent = '0';
                 document.getElementById('totalRecords').textContent = '0';
@@ -1124,37 +2218,46 @@
                 return;
             }
             
-            tbody.innerHTML = pageItems.map(inc => `
-                <tr class="border-b border-slate-700 hover:bg-slate-800/30">
-                    <td data-label="ID" class="font-mono text-xs">${escapeHtml(inc.incomeId || inc.id.slice(-6))}</td>
-                    <td data-label="Type">
-                        <span class="type-badge ${typeClasses[inc.type] || 'type-other'}">${inc.type ? inc.type.charAt(0).toUpperCase() + inc.type.slice(1) : 'Other'}</span>
-                    </td>
-                    <td data-label="Source/Contributor">
-                        <div class="text-sm">
-                            <div class="font-medium">${escapeHtml(inc.source) || '—'}</div>
-                            <div class="text-xs text-slate-400">${escapeHtml(inc.contributor) || ''}</div>
-                        </div>
-                    </td>
-                    <td data-label="Amount" class="font-extrabold text-emerald-400">+${formatMoney(inc.amount)}</td>
-                    <td data-label="Date">${inc.date || '—'}</td>
-                    <td data-label="Status">${getStatusBadge(inc.status)}</td>
-                    <td data-label="Description" class="max-w-[150px] truncate">${escapeHtml(inc.description) || '—'}</td>
-                    <td data-label="Actions">
-                        <div class="table-actions">
-                            <button onclick="editIncome('${inc.id}')" class="text-indigo-400 hover:text-indigo-300 transition p-1" title="Edit">
-                                <i class="fas fa-edit"></i>
+            tbody.innerHTML = pageItems.map(t => {
+                const displayType = t.transactionType === 'income' ? (t.type || t.category || 'salary') : t.transactionType;
+                const amountClass = t.transactionType === 'expense' ? 'text-red-400 amount-negative' : (t.transactionType === 'lent' ? 'text-blue-400' : (t.transactionType === 'debt-repayment' ? 'text-green-400' : 'text-emerald-400 amount-positive'));
+                const amountPrefix = t.transactionType === 'expense' ? '-' : (t.transactionType === 'lent' ? '📤 ' : (t.transactionType === 'debt-repayment' ? '💰 ' : '+'));
+                const displayName = t.transactionType === 'lent' ? t.personName : (t.transactionType === 'debt-repayment' ? t.personName : (t.source || '—'));
+                const status = t.transactionType === 'lent' ? (t.paidAmount === t.amount ? 'Paid' : (t.paidAmount > 0 ? 'Partial' : 'Unpaid')) : 'Completed';
+                const typeIcon = categoryIcons[displayType] || (t.transactionType === 'expense' ? '📦' : (t.transactionType === 'lent' ? '📤' : (t.transactionType === 'debt-repayment' ? '💵' : '📌')));
+                
+                return `
+                    <tr class="border-b border-slate-700 hover:bg-slate-800/30 cursor-pointer transition" onclick="viewTransactionDetails('${t.id}')">
+                        <td data-label="ID" class="font-mono text-xs">${escapeHtml(t.incomeId || t.id.slice(-6))}</td>
+                        <td data-label="Type">
+                            <span class="type-badge ${typeClasses[displayType] || 'type-other'}">${typeIcon} ${displayType === 'debt-repayment' ? 'Debt Repayment' : (displayType === 'expense' ? 'Expense' : (displayType === 'lent' ? 'Money Lent' : (displayType ? displayType.charAt(0).toUpperCase() + displayType.slice(1) : 'Other')))}</span>
+                            ${getTransactionTag(t)}
+                        </td>
+                        <td data-label="Source/Person">
+                            <div class="text-sm font-medium">${escapeHtml(displayName) || '—'}</div>
+                            ${t.transactionType === 'lent' && t.dueDate ? `<div class="text-xs text-slate-400">Due: ${t.dueDate}</div>` : ''}
+                        </td>
+                        <td data-label="Amount" class="font-black text-lg ${amountClass}">${amountPrefix}${formatMoney(t.amount)}</td>
+                        <td data-label="Date">${t.date || '—'}</td>
+                        <td data-label="Account"><span class="text-xs">${t.account || 'cash'}</span></td>
+                        <td data-label="Receipt">
+                            <button onclick="event.stopPropagation(); showThermalReceipt(${JSON.stringify(t).replace(/"/g, '&quot;')})" class="text-amber-400 hover:text-amber-300 transition" title="Thermal Receipt">
+                                <i class="fas fa-receipt"></i>
                             </button>
-                            <button onclick="openUpdateStatusModal('${inc.id}')" class="text-amber-400 hover:text-amber-300 transition p-1" title="Update Status">
-                                <i class="fas fa-exchange-alt"></i>
-                            </button>
-                            <button onclick="deleteIncome('${inc.id}')" class="text-red-400 hover:text-red-300 transition p-1" title="Delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+                        </td>
+                        <td data-label="Actions">
+                            <div class="table-actions" onclick="event.stopPropagation()">
+                                <button onclick="editTransaction('${t.id}')" class="text-indigo-400 hover:text-indigo-300 transition p-1" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteTransaction('${t.id}')" class="text-red-400 hover:text-red-300 transition p-1" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
             
             document.getElementById('showingStart').textContent = start + 1;
             document.getElementById('showingEnd').textContent = Math.min(end, totalRecords);
@@ -1174,181 +2277,385 @@
         
         function goToPage(page) { currentPage = page; renderTable(); }
         
-        function renderTagSuggestions() {
-            const container = document.getElementById('tagSuggestions');
-            container.innerHTML = commonTags.map(tag => `
-                <span class="tag bg-indigo-500/20 hover:bg-indigo-500/30 cursor-pointer" onclick="addTag('${tag}')">${tag}</span>
-            `).join('');
-        }
-        
-        function addTag(tag) {
-            const input = document.getElementById('incomeTags');
-            const current = input.value;
-            if (current) {
-                const tags = current.split(',').map(t => t.trim());
-                if (!tags.includes(tag)) input.value = current + ', ' + tag;
-            } else {
-                input.value = tag;
+        // View transaction details
+        window.viewTransactionDetails = async (id) => {
+            const transaction = allTransactions.find(t => t.id === id);
+            if (!transaction) return;
+            
+            const detailsHtml = `
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Transaction ID:</span><br><span class="font-mono font-bold">${transaction.incomeId || transaction.id.slice(-6)}</span></div>
+                        <div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Date:</span><br>${transaction.date || '—'}</div>
+                        <div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Type:</span><br>${transaction.transactionType === 'expense' ? 'Expense' : (transaction.transactionType === 'lent' ? 'Money Lent' : (transaction.transactionType === 'debt-repayment' ? 'Debt Repayment' : (transaction.type || 'Income')))}</div>
+                        <div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Amount:</span><br><span class="font-black text-lg ${transaction.transactionType === 'expense' ? 'text-red-400' : 'text-emerald-400'}">${transaction.transactionType === 'expense' ? '-' : '+'}${formatMoney(transaction.amount)}</span></div>
+                        <div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Source/Person:</span><br>${escapeHtml(transaction.source || transaction.personName || '—')}</div>
+                        <div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Account:</span><br>${transaction.account || 'cash'}</div>
+                    </div>
+                    ${transaction.reference ? `<div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Reference:</span><br>${escapeHtml(transaction.reference)}</div>` : ''}
+                    ${transaction.description ? `<div class="p-3 bg-slate-800/50 rounded-lg"><span class="text-slate-400">Description:</span><br>${escapeHtml(transaction.description)}</div>` : ''}
+                    <div class="p-3 bg-slate-800/50 rounded-lg">
+                        <span class="text-slate-400">Created By:</span> ${escapeHtml(transaction.createdBy) || '—'}<br>
+                        <span class="text-slate-400">Created At:</span> ${transaction.createdAt ? new Date(transaction.createdAt.toDate()).toLocaleString() : '—'}
+                    </div>
+                </div>
+            `;
+            
+            let detailsModal = document.getElementById('detailsModal');
+            if (!detailsModal) {
+                detailsModal = document.createElement('div');
+                detailsModal.id = 'detailsModal';
+                detailsModal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden';
+                detailsModal.innerHTML = `
+                    <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                                <i class="fas fa-info-circle mr-2"></i> Transaction Details
+                            </h2>
+                            <button onclick="closeModal('detailsModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div id="detailsContent" class="space-y-3"></div>
+                    </div>
+                `;
+                document.body.appendChild(detailsModal);
             }
-        }
+            document.getElementById('detailsContent').innerHTML = detailsHtml;
+            openModal('detailsModal');
+        };
         
         // ============================================
         // CRUD OPERATIONS
         // ============================================
         
-        async function saveIncome(event) {
+        async function saveTransaction(event) {
             event.preventDefault();
             const editId = document.getElementById('editIncomeId').value;
-            const amount = parseFloat(document.getElementById('incomeAmount').value);
-            const type = document.getElementById('incomeType').value;
-            const category = document.getElementById('incomeCategory').value;
-            const source = document.getElementById('incomeSource').value;
-            const contributor = document.getElementById('incomeContributor').value;
-            const status = document.getElementById('incomeStatus').value;
-            const date = document.getElementById('incomeDate').value || new Date().toISOString().split('T')[0];
-            const tagsInput = document.getElementById('incomeTags').value;
-            const description = document.getElementById('incomeDescription').value;
-            const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+            const transType = document.getElementById('transactionType').value;
+            const amount = parseFloat(document.getElementById('transactionAmount').value);
+            const date = document.getElementById('transactionDate').value || new Date().toISOString().split('T')[0];
+            const description = document.getElementById('transactionDescription').value;
+            const personName = document.getElementById('personName').value.trim();
+            const source = document.getElementById('transactionSource').value.trim();
+            const incomeType = document.getElementById('incomeType').value;
+            const dueDate = document.getElementById('debtDueDate').value;
+            const account = document.getElementById('transactionAccount').value;
+            const reference = document.getElementById('transactionReference').value;
+            const paymentMethod = document.getElementById('transactionPaymentMethod').value;
             
             if (!amount || isNaN(amount) || amount <= 0) {
                 showToast('Please enter a valid amount', 'error');
                 return;
             }
             
+            if ((transType === 'lent' || transType === 'debt-repayment') && !personName) {
+                showToast('Please enter person name', 'error');
+                return;
+            }
+            
+            if ((transType === 'income' || transType === 'expense') && !source) {
+                showToast('Please enter source/item name', 'error');
+                return;
+            }
+            
             showLoading(true);
             try {
-                const incomeData = {
+                const transactionData = {
                     userId: currentUser.uid,
                     amount: amount,
-                    type: type,
-                    category: category || type,
-                    source: source,
-                    contributor: contributor,
-                    status: status,
                     date: date,
-                    tags: tags,
                     description: description,
+                    transactionType: transType,
+                    account: account,
+                    reference: reference || null,
+                    paymentMethod: paymentMethod,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedBy: currentUser.email
+                    updatedBy: userData?.fullName || currentUser.email
                 };
                 
+                if (transType === 'income') {
+                    transactionData.type = incomeType;
+                    transactionData.category = incomeType;
+                    transactionData.source = source;
+                } else if (transType === 'expense') {
+                    transactionData.type = 'expense';
+                    transactionData.category = 'expense';
+                    transactionData.source = source;
+                } else if (transType === 'lent') {
+                    transactionData.type = 'lent';
+                    transactionData.personName = personName;
+                    transactionData.dueDate = dueDate || null;
+                    transactionData.linkedDebtId = null;
+                    transactionData.status = 'unpaid';
+                    transactionData.paidAmount = 0;
+                    transactionData.source = source;
+                } else if (transType === 'debt-repayment') {
+                    transactionData.type = 'debt-repayment';
+                    transactionData.personName = personName;
+                    transactionData.source = personName;
+                }
+                
+                let transactionId = editId;
                 if (editId) {
-                    await db.collection('income').doc(editId).update(incomeData);
-                    showToast('Income updated successfully!', 'success');
+                    await db.collection('income').doc(editId).update(transactionData);
+                    showToast('Transaction updated successfully!', 'success');
                 } else {
-                    incomeData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    incomeData.createdBy = currentUser.email;
-                    incomeData.incomeId = generateIncomeId();
-                    await db.collection('income').add(incomeData);
-                    showToast('Income added successfully!', 'success');
+                    transactionData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    transactionData.createdBy = userData?.fullName || currentUser.email;
+                    transactionData.incomeId = generateIncomeId();
+                    const docRef = await db.collection('income').add(transactionData);
+                    transactionId = docRef.id;
+                    
+                    if (transType === 'lent') {
+                        await db.collection('debts').add({
+                            userId: currentUser.uid,
+                            type: 'lent',
+                            personName: personName,
+                            amount: amount,
+                            paidAmount: 0,
+                            remainingAmount: amount,
+                            sourceIncome: incomeType,
+                            dueDate: dueDate || null,
+                            notes: description,
+                            phone: '',
+                            status: 'unpaid',
+                            linkedIncomeId: transactionId,
+                            createdBy: userData?.fullName || currentUser.email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        showToast('Debt record created automatically!', 'success');
+                    }
+                    
+                    if (transType === 'debt-repayment') {
+                        const debtSnapshot = await db.collection('debts')
+                            .where('userId', '==', currentUser.uid)
+                            .where('personName', '==', personName)
+                            .where('type', '==', 'lent')
+                            .get();
+                        
+                        for (const doc of debtSnapshot.docs) {
+                            const debt = doc.data();
+                            const currentPaid = parseFloat(debt.paidAmount) || 0;
+                            const newPaid = currentPaid + amount;
+                            const remaining = debt.amount - newPaid;
+                            await db.collection('debts').doc(doc.id).update({
+                                paidAmount: newPaid,
+                                remainingAmount: remaining,
+                                status: remaining <= 0 ? 'paid' : (newPaid > 0 ? 'partial' : 'unpaid'),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            showToast(`Debt for ${personName} updated!`, 'success');
+                            break;
+                        }
+                    }
                 }
                 
                 closeIncomeModal();
                 document.getElementById('incomeForm').reset();
-                await loadIncomes();
+                await loadTransactions();
+                await loadDebts();
+                updateAllStats();
             } catch (error) {
-                console.error('Error saving income:', error);
-                showToast('Error saving income: ' + error.message, 'error');
+                console.error('Error saving transaction:', error);
+                showToast('Error saving transaction: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
         
-        async function updateStatus(event) {
-            event.preventDefault();
-            const id = document.getElementById('statusIncomeId').value;
-            const newStatus = document.getElementById('newStatus').value;
-            const comments = document.getElementById('statusComments').value;
-            
-            showLoading(true);
-            try {
-                await db.collection('income').doc(id).update({
-                    status: newStatus,
-                    statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    statusComments: comments,
-                    updatedBy: currentUser.email
-                });
-                showToast(`Status updated to ${newStatus}`, 'success');
-                closeModal('updateStatusModal');
-                await loadIncomes();
-            } catch (error) {
-                showToast('Error updating status', 'error');
-            } finally {
-                showLoading(false);
+        window.editTransaction = async (id) => {
+            const transaction = allTransactions.find(t => t.id === id);
+            if (transaction) {
+                openIncomeModal(true, transaction);
             }
-        }
-        
-        window.editIncome = async (id) => {
-            const income = allIncomes.find(inc => inc.id === id);
-            if (income) openIncomeModal(true, income);
         };
         
-        window.deleteIncome = (id) => { openDeleteModal(id); };
+        window.deleteTransaction = (id) => { openDeleteModal(id); };
         
         async function confirmDelete() {
             if (!deleteId) return;
             showLoading(true);
             try {
+                const transaction = allTransactions.find(t => t.id === deleteId);
                 await db.collection('income').doc(deleteId).delete();
-                showToast('Income deleted successfully!', 'success');
+                
+                if (transaction && transaction.transactionType === 'lent') {
+                    const debtSnapshot = await db.collection('debts')
+                        .where('userId', '==', currentUser.uid)
+                        .where('linkedIncomeId', '==', deleteId)
+                        .get();
+                    for (const doc of debtSnapshot.docs) {
+                        await db.collection('debts').doc(doc.id).delete();
+                    }
+                }
+                
+                showToast('Transaction deleted successfully!', 'success');
                 closeDeleteModal();
-                await loadIncomes();
+                await loadTransactions();
+                await loadDebts();
+                updateAllStats();
             } catch (error) {
-                showToast('Error deleting income', 'error');
+                console.error('Error deleting transaction:', error);
+                showToast('Error deleting transaction', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
-        // Export functions
-        function exportToCSV() {
-            if (filteredIncomes.length === 0) {
+        // ============================================
+        // EXPORT FUNCTIONS
+        // ============================================
+        
+        async function exportToPDF() {
+            if (filteredTransactions.length === 0) {
                 showToast('No data to export', 'warning');
                 return;
             }
-            let csv = 'ID,Date,Type,Category,Source,Contributor,Amount,Status,Description,Tags\n';
-            filteredIncomes.forEach(inc => {
-                const row = [
-                    inc.incomeId || inc.id.slice(-6),
-                    inc.date || '',
-                    inc.type || '',
-                    inc.category || '',
-                    inc.source || '',
-                    inc.contributor || '',
-                    inc.amount || 0,
-                    inc.status || '',
-                    (inc.description || '').replace(/,/g, ';'),
-                    (inc.tags || []).join('|')
-                ].join(',');
-                csv += row + '\n';
+            
+            const totalIncome = filteredTransactions.filter(t => t.transactionType === 'income').reduce((s, t) => s + t.amount, 0);
+            const totalSalary = filteredTransactions.filter(t => t.transactionType === 'income' && (t.type === 'salary' || t.category === 'salary')).reduce((s, t) => s + t.amount, 0);
+            const totalOther = totalIncome - totalSalary;
+            const totalExpensesSum = filteredTransactions.filter(t => t.transactionType === 'expense').reduce((s, t) => s + t.amount, 0);
+            const totalLentSum = filteredTransactions.filter(t => t.transactionType === 'lent').reduce((s, t) => s + t.amount, 0);
+            const totalRepaymentsSum = filteredTransactions.filter(t => t.transactionType === 'debt-repayment').reduce((s, t) => s + t.amount, 0);
+            const netBalance = totalSalary + totalOther - totalExpensesSum - totalLentSum + totalRepaymentsSum;
+            const referenceId = `MAYE-FIN-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${Math.floor(Math.random() * 10000)}`;
+            
+            const tableRows = filteredTransactions.slice(0, 30).map(t => {
+                const displayName = t.transactionType === 'lent' ? t.personName : (t.transactionType === 'debt-repayment' ? t.personName : t.source);
+                const amountColor = t.transactionType === 'expense' ? '#EF4444' : (t.transactionType === 'lent' ? '#3B82F6' : (t.transactionType === 'debt-repayment' ? '#10B981' : '#22C55E'));
+                const amountPrefix = t.transactionType === 'expense' ? '-' : '+';
+                return `
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 8px; font-size: 10px;">${t.date || '—'}</td>
+                        <td style="padding: 8px; font-size: 10px;">${t.transactionType === 'expense' ? 'Expense' : (t.transactionType === 'lent' ? 'Money Lent' : (t.transactionType === 'debt-repayment' ? 'Debt Repayment' : (t.type || 'Income')))}</td>
+                        <td style="padding: 8px; font-size: 10px;">${displayName || '—'}</td>
+                        <td style="padding: 8px; font-size: 10px; text-align: right; color: ${amountColor}; font-weight: bold;">${amountPrefix}${formatMoney(t.amount)}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            const printHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Financial Report - ${COMPANY_NAME}</title>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: 'Inter', Arial, sans-serif; background: white; padding: 30px; }
+                        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 2px solid #4F46E5; }
+                        .header-left { display: flex; align-items: center; gap: 15px; }
+                        .header-left img { height: 50px; width: auto; }
+                        .header-left h1 { font-size: 20px; font-weight: 800; color: #4F46E5; margin: 0; }
+                        .summary-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+                        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+                        .stat-card { background: #f1f5f9; padding: 12px; border-radius: 10px; text-align: center; }
+                        .stat-value { font-size: 16px; font-weight: 800; color: #1e293b; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        th { background: #4F46E5; color: white; padding: 10px; font-size: 10px; text-align: left; }
+                        td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 10px; }
+                        .footer { text-align: center; padding: 15px; border-top: 1px solid #e2e8f0; margin-top: 20px; font-size: 9px; color: #64748b; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="header-left">
+                            <img src="${LOGO_URL}" alt="Logo">
+                            <div>
+                                <h1>${COMPANY_NAME}</h1>
+                                <p style="font-size: 10px;">${COMPANY_SLOGAN}</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 700;">Financial Report</div>
+                            <div style="font-size: 9px; color: #64748b;">Generated: ${new Date().toLocaleString()}</div>
+                            <div style="font-size: 9px; color: #64748b;">Ref: ${referenceId}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-box">
+                        <strong>Executive Summary:</strong> Total Payment (New Income): ${formatMoney(totalSalary + totalOther)} | Salary: ${formatMoney(totalSalary)} | Other Income: ${formatMoney(totalOther)} | Lent Out: ${formatMoney(totalLentSum)} | Debt Recovery: ${formatMoney(totalRepaymentsSum)} | Expenses: ${formatMoney(totalExpensesSum)} | Current Balance: ${formatMoney(netBalance)}
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-value">${formatMoney(totalPayment)}</div><div>Total Payment</div></div>
+                        <div class="stat-card"><div class="stat-value">${formatMoney(totalExpensesSum)}</div><div>Expenses</div></div>
+                        <div class="stat-card"><div class="stat-value">${formatMoney(netBalance)}</div><div>Current Balance</div></div>
+                    </div>
+                    
+                    <h4 style="margin: 10px 0;">Transaction Details</h4>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr><th>Date</th><th>Type</th><th>Source/Person</th><th>Amount</th></tr>
+                        </thead>
+                        <tbody>${tableRows}</tbody>
+                    </table>
+                    ${filteredTransactions.length > 30 ? `<p style="font-size: 8px; margin-top: 10px;">* Showing first 30 of ${filteredTransactions.length} transactions</p>` : ''}
+                    
+                    <div class="footer">
+                        <p>Confidential - ${COMPANY_NAME} Financial Analytics</p>
+                        <p>Generated by: ${userData?.fullName || currentUser?.email}</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `financial-report-${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
+            showToast('Generating PDF report...', 'info');
+            await html2pdf().set(opt).from(printHTML).save();
+            showToast('PDF exported successfully!', 'success');
+        }
+        
+        function exportToCSV() {
+            if (filteredTransactions.length === 0) {
+                showToast('No data to export', 'warning');
+                return;
+            }
+            let csv = 'ID,Date,Type,Transaction Type,Source/Person,Amount,Account,Reference,Description,Due Date,Status,Created By,Created At\n';
+            filteredTransactions.forEach(t => {
+                const displayName = t.transactionType === 'lent' ? t.personName : (t.transactionType === 'debt-repayment' ? t.personName : t.source);
+                const status = t.transactionType === 'lent' ? (t.paidAmount === t.amount ? 'Paid' : (t.paidAmount > 0 ? 'Partial' : 'Unpaid')) : 'Completed';
+                csv += `${t.incomeId || t.id.slice(-6)},${t.date || ''},${t.type || ''},${t.transactionType || 'income'},${displayName || ''},${t.amount || 0},${t.account || 'cash'},${(t.reference || '').replace(/,/g, ';')},${(t.description || '').replace(/,/g, ';')},${t.dueDate || ''},${status},${t.createdBy || ''},${t.createdAt ? new Date(t.createdAt.toDate()).toLocaleString() : ''}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `maye-incomes-${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `financial-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
             showToast('CSV exported successfully!', 'success');
         }
         
         function exportToJSON() {
-            if (filteredIncomes.length === 0) {
+            if (filteredTransactions.length === 0) {
                 showToast('No data to export', 'warning');
                 return;
             }
             const exportData = {
                 exportDate: new Date().toISOString(),
-                totalRecords: filteredIncomes.length,
-                totalAmount: filteredIncomes.reduce((s, inc) => s + inc.amount, 0),
-                data: filteredIncomes
+                reportReference: `MAYE-FIN-${Date.now()}`,
+                generatedBy: userData?.fullName || currentUser?.email,
+                totalRecords: filteredTransactions.length,
+                summary: {
+                    totalPayment: totalPayment,
+                    totalSalary: totalSalaryAmount,
+                    totalOtherIncome: totalOtherIncomeAmount,
+                    totalExpenses: totalExpensesAmount,
+                    totalLentOut: totalLentAmount,
+                    totalDebtRecovery: totalDebtRecoveryAmount,
+                    currentBalance: currentBalance
+                },
+                data: filteredTransactions
             };
             const dataStr = JSON.stringify(exportData, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `maye-incomes-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `financial-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
             showToast('JSON exported successfully!', 'success');
@@ -1372,9 +2679,11 @@
         }
         
         function setupEventListeners() {
-            document.getElementById('incomeForm').addEventListener('submit', saveIncome);
+            document.getElementById('incomeForm').addEventListener('submit', saveTransaction);
             document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
-            document.getElementById('updateStatusForm').addEventListener('submit', updateStatus);
+            document.getElementById('transactionType').addEventListener('change', toggleFormFields);
+            document.getElementById('printThermalReceiptBtn').addEventListener('click', printThermalReceipt);
+            document.getElementById('thermalReceiptBtn').addEventListener('click', () => showThermalReceipt());
             
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1391,16 +2700,11 @@
                 applyFiltersAndRender();
             });
             
-            document.getElementById('statusFilterSelect').addEventListener('change', (e) => {
-                currentStatusFilter = e.target.value;
-                currentPage = 1;
-                applyFiltersAndRender();
-            });
-            
             document.getElementById('dateRangeSelect').addEventListener('change', (e) => {
                 currentDateRange = e.target.value;
                 currentPage = 1;
                 applyFiltersAndRender();
+                updateCharts();
             });
             
             const searchInput = document.getElementById('globalSearch');
@@ -1421,11 +2725,15 @@
             
             document.getElementById('exportBtn')?.addEventListener('click', () => openModal('exportModal'));
             document.getElementById('exportCSVBtn')?.addEventListener('click', () => { exportToCSV(); closeModal('exportModal'); });
+            document.getElementById('exportPDFBtn')?.addEventListener('click', () => { exportToPDF(); closeModal('exportModal'); });
             document.getElementById('exportJSONBtn')?.addEventListener('click', () => { exportToJSON(); closeModal('exportModal'); });
             
             document.getElementById('refreshBtn')?.addEventListener('click', async () => {
                 showToast('Refreshing data...', 'info');
-                await loadIncomes();
+                await loadTransactions();
+                await loadDebts();
+                await loadPurchases();
+                updateAllStats();
                 showToast('Data refreshed', 'success');
             });
             
@@ -1491,6 +2799,8 @@
                     if (currentTheme === 'light') document.body.classList.add('light-mode');
                     else document.body.classList.remove('light-mode');
                     themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    updateCharts();
+                    updateAllStats();
                 });
             }
             
@@ -1521,7 +2831,8 @@
                     closeIncomeModal();
                     closeDeleteModal();
                     closeModal('exportModal');
-                    closeModal('updateStatusModal');
+                    closeModal('detailsModal');
+                    closeModal('thermalReceiptModal');
                 }
             });
         }
@@ -1534,14 +2845,12 @@
         }
         
         window.goToPage = goToPage;
-        window.addTag = addTag;
         window.closeIncomeModal = closeIncomeModal;
         window.closeDeleteModal = closeDeleteModal;
-        window.openUpdateStatusModal = openUpdateStatusModal;
-        window.editIncome = editIncome;
-        window.deleteIncome = deleteIncome;
-        window.exportToCSV = exportToCSV;
-        window.exportToJSON = exportToJSON;
+        window.editTransaction = editTransaction;
+        window.deleteTransaction = deleteTransaction;
+        window.closeModal = closeModal;
+        window.showThermalReceipt = showThermalReceipt;
     </script>
 </body>
 </html>
