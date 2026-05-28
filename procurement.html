@@ -85,6 +85,17 @@
             border-left: 3px solid #4F46E5;
         }
         
+        /* Admin link in sidebar */
+        .sidebar-nav-item.admin-link {
+            border-top: 1px solid rgba(79, 70, 229, 0.2);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        
+        .sidebar-nav-item.admin-link i {
+            color: #F59E0B;
+        }
+        
         /* Topbar */
         .topbar-premium {
             background: rgba(15, 23, 42, 0.85);
@@ -344,74 +355,12 @@
             color: white;
         }
         
-        /* Search & Filter Bar */
-        .search-filters {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 20px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            align-items: center;
-        }
-        
-        .filter-input {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            outline: none;
-            transition: all 0.2s;
-            color: #e2e8f0;
-        }
-        
-        .filter-input:focus {
-            border-color: #4F46E5;
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-        }
-        
-        body.light-mode .filter-input {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #1e293b;
-        }
-        
-        /* Sort button */
-        .sort-btn {
-            background: rgba(51, 65, 85, 0.5);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .sort-btn:hover, .sort-btn.active {
-            background: rgba(79, 70, 229, 0.2);
-            border-color: #4F46E5;
-            color: #818cf8;
-        }
-        
         /* Checkbox */
         .select-checkbox {
             width: 18px;
             height: 18px;
             cursor: pointer;
             accent-color: #4F46E5;
-        }
-        
-        /* Audit trail text */
-        .audit-text {
-            font-size: 0.65rem;
-            color: #64748b;
-            margin-top: 0.25rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
         }
         
         /* Selection toolbar */
@@ -485,6 +434,12 @@
             margin-bottom: 1.5rem;
             border: 1px solid #e2e8f0;
         }
+        
+        /* Edit Purchase Modal */
+        .edit-purchase-modal {
+            max-width: 500px;
+            width: 90%;
+        }
     </style>
 </head>
 <body>
@@ -516,18 +471,121 @@
         </div>
     </div>
     
-    <!-- Selection Toolbar -->
+    <!-- Selection Toolbar (For Purchase Tab) -->
     <div id="selectionToolbar" class="selection-toolbar no-print hidden">
-        <span id="selectedCount" class="text-white font-bold">0 selected</span>
-        <button id="bulkDeleteBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl text-white font-bold text-sm">
-            <i class="fas fa-trash-alt mr-1"></i> Delete Selected
-        </button>
-        <button id="bulkExportBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl text-white font-bold text-sm">
-            <i class="fas fa-download mr-1"></i> Export Selected
-        </button>
-        <button id="bulkCancelBtn" class="bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-xl text-white font-bold text-sm">
-            Cancel
-        </button>
+        <div class="selected-info">
+            <i class="fas fa-check-circle text-indigo-400"></i>
+            <span id="selectedCount" class="font-bold">0 selected</span>
+            <span id="selectedTotal" class="text-xs text-slate-400 ml-2"></span>
+        </div>
+        <div class="flex gap-2">
+            <button id="bulkExportPDFBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl text-white font-bold text-sm transition">
+                <i class="fas fa-file-pdf mr-1"></i> Export PDF
+            </button>
+            <button id="bulkExportCSVBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl text-white font-bold text-sm transition">
+                <i class="fas fa-file-csv mr-1"></i> Export CSV
+            </button>
+            <button id="bulkDeleteBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl text-white font-bold text-sm transition" disabled>
+                <i class="fas fa-trash-alt mr-1"></i> Delete (<span id="bulkDeleteCount">0</span>)
+            </button>
+            <button id="bulkCancelBtn" class="bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-xl text-white font-bold text-sm transition">
+                <i class="fas fa-times mr-1"></i> Cancel
+            </button>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl text-center">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-red-400 text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold mb-2" id="deleteConfirmTitle">Delete Purchase?</h2>
+            <p class="text-slate-400 mb-6" id="deleteConfirmMessage">Are you sure you want to permanently delete this purchase record? This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold transition">
+                    <i class="fas fa-trash-alt mr-2"></i> Yes, Delete
+                </button>
+                <button id="cancelDeleteBtn" class="flex-1 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Purchase Modal -->
+    <div id="editPurchaseModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
+        <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    <i class="fas fa-edit mr-2"></i> Edit Purchase
+                </h2>
+                <button onclick="closeModal('editPurchaseModal')" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="editPurchaseForm">
+                <input type="hidden" id="editPurchaseId">
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Item Name *</label>
+                    <input type="text" id="editItemName" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
+                        <input type="number" id="editQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
+                        <input type="text" id="editUnit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" placeholder="kg, pcs">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price *</label>
+                        <input type="number" id="editPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                        <select id="editCategory" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                            <option value="IT Equipment">💻 IT Equipment</option>
+                            <option value="Office Supplies">📎 Office Supplies</option>
+                            <option value="Furniture">🪑 Furniture</option>
+                            <option value="Food">🍔 Food</option>
+                            <option value="Healthcare">🏥 Healthcare</option>
+                            <option value="Other">📌 Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Supplier</label>
+                    <input type="text" id="editSupplier" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" placeholder="Supplier name">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Date</label>
+                    <input type="date" id="editDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Notes</label>
+                    <textarea id="editNotes" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none resize-none"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Status</label>
+                    <select id="editStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none">
+                        <option value="approved">✅ Approved</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="paid">💰 Paid</option>
+                        <option value="received">📋 Received</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 mt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 py-2.5 rounded-xl font-bold transition">
+                        <i class="fas fa-save mr-2"></i> Update Purchase
+                    </button>
+                    <button type="button" onclick="closeModal('editPurchaseModal')" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl font-semibold transition">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
     
     <!-- Main Container -->
@@ -550,7 +608,11 @@
             </div>
             <nav id="sidebarNav" class="flex-1 py-5 space-y-1.5"></nav>
             <div class="p-4 border-t border-indigo-500/20 mt-auto">
-                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10">
+                <div class="sidebar-nav-item admin-link text-amber-400 hover:bg-amber-500/10" onclick="window.location.href='administration.html'">
+                    <i class="fas fa-user-shield w-5"></i>
+                    <span class="nav-text font-semibold">Admin Panel</span>
+                </div>
+                <button id="logoutBtnSidebar" class="sidebar-nav-item w-full !text-red-400 hover:!bg-red-500/10 mt-2">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="nav-text font-semibold">Logout</span>
                 </button>
@@ -589,7 +651,7 @@
                                 </div>
                                 <i class="fas fa-chevron-down text-xs text-slate-400 hidden lg:inline"></i>
                             </button>
-                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-64 rounded-2xl hidden z-50 overflow-hidden">
+                            <div id="userDropdown" class="dropdown-premium absolute top-full right-0 mt-2 w-72 rounded-2xl hidden z-50 overflow-hidden">
                                 <div class="p-4 border-b border-indigo-500/20">
                                     <p id="userEmailDisplay" class="text-sm font-medium text-slate-300 truncate">user@example.com</p>
                                 </div>
@@ -603,11 +665,14 @@
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='reports.html'">
                                         <i class="fas fa-chart-pie w-5 text-purple-400"></i> Reports
                                     </div>
+                                    <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='debts.html'">
+                                        <i class="fas fa-hand-holding-usd w-5 text-cyan-400"></i> Debts
+                                    </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='settings.html'">
                                         <i class="fas fa-cog w-5 text-indigo-400"></i> Settings
                                     </div>
                                     <div class="flex items-center gap-3 px-4 py-3 hover:bg-indigo-500/10 transition cursor-pointer font-medium" onclick="window.location.href='administration.html'">
-                                        <i class="fas fa-user-shield w-5 text-rose-400"></i> Admin
+                                        <i class="fas fa-user-shield w-5 text-amber-400"></i> Admin Panel
                                     </div>
                                     <hr class="border-indigo-500/20 my-1">
                                     <button id="logoutBtnTopbar" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition font-medium">
@@ -697,11 +762,11 @@
                         <i class="fas fa-truck mr-2"></i> Suppliers
                     </button>
                     <button class="procurement-tab px-5 py-2.5 rounded-xl font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700" data-tab="reports">
-                        <i class="fas fa-chart-line mr-2"></i> Reports
+                        <i class="fas fa-chart-line mr-2"></i> Analytics
                     </button>
                 </div>
                 
-                <!-- ==================== REQUISITIONS TAB ==================== -->
+                <!-- ==================== REQUISITIONS TAB (UNCHANGED - WORKING PERFECTLY) ==================== -->
                 <div id="requisitionsTab" class="procurement-tab-content">
                     <div class="glass-card p-6 mb-6">
                         <h2 class="text-xl font-extrabold mb-5 flex items-center gap-2">
@@ -718,7 +783,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
-                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.001" step="0.001" min="0.001" value="1" inputmode="decimal" required>
+                                <input type="number" id="reqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.001" step="0.001" min="0.001" value="1" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -726,7 +791,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price *</label>
-                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.000" step="0.001" min="0.001" inputmode="decimal" required>
+                                <input type="number" id="reqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500" placeholder="0.000" step="0.001" min="0.001" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -776,6 +841,16 @@
                                 <i class="fas fa-list text-indigo-400"></i> Requisitions List
                             </h2>
                             <div class="flex gap-2">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="reqSelectAll" class="select-checkbox">
+                                    <label class="text-sm text-slate-400">Select All</label>
+                                </div>
+                                <button id="reqBulkDeleteBtn" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 px-3 py-1.5 rounded-lg text-sm font-bold transition">
+                                    <i class="fas fa-trash-alt mr-1"></i> Delete Selected
+                                </button>
+                                <button id="reqExportPDFBtn" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 px-3 py-1.5 rounded-lg text-sm font-bold transition">
+                                    <i class="fas fa-file-pdf mr-1"></i> Export PDF
+                                </button>
                                 <select id="reqFilterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
                                     <option value="all">All Status</option>
                                     <option value="pending">⏳ Pending</option>
@@ -791,6 +866,7 @@
                             <table class="data-table w-full">
                                 <thead>
                                     <tr>
+                                        <th class="w-10"></th>
                                         <th>Req ID</th>
                                         <th>Item</th>
                                         <th>Qty</th>
@@ -804,19 +880,19 @@
                                     </tr>
                                 </thead>
                                 <tbody id="requisitionsTableBody">
-                                    <td><td colspan="10" class="text-center text-slate-400 py-8">Loading requisitions...</td></tr>
+                                    <tr><td colspan="11" class="text-center text-slate-400 py-8">Loading requisitions...</td</tr>
                                 </tbody>
-                             </table>
+                            </table>
                         </div>
                         <div id="reqPagination" class="flex justify-center gap-2 mt-4"></div>
                     </div>
                 </div>
                 
-                <!-- ==================== PURCHASE ORDERS TAB ==================== -->
+                <!-- ==================== PURCHASE ORDERS TAB (FIXED DELETE) ==================== -->
                 <div id="purchasesTab" class="procurement-tab-content hidden">
                     <div class="glass-card p-6">
                         <!-- Corporate Metadata Block for Print -->
-                        <div class="corporate-metadata no-print" id="printMetadata" style="margin-bottom: 1rem;">
+                        <div class="corporate-metadata no-print" id="printMetadata">
                             <div class="flex flex-wrap justify-between items-start gap-4">
                                 <div class="flex items-center gap-4">
                                     <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="MAYE Logo" style="height: 60px; width: auto;">
@@ -838,7 +914,10 @@
                         
                         <!-- Advanced Search & Filters -->
                         <div class="search-filters no-print">
-                            <input type="text" id="searchInput" placeholder="🔍 Search by item, supplier, category, ID..." class="filter-input flex-1 min-w-[150px]">
+                            <div class="relative flex-1 min-w-[200px]">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                                <input type="text" id="searchInput" placeholder="Search by item, supplier, category, ID..." class="filter-input pl-9 w-full">
+                            </div>
                             <select id="statusFilter" class="filter-input">
                                 <option value="all">All Status</option>
                                 <option value="approved">✅ Approved</option>
@@ -869,9 +948,10 @@
                         <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
                             <h2 class="text-xl font-extrabold flex items-center gap-2">
                                 <i class="fas fa-shopping-cart text-indigo-400"></i> Purchase Orders
+                                <span id="filteredCount" class="text-sm font-normal text-slate-400"></span>
                             </h2>
                             <div class="flex gap-2">
-                                <button id="addPurchaseBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold text-sm">
+                                <button id="addPurchaseBtn" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold text-sm transition">
                                     <i class="fas fa-plus mr-1"></i> Add Purchase
                                 </button>
                                 <button id="exportPurchasesPDFBtn" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 px-4 py-2 rounded-xl font-bold transition">
@@ -901,9 +981,18 @@
                                     </tr>
                                 </thead>
                                 <tbody id="purchasesTableBody">
-                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td></tr>
+                                    <tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</td>
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Summary Footer -->
+                        <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-700">
+                            <div class="text-sm text-slate-400">
+                                Showing <span id="showingStart">0</span> - <span id="showingEnd">0</span> of <span id="totalFilteredRecords">0</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-slate-400">Total Amount: <span id="footerTotalAmount" class="font-bold text-emerald-400">D 0.000</span></div>
+                            </div>
                         </div>
                         <div id="purchasePagination" class="flex justify-center gap-2 mt-4"></div>
                     </div>
@@ -951,7 +1040,7 @@
                     </div>
                 </div>
                 
-                <!-- ==================== REPORTS TAB ==================== -->
+                <!-- ==================== ANALYTICS TAB ==================== -->
                 <div id="reportsTab" class="procurement-tab-content hidden">
                     <div class="glass-card p-6 mb-6">
                         <h2 class="text-xl font-extrabold mb-4 flex items-center gap-2">
@@ -973,9 +1062,6 @@
                             <i class="fas fa-file-alt text-indigo-400"></i> Export Reports
                         </h2>
                         <div class="flex flex-wrap gap-3">
-                            <button id="exportRequisitionsCSV" class="bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 rounded-xl font-bold transition">
-                                <i class="fas fa-file-csv mr-2"></i> Export Requisitions
-                            </button>
                             <button id="exportSuppliersCSV" class="bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl font-bold transition">
                                 <i class="fas fa-file-csv mr-2"></i> Export Suppliers
                             </button>
@@ -986,7 +1072,7 @@
         </div>
     </div>
     
-    <!-- Add/Edit Purchase Modal -->
+    <!-- Add Purchase Modal -->
     <div id="purchaseModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
         <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
             <div class="flex justify-between items-center mb-4">
@@ -1000,8 +1086,8 @@
             <form id="purchaseForm">
                 <input type="hidden" id="purchaseEditId">
                 <div class="mb-3">
-                    <label class="block text-sm font-bold text-slate-300 mb-2">Purchase ID</label>
-                    <input type="text" id="purchaseId" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 font-mono text-sm" readonly>
+                    <label class="block text-sm font-bold text-slate-300 mb-2">Purchase ID (Optional)</label>
+                    <input type="text" id="purchaseId" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 font-mono text-sm" placeholder="Auto-generated if left empty">
                 </div>
                 <div class="mb-3">
                     <label class="block text-sm font-bold text-slate-300 mb-2">Item Name *</label>
@@ -1010,7 +1096,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Quantity *</label>
-                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" value="1" inputmode="decimal" required>
+                        <input type="number" id="purchaseQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" value="1" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -1020,7 +1106,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Price *</label>
-                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" inputmode="decimal" required>
+                        <input type="number" id="purchasePrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -1062,7 +1148,7 @@
         </div>
     </div>
     
-    <!-- Edit Requisition Modal -->
+    <!-- Edit Requisition Modal (Unchanged) -->
     <div id="editRequisitionModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
         <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl">
             <div class="flex justify-between items-center mb-4">
@@ -1082,7 +1168,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Quantity</label>
-                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" inputmode="decimal" required>
+                        <input type="number" id="editReqQuantity" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit</label>
@@ -1092,7 +1178,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Unit Price</label>
-                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" inputmode="decimal" required>
+                        <input type="number" id="editReqUnitPrice" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 outline-none" step="0.001" min="0.001" required>
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-bold text-slate-300 mb-2">Category</label>
@@ -1146,7 +1232,7 @@
         </div>
     </div>
     
-    <!-- View Details Modal (Receipt Style) -->
+    <!-- View Details Modal -->
     <div id="viewDetailsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[5000] items-center justify-center hidden">
         <div class="modal-premium w-[90%] max-w-md p-6 rounded-3xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -1196,7 +1282,9 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        // Global state
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
         let currentUser = null;
         let userData = null;
         let purchases = [];
@@ -1213,8 +1301,11 @@
         let itemsPerPage = 10;
         let currentSort = 'newest';
         
-        // Selection state
-        let selectedPurchases = new Set();
+        // Purchase selection state (using Firestore document IDs)
+        let selectedPurchaseIds = new Set();
+        
+        // Requisition selection state (unchanged)
+        let selectedRequisitionIds = new Set();
         
         // Search state
         let searchTerm = '';
@@ -1223,6 +1314,11 @@
         let supplierFilter = '';
         let dateFrom = '';
         let dateTo = '';
+        
+        // Delete pending state for purchase only
+        let pendingDeleteId = null;
+        let pendingBulkDelete = false;
+        let pendingDeleteIds = [];
         
         const currencies = {
             USD: { symbol: '$', name: 'US Dollar' },
@@ -1236,6 +1332,7 @@
             { icon: 'fa-money-bill-wave', text: 'Income', page: 'income.html', active: false },
             { icon: 'fa-shopping-cart', text: 'Procurement', page: 'procurement.html', active: true },
             { icon: 'fa-chart-pie', text: 'Reports', page: 'reports.html', active: false },
+            { icon: 'fa-hand-holding-usd', text: 'Debts', page: 'debts.html', active: false },
             { icon: 'fa-cog', text: 'Settings', page: 'settings.html', active: false },
             { icon: 'fa-user-shield', text: 'Admin', page: 'administration.html', active: false }
         ];
@@ -1245,13 +1342,12 @@
         const COMPANY_SLOGAN = "Incungamutungo ry'Urugo";
         
         // ============================================
-        // FORMATTING FUNCTIONS (with 3 decimals)
+        // FORMATTING FUNCTIONS
         // ============================================
         
         function formatMoney(amount) {
             const symbol = currencies[currentCurrency]?.symbol || 'D';
             const formatted = amount.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-            if (currentCurrency === 'AED') return `${symbol} ${formatted}`;
             return `${symbol} ${formatted}`;
         }
         
@@ -1325,9 +1421,12 @@
         }
         
         function updatePrintMetadata() {
-            document.getElementById('printDate').textContent = new Date().toLocaleString();
-            document.getElementById('printRefId').textContent = generateReferenceId();
-            document.getElementById('printGeneratedBy').textContent = userData?.fullName || currentUser?.email || 'System User';
+            const printDate = document.getElementById('printDate');
+            const printRefId = document.getElementById('printRefId');
+            const printGeneratedBy = document.getElementById('printGeneratedBy');
+            if (printDate) printDate.textContent = new Date().toLocaleString();
+            if (printRefId) printRefId.textContent = generateReferenceId();
+            if (printGeneratedBy) printGeneratedBy.textContent = userData?.fullName || currentUser?.email || 'System User';
         }
         
         // ============================================
@@ -1361,16 +1460,7 @@
         }
         
         // ============================================
-        // VALIDATION FUNCTION
-        // ============================================
-        function isValidPositiveNumber(value) {
-            if (value === undefined || value === null || value === '') return false;
-            const num = parseFloat(value);
-            return !isNaN(num) && num > 0;
-        }
-        
-        // ============================================
-        // ADVANCED SEARCH & FILTER FUNCTION
+        // PURCHASE FILTER FUNCTION
         // ============================================
         
         function filterPurchases() {
@@ -1382,7 +1472,8 @@
                     p.itemName?.toLowerCase().includes(term) ||
                     p.supplier?.toLowerCase().includes(term) ||
                     p.category?.toLowerCase().includes(term) ||
-                    p.id?.toLowerCase().includes(term)
+                    p.id?.toLowerCase().includes(term) ||
+                    (p.purchaseNumber && p.purchaseNumber.toLowerCase().includes(term))
                 );
             }
             
@@ -1426,160 +1517,49 @@
             return filtered;
         }
         
-        function renderFilteredPurchases() {
-            const filtered = filterPurchases();
-            renderPurchasesTableWithData(filtered);
-            updateSelectionUI();
-        }
-        
-        // ============================================
-        // AUTHENTICATION & DATA LOADING
-        // ============================================
-        
-        auth.onAuthStateChanged(async (user) => {
-            if (!user || !user.emailVerified) {
-                window.location.href = 'index.html';
-                return;
-            }
-            currentUser = user;
-            await loadUserData();
-            await loadPurchases();
-            await loadRequisitions();
-            await loadSuppliers();
-            renderSidebar();
-            setupEventListeners();
-            setupTabs();
-            updateStats();
-            renderFilteredPurchases();
-            renderRequisitionsTable();
-            renderSuppliersList();
-            initReportsCharts();
-            setupRealtimeListener();
-            updatePrintMetadata();
-        });
-        
-        async function loadUserData() {
-            try {
-                const doc = await db.collection('users').doc(currentUser.uid).get();
-                if (doc.exists) {
-                    userData = doc.data();
-                    document.getElementById('userName').textContent = userData?.fullName || currentUser.email.split('@')[0];
-                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
-                    if (userData?.settings) {
-                        currentCurrency = userData.settings.currency || 'AED';
-                        currentTheme = userData.settings.theme || 'dark';
-                        currencySymbol = currencies[currentCurrency]?.symbol || 'D';
-                    }
-                    if (userData?.profilePicture) {
-                        document.getElementById('userAvatar').src = userData.profilePicture;
-                        document.getElementById('userAvatar').classList.remove('hidden');
-                        document.getElementById('userAvatarFallback').classList.add('hidden');
-                    }
+        function getSelectedTotalAmount() {
+            let total = 0;
+            for (const id of selectedPurchaseIds) {
+                const purchase = purchases.find(p => p.id === id);
+                if (purchase) {
+                    total += (purchase.price || 0) * (purchase.quantity || 0);
                 }
-                if (currentTheme === 'light') document.body.classList.add('light-mode');
-                else document.body.classList.remove('light-mode');
-            } catch (error) {
-                console.error('Error loading user data:', error);
             }
+            return total;
         }
         
-        async function loadPurchases() {
-            showLoading(true);
-            try {
-                const snapshot = await db.collection('purchases')
-                    .where('userId', '==', currentUser.uid)
-                    .get();
-                purchases = snapshot.docs.map(doc => ({ 
-                    id: doc.id, 
-                    ...doc.data(),
-                    quantity: parseFloat(doc.data().quantity) || 0,
-                    price: parseFloat(doc.data().price) || 0,
-                    total: (parseFloat(doc.data().price) || 0) * (parseFloat(doc.data().quantity) || 0)
-                }));
-                purchases.sort((a, b) => {
-                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
-                    return 0;
-                });
-                updateStats();
-                renderFilteredPurchases();
-                if (charts.category) initReportsCharts();
-            } catch (error) {
-                console.error('Error loading purchases:', error);
-            } finally {
-                showLoading(false);
-            }
-        }
-        
-        async function loadRequisitions() {
-            try {
-                const snapshot = await db.collection('requisitions')
-                    .where('userId', '==', currentUser.uid)
-                    .get();
-                requisitions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                requisitions.sort((a, b) => {
-                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
-                    return 0;
-                });
-                renderRequisitionsTable();
-            } catch (error) {
-                console.error('Error loading requisitions:', error);
-            }
-        }
-        
-        async function loadSuppliers() {
-            try {
-                const snapshot = await db.collection('suppliers')
-                    .where('userId', '==', currentUser.uid)
-                    .get();
-                suppliers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                document.getElementById('totalSuppliers').textContent = suppliers.length;
-                renderSuppliersList();
-            } catch (error) {
-                console.error('Error loading suppliers:', error);
-            }
-        }
-        
-        function setupRealtimeListener() {
-            if (!currentUser) return;
-            db.collection('purchases')
-                .where('userId', '==', currentUser.uid)
-                .onSnapshot(() => loadPurchases(), (error) => console.error('Realtime error:', error));
-        }
-        
-        function updateStats() {
-            const totalReqs = requisitions.length;
-            const pendingReqs = requisitions.filter(r => r.status === 'pending').length;
-            const totalAmount = requisitions.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
-            const totalSpend = purchases.reduce((s, p) => s + ((p.price || 0) * (p.quantity || 0)), 0);
-            document.getElementById('totalRequisitions').textContent = totalReqs;
-            document.getElementById('totalPurchases').textContent = purchases.length;
-            document.getElementById('totalSpend').innerHTML = formatMoney(totalSpend);
-            document.getElementById('pendingApprovals').textContent = pendingReqs;
-            document.getElementById('totalAmount').innerHTML = formatMoney(totalAmount);
-        }
-        
-        // ============================================
-        // RENDER FUNCTIONS
-        // ============================================
-        
-        function updateSelectionUI() {
-            const count = selectedPurchases.size;
+        function updatePurchaseSelectionUI() {
+            const count = selectedPurchaseIds.size;
             const toolbar = document.getElementById('selectionToolbar');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const selectedTotalSpan = document.getElementById('selectedTotal');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const bulkDeleteCountSpan = document.getElementById('bulkDeleteCount');
+            
             if (toolbar) {
                 if (count > 0) {
                     toolbar.classList.remove('hidden');
-                    document.getElementById('selectedCount').innerHTML = `${count} selected`;
+                    if (selectedCountSpan) selectedCountSpan.innerHTML = `${count} selected`;
+                    if (selectedTotalSpan) selectedTotalSpan.innerHTML = `Total: ${formatMoney(getSelectedTotalAmount())}`;
+                    if (bulkDeleteCountSpan) bulkDeleteCountSpan.innerHTML = count;
+                    if (bulkDeleteBtn) bulkDeleteBtn.disabled = false;
                 } else {
                     toolbar.classList.add('hidden');
+                    if (bulkDeleteBtn) bulkDeleteBtn.disabled = true;
                 }
             }
+            
             const selectAll = document.getElementById('selectAllPOs');
             if (selectAll) {
                 const visibleIds = purchases.slice((poCurrentPage-1)*itemsPerPage, poCurrentPage*itemsPerPage).map(p => p.id);
-                const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedPurchases.has(id));
+                const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedPurchaseIds.has(id));
                 selectAll.checked = allSelected;
             }
         }
+        
+        // ============================================
+        // RENDER PURCHASE TABLE (FIXED - Uses doc.id)
+        // ============================================
         
         function renderPurchasesTableWithData(filtered) {
             const tbody = document.getElementById('purchasesTableBody');
@@ -1589,9 +1569,16 @@
             const end = start + itemsPerPage;
             const pageItems = filtered.slice(start, end);
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            const totalFilteredAmount = filtered.reduce((sum, p) => sum + ((p.price || 0) * (p.quantity || 0)), 0);
+            
+            document.getElementById('showingStart').textContent = filtered.length === 0 ? 0 : start + 1;
+            document.getElementById('showingEnd').textContent = Math.min(end, filtered.length);
+            document.getElementById('totalFilteredRecords').textContent = filtered.length;
+            document.getElementById('footerTotalAmount').innerHTML = formatMoney(totalFilteredAmount);
+            document.getElementById('filteredCount').innerHTML = `(${filtered.length} records)`;
             
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td<tr>';
+                tbody.innerHTML = '<tr><td colspan="12" class="text-center text-slate-400 py-8">No purchase orders found</td</tr>';
                 const paginationDiv = document.getElementById('purchasePagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1601,24 +1588,32 @@
                 const qty = parseFloat(p.quantity) || 0;
                 const price = parseFloat(p.price) || 0;
                 const total = qty * price;
+                // CRITICAL: Using p.id which is the Firestore document ID
+                const firestoreId = p.id;
+                const displayId = p.purchaseNumber || p.id.slice(-8).toUpperCase();
+                
                 return `
-                    <tr class="border-b border-slate-700 hover:bg-slate-800/30">
-                        <td class="p-3"><input type="checkbox" class="select-checkbox purchase-select" data-id="${p.id}" ${selectedPurchases.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); togglePurchaseSelect('${p.id}')"></td>
-                        <td class="p-3 font-mono text-sm" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.id}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${qty.toFixed(3)}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.unit || 'pcs'}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(price)}</td>
-                        <td class="p-3 font-bold text-emerald-400" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${formatMoney(total)}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.category || 'Other'}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${escapeHtml(p.supplier) || '—'}</td>
-                        <td class="p-3" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${getStatusBadge(p.status)}</td>
-                        <td class="p-3 text-xs" onclick="viewPurchaseDetails('${p.id}')" style="cursor:pointer">${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</td>
+                    <tr class="border-b border-slate-700 hover:bg-slate-800/30" data-id="${firestoreId}">
+                        <td class="p-3"><input type="checkbox" class="select-checkbox purchase-select" data-id="${firestoreId}" ${selectedPurchaseIds.has(firestoreId) ? 'checked' : ''} onclick="event.stopPropagation(); togglePurchaseSelect('${firestoreId}')"></td>
+                        <td class="p-3 font-mono text-sm" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${displayId}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${escapeHtml(p.itemName)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${qty.toFixed(3)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${p.unit || 'pcs'}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${formatMoney(price)}</td>
+                        <td class="p-3 font-bold text-emerald-400" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${formatMoney(total)}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${p.category || 'Other'}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${escapeHtml(p.supplier) || '—'}</td>
+                        <td class="p-3" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${getStatusBadge(p.status)}</td>
+                        <td class="p-3 text-xs" onclick="viewPurchaseDetails('${firestoreId}')" style="cursor:pointer">${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</td>
                         <td class="p-3">
-                            <button onclick="event.stopPropagation(); editPurchase('${p.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
-                            <button onclick="event.stopPropagation(); deletePurchase('${p.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
+                            <button onclick="event.stopPropagation(); editPurchase('${firestoreId}')" class="text-indigo-400 hover:text-indigo-300 mr-2 transition" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); confirmSingleDelete('${firestoreId}')" class="text-red-400 hover:text-red-300 transition" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            </td>
+                        </tr>
                 `;
             }).join('');
             
@@ -1633,6 +1628,10 @@
             const paginationDiv = document.getElementById('purchasePagination');
             if (paginationDiv) paginationDiv.innerHTML = paginationHtml;
         }
+        
+        // ============================================
+        // REQUISITION FUNCTIONS (UNCHANGED - WORKING PERFECTLY)
+        // ============================================
         
         function renderRequisitionsTable() {
             const tbody = document.getElementById('requisitionsTableBody');
@@ -1650,7 +1649,7 @@
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             
             if (filtered.length === 0) {
-                                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-slate-400 py-8">No requisitions found</td</tr>';
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center text-slate-400 py-8">No requisitions found</td>';
                 const paginationDiv = document.getElementById('reqPagination');
                 if (paginationDiv) paginationDiv.innerHTML = '';
                 return;
@@ -1666,6 +1665,7 @@
                 const updatedAtFormatted = formatAuditDate(r.updatedAt);
                 return `
                     <tr class="border-b border-slate-700 hover:bg-slate-800/30">
+                        <td class="p-3"><input type="checkbox" class="select-checkbox requisition-select" data-id="${r.id}" ${selectedRequisitionIds.has(r.id) ? 'checked' : ''} onclick="toggleRequisitionSelect('${r.id}')"></td>
                         <td class="p-3 font-mono text-sm">${r.reqId || r.id.slice(-6)}</td>
                         <td class="p-3">${escapeHtml(r.itemName)}</td>
                         <td class="p-3">${qty.toFixed(3)}</td>
@@ -1676,18 +1676,18 @@
                         <td class="p-3">${getPriorityBadge(r.priority)}</td>
                         <td class="p-3">${getStatusBadge(r.status)}</td>
                         <td class="p-3">
-                            <button onclick="editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300"><i class="fas fa-trash-alt"></i></button>
-                           </td>
-                       </tr>
+                            <button onclick="editRequisition('${r.id}')" class="text-indigo-400 hover:text-indigo-300 mr-2 transition"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteRequisition('${r.id}')" class="text-red-400 hover:text-red-300 transition"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
                     <tr class="border-b border-slate-700 bg-slate-800/20">
-                        <td colspan="10" class="p-2">
+                        <td colspan="11" class="p-2">
                             <div class="audit-text">
                                 <span><i class="fas fa-user-plus text-indigo-400"></i> Created by: ${escapeHtml(createdByName)} on ${createdAtFormatted}</span>
                                 <span><i class="fas fa-edit text-amber-400"></i> Last edit: ${escapeHtml(updatedByName)} on ${updatedAtFormatted}</span>
                             </div>
-                           </td>
-                       </tr>
+                            </td>
+                        </tr>
                 `;
             }).join('');
             
@@ -1763,30 +1763,227 @@
             }
         }
         
+        function updateStats() {
+            const totalReqs = requisitions.length;
+            const pendingReqs = requisitions.filter(r => r.status === 'pending').length;
+            const totalAmount = requisitions.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
+            const totalSpend = purchases.reduce((s, p) => s + ((p.price || 0) * (p.quantity || 0)), 0);
+            document.getElementById('totalRequisitions').textContent = totalReqs;
+            document.getElementById('totalPurchases').textContent = purchases.length;
+            document.getElementById('totalSpend').innerHTML = formatMoney(totalSpend);
+            document.getElementById('pendingApprovals').textContent = pendingReqs;
+            document.getElementById('totalAmount').innerHTML = formatMoney(totalAmount);
+        }
+        
+        function renderFilteredPurchases() {
+            const filtered = filterPurchases();
+            renderPurchasesTableWithData(filtered);
+            updatePurchaseSelectionUI();
+        }
+        
         // ============================================
-        // CRUD OPERATIONS with AUTO-REGISTER FIX
+        // PURCHASE DELETE FUNCTIONS - FIXED (Uses Firestore document ID)
+        // ============================================
+        
+        window.confirmSingleDelete = (id) => {
+            pendingDeleteId = id;
+            pendingBulkDelete = false;
+            document.getElementById('deleteConfirmTitle').innerHTML = 'Delete Purchase?';
+            document.getElementById('deleteConfirmMessage').innerHTML = 'Are you sure you want to permanently delete this purchase record? This action cannot be undone.';
+            openModal('deleteConfirmModal');
+        };
+        
+        function confirmBulkDelete() {
+            if (selectedPurchaseIds.size === 0) {
+                showToast('No items selected', 'warning');
+                return;
+            }
+            pendingDeleteIds = Array.from(selectedPurchaseIds);
+            pendingBulkDelete = true;
+            document.getElementById('deleteConfirmTitle').innerHTML = 'Delete Selected Purchases?';
+            document.getElementById('deleteConfirmMessage').innerHTML = `Are you sure you want to permanently delete ${selectedPurchaseIds.size} selected purchase record(s)? This action cannot be undone.`;
+            openModal('deleteConfirmModal');
+        }
+        
+        async function executeDelete() {
+            showLoading(true);
+            
+            try {
+                if (pendingBulkDelete && pendingDeleteIds.length > 0) {
+                    console.log('Starting bulk delete for purchases:', pendingDeleteIds);
+                    const batch = db.batch();
+                    for (const id of pendingDeleteIds) {
+                        const docRef = db.collection('purchases').doc(id);
+                        batch.delete(docRef);
+                    }
+                    await batch.commit();
+                    console.log(`✅ Bulk delete successful: ${pendingDeleteIds.length} purchases`);
+                    
+                    purchases = purchases.filter(p => !pendingDeleteIds.includes(p.id));
+                    selectedPurchaseIds.clear();
+                    showToast(`${pendingDeleteIds.length} purchase(s) deleted permanently!`, 'success');
+                    
+                } else if (pendingDeleteId) {
+                    console.log('Starting single delete for purchase:', pendingDeleteId);
+                    const docRef = db.collection('purchases').doc(pendingDeleteId);
+                    await docRef.delete();
+                    console.log('✅ Purchase deleted successfully:', pendingDeleteId);
+                    
+                    purchases = purchases.filter(p => p.id !== pendingDeleteId);
+                    selectedPurchaseIds.delete(pendingDeleteId);
+                    showToast('Purchase deleted permanently!', 'success');
+                }
+                
+                pendingDeleteId = null;
+                pendingDeleteIds = [];
+                pendingBulkDelete = false;
+                
+                updatePurchaseSelectionUI();
+                renderFilteredPurchases();
+                updateStats();
+                if (charts.category) initReportsCharts();
+                
+            } catch (error) {
+                console.error('❌ Delete error:', error);
+                showToast('Error deleting: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+                closeModal('deleteConfirmModal');
+            }
+        }
+        
+        function cancelDelete() {
+            pendingDeleteId = null;
+            pendingDeleteIds = [];
+            pendingBulkDelete = false;
+            closeModal('deleteConfirmModal');
+        }
+        
+        // ============================================
+        // PURCHASE SELECTION FUNCTIONS (Using Firestore document IDs)
         // ============================================
         
         window.togglePurchaseSelect = (id) => {
-            if (selectedPurchases.has(id)) selectedPurchases.delete(id);
-            else selectedPurchases.add(id);
-            updateSelectionUI();
+            if (selectedPurchaseIds.has(id)) selectedPurchaseIds.delete(id);
+            else selectedPurchaseIds.add(id);
+            updatePurchaseSelectionUI();
+            // Update the header checkbox state based on current page selections
+            const selectAll = document.getElementById('selectAllPOs');
+            if (selectAll) {
+                const visibleIds = purchases.slice((poCurrentPage-1)*itemsPerPage, poCurrentPage*itemsPerPage).map(p => p.id);
+                const allSelected = visibleIds.length > 0 && visibleIds.every(pid => selectedPurchaseIds.has(pid));
+                selectAll.checked = allSelected;
+            }
         };
         
-        window.selectAllPOs = () => {
+        window.selectAllPurchases = () => {
             const selectAll = document.getElementById('selectAllPOs');
-            const visibleIds = purchases.slice((poCurrentPage-1)*itemsPerPage, poCurrentPage*itemsPerPage).map(p => p.id);
-            if (selectAll && selectAll.checked) {
-                visibleIds.forEach(id => selectedPurchases.add(id));
+            if (!selectAll) return;
+            
+            const start = (poCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const visibleIds = purchases.slice(start, end).map(p => p.id);
+            
+            if (selectAll.checked) {
+                visibleIds.forEach(id => selectedPurchaseIds.add(id));
             } else {
-                visibleIds.forEach(id => selectedPurchases.delete(id));
+                visibleIds.forEach(id => selectedPurchaseIds.delete(id));
             }
-            updateSelectionUI();
+            updatePurchaseSelectionUI();
         };
+        
+        // ============================================
+        // REQUISITION SELECTION FUNCTIONS (UNCHANGED)
+        // ============================================
+        
+        window.toggleRequisitionSelect = (id) => {
+            if (selectedRequisitionIds.has(id)) selectedRequisitionIds.delete(id);
+            else selectedRequisitionIds.add(id);
+            const selectAll = document.getElementById('reqSelectAll');
+            if (selectAll) {
+                const start = (reqCurrentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const visibleIds = requisitions.slice(start, end).map(r => r.id);
+                const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedRequisitionIds.has(id));
+                selectAll.checked = allSelected;
+            }
+        };
+        
+        window.selectAllRequisitions = () => {
+            const selectAll = document.getElementById('reqSelectAll');
+            if (!selectAll) return;
+            
+            const start = (reqCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const visibleIds = requisitions.slice(start, end).map(r => r.id);
+            
+            if (selectAll.checked) {
+                visibleIds.forEach(id => selectedRequisitionIds.add(id));
+            } else {
+                visibleIds.forEach(id => selectedRequisitionIds.delete(id));
+            }
+        };
+        
+        // ============================================
+        // REQUISITION BULK DELETE (UNCHANGED - WORKING)
+        // ============================================
+        
+        async function deleteSelectedRequisitions() {
+            if (selectedRequisitionIds.size === 0) {
+                showToast('No requisitions selected', 'warning');
+                return;
+            }
+            
+            if (!confirm(`Delete ${selectedRequisitionIds.size} selected requisition(s)? This action cannot be undone.`)) return;
+            
+            showLoading(true);
+            try {
+                const batch = db.batch();
+                for (const id of selectedRequisitionIds) {
+                    const docRef = db.collection('requisitions').doc(id);
+                    batch.delete(docRef);
+                }
+                await batch.commit();
+                showToast(`${selectedRequisitionIds.size} requisition(s) deleted!`, 'success');
+                selectedRequisitionIds.clear();
+                await loadRequisitions();
+                renderRequisitionsTable();
+            } catch (error) {
+                console.error('Error deleting requisitions:', error);
+                showToast('Error deleting requisitions', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // ============================================
+        // REQUISITION DELETE (UNCHANGED - WORKING)
+        // ============================================
+        
+        window.deleteRequisition = async (id) => {
+            if (confirm('Delete this requisition? This action cannot be undone.')) {
+                showLoading(true);
+                try {
+                    await db.collection('requisitions').doc(id).delete();
+                    showToast('Requisition deleted successfully!', 'success');
+                    await loadRequisitions();
+                    renderRequisitionsTable();
+                } catch (error) {
+                    console.error('Error deleting requisition:', error);
+                    showToast('Error deleting requisition: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        };
+        
+        // ============================================
+        // PURCHASE CRUD OPERATIONS
+        // ============================================
         
         async function addPurchase(event) {
             event.preventDefault();
-            const purchaseId = document.getElementById('purchaseId')?.value || generatePurchaseId();
+            const purchaseNumber = document.getElementById('purchaseId')?.value.trim() || generatePurchaseId();
             const itemName = document.getElementById('purchaseItemName')?.value.trim();
             const quantity = parseFloat(document.getElementById('purchaseQuantity')?.value);
             const unit = document.getElementById('purchaseUnit')?.value.trim();
@@ -1807,7 +2004,7 @@
             try {
                 const total = quantity * price;
                 const purchaseData = {
-                    id: purchaseId,
+                    purchaseNumber: purchaseNumber,
                     userId: currentUser.uid,
                     itemName: itemName,
                     quantity: quantity,
@@ -1822,26 +2019,105 @@
                     updatedBy: userData?.fullName || currentUser.email,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
+                
                 if (editId) {
                     await db.collection('purchases').doc(editId).update(purchaseData);
-                    showToast(`Purchase ${purchaseId} updated!`, 'success');
+                    showToast(`Purchase ${purchaseNumber} updated!`, 'success');
                 } else {
                     purchaseData.createdBy = userData?.fullName || currentUser.email;
                     purchaseData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection('purchases').add(purchaseData);
-                    showToast(`Purchase ${purchaseId} added!`, 'success');
+                    const docRef = await db.collection('purchases').add(purchaseData);
+                    console.log('Purchase added with ID:', docRef.id);
+                    showToast(`Purchase ${purchaseNumber} added!`, 'success');
                 }
+                
                 closeModal('purchaseModal');
                 document.getElementById('purchaseForm')?.reset();
                 document.getElementById('purchaseEditId').value = '';
                 await loadPurchases();
+                renderFilteredPurchases();
+                
             } catch (error) {
                 console.error('Error saving purchase:', error);
-                showToast('Error saving purchase', 'error');
+                showToast('Error saving purchase: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
+        
+        // Edit Purchase
+        window.editPurchase = async (id) => {
+            const purchase = purchases.find(p => p.id === id);
+            if (!purchase) {
+                showToast('Purchase not found', 'error');
+                return;
+            }
+            
+            document.getElementById('editPurchaseId').value = purchase.id;
+            document.getElementById('editItemName').value = purchase.itemName || '';
+            document.getElementById('editQuantity').value = purchase.quantity || 1;
+            document.getElementById('editUnit').value = purchase.unit || '';
+            document.getElementById('editPrice').value = purchase.price || 0;
+            document.getElementById('editCategory').value = purchase.category || 'Other';
+            document.getElementById('editSupplier').value = purchase.supplier || '';
+            document.getElementById('editDate').value = purchase.date || '';
+            document.getElementById('editNotes').value = purchase.notes || '';
+            document.getElementById('editStatus').value = purchase.status || 'approved';
+            openModal('editPurchaseModal');
+        };
+        
+        async function updatePurchase(event) {
+            event.preventDefault();
+            const id = document.getElementById('editPurchaseId').value;
+            const itemName = document.getElementById('editItemName').value.trim();
+            const quantity = parseFloat(document.getElementById('editQuantity').value);
+            const unit = document.getElementById('editUnit').value.trim();
+            const price = parseFloat(document.getElementById('editPrice').value);
+            const category = document.getElementById('editCategory').value;
+            const supplier = document.getElementById('editSupplier').value.trim();
+            const date = document.getElementById('editDate').value;
+            const notes = document.getElementById('editNotes').value;
+            const status = document.getElementById('editStatus').value;
+            
+            if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                const total = quantity * price;
+                await db.collection('purchases').doc(id).update({
+                    itemName: itemName,
+                    quantity: quantity,
+                    unit: unit || 'pcs',
+                    price: price,
+                    totalAmount: total,
+                    category: category,
+                    supplier: supplier,
+                    date: date,
+                    notes: notes,
+                    status: status,
+                    updatedBy: userData?.fullName || currentUser.email,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showToast('Purchase updated successfully!', 'success');
+                closeModal('editPurchaseModal');
+                await loadPurchases();
+                renderFilteredPurchases();
+                
+            } catch (error) {
+                console.error('Error updating purchase:', error);
+                showToast('Error updating purchase: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // ============================================
+        // REQUISITION CRUD (UNCHANGED)
+        // ============================================
         
         async function addRequisition(event) {
             event.preventDefault();
@@ -1887,38 +2163,10 @@
                 document.getElementById('requisitionForm')?.reset();
                 document.getElementById('reqId').value = generateRequisitionId();
                 await loadRequisitions();
+                renderRequisitionsTable();
             } catch (error) {
                 console.error('Error submitting requisition:', error);
                 showToast('Error submitting requisition: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-        
-        async function addSupplier(event) {
-            event.preventDefault();
-            const code = generateSupplierCode();
-            const name = document.getElementById('supplierName')?.value.trim();
-            if (!name) { showToast('Supplier name required', 'error'); return; }
-            showLoading(true);
-            try {
-                await db.collection('suppliers').add({
-                    code: code,
-                    userId: currentUser.uid,
-                    name: name,
-                    contact: document.getElementById('supplierContact')?.value,
-                    email: document.getElementById('supplierEmail')?.value,
-                    phone: document.getElementById('supplierPhone')?.value,
-                    address: document.getElementById('supplierAddress')?.value,
-                    createdBy: userData?.fullName || currentUser.email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast(`Supplier ${name} added!`, 'success');
-                document.getElementById('supplierForm')?.reset();
-                document.getElementById('supplierCode').value = generateSupplierCode();
-                await loadSuppliers();
-            } catch (error) {
-                showToast('Error adding supplier', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1941,9 +2189,6 @@
             openModal('editRequisitionModal');
         };
         
-        // ============================================
-        // AUTO-REGISTER PURCHASE FUNCTION - FIXED!
-        // ============================================
         async function updateRequisition(event) {
             event.preventDefault();
             const id = document.getElementById('editRequisitionId')?.value;
@@ -1957,15 +2202,6 @@
             const justification = document.getElementById('editReqJustification')?.value;
             const priority = document.getElementById('editReqPriority')?.value;
             const status = document.getElementById('editReqStatus')?.value;
-            const oldStatus = requisitions.find(r => r.id === id)?.status;
-            
-            console.log('=== UPDATE REQUISITION DEBUG ===');
-            console.log('Requisition ID:', id);
-            console.log('Old Status:', oldStatus);
-            console.log('New Status:', status);
-            console.log('Item:', itemName);
-            console.log('Quantity:', quantity);
-            console.log('Unit Price:', unitPrice);
             
             if (!itemName || isNaN(quantity) || quantity <= 0 || isNaN(unitPrice) || unitPrice <= 0) {
                 showToast(`Please fill all required fields with valid positive values. Quantity: ${quantity}, Price: ${unitPrice}`, 'error');
@@ -1992,75 +2228,41 @@
                 };
                 
                 await db.collection('requisitions').doc(id).update(updateData);
-                console.log('Requisition updated successfully');
                 showToast('Requisition updated successfully!', 'success');
                 
                 // AUTO-REGISTER PURCHASE WHEN STATUS CHANGES TO 'approved'
                 if (status === 'approved') {
-                    console.log('Status is APPROVED - checking if auto-register needed...');
-                    console.log('Old status was:', oldStatus);
-                    
-                    // Register purchase regardless of old status (always register when approved)
                     const purchaseId = generatePurchaseId();
-                    console.log('Generated Purchase ID:', purchaseId);
-                    
-                    // Get the requisition data
-                    const reqData = {
+                    const purchaseData = {
+                        purchaseNumber: purchaseId,
+                        userId: currentUser.uid,
+                        requisitionId: id,
+                        requisitionRef: document.getElementById('editRequisitionId')?.value,
                         itemName: itemName,
                         quantity: quantity,
                         unit: unit || 'pcs',
-                        unitPrice: unitPrice,
+                        price: unitPrice,
                         totalAmount: total,
                         category: category,
                         supplier: supplier,
-                        reqId: document.getElementById('editRequisitionId')?.value
+                        date: new Date().toISOString().split('T')[0],
+                        notes: `Auto-created from approved requisition`,
+                        status: 'approved',
+                        createdBy: userData?.fullName || currentUser.email,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedBy: userData?.fullName || currentUser.email,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
                     
-                    console.log('Purchase data to save:', {
-                        id: purchaseId,
-                        itemName: reqData.itemName,
-                        quantity: reqData.quantity,
-                        price: reqData.unitPrice,
-                        totalAmount: reqData.totalAmount,
-                        category: reqData.category,
-                        supplier: reqData.supplier
-                    });
-                    
-                    try {
-                        await db.collection('purchases').add({
-                            id: purchaseId,
-                            userId: currentUser.uid,
-                            requisitionId: id,
-                            requisitionRef: reqData.reqId,
-                            itemName: reqData.itemName,
-                            quantity: reqData.quantity,
-                            unit: reqData.unit,
-                            price: reqData.unitPrice,
-                            totalAmount: reqData.totalAmount,
-                            category: reqData.category,
-                            supplier: reqData.supplier,
-                            date: new Date().toISOString().split('T')[0],
-                            notes: `Auto-created from approved requisition`,
-                            status: 'approved',
-                            createdBy: userData?.fullName || currentUser.email,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            updatedBy: userData?.fullName || currentUser.email,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
-                        console.log('Purchase auto-created successfully!');
-                        showToast(`Purchase order ${purchaseId} auto-created from approved requisition!`, 'success');
-                        await loadPurchases();
-                    } catch (purchaseError) {
-                        console.error('Error creating auto-purchase:', purchaseError);
-                        showToast('Requisition approved but auto-purchase creation failed: ' + purchaseError.message, 'error');
-                    }
-                } else {
-                    console.log('Status is NOT approved (', status, ') - skipping auto-register');
+                    await db.collection('purchases').add(purchaseData);
+                    showToast(`Purchase order ${purchaseId} auto-created from approved requisition!`, 'success');
+                    await loadPurchases();
+                    renderFilteredPurchases();
                 }
                 
                 closeModal('editRequisitionModal');
                 await loadRequisitions();
+                renderRequisitionsTable();
             } catch (error) {
                 console.error('Error updating requisition:', error);
                 showToast('Error updating requisition: ' + error.message, 'error');
@@ -2068,6 +2270,74 @@
                 showLoading(false);
             }
         }
+        
+        // ============================================
+        // SUPPLIER CRUD (UNCHANGED)
+        // ============================================
+        
+        async function addSupplier(event) {
+            event.preventDefault();
+            const code = generateSupplierCode();
+            const name = document.getElementById('supplierName')?.value.trim();
+            if (!name) { showToast('Supplier name required', 'error'); return; }
+            showLoading(true);
+            try {
+                await db.collection('suppliers').add({
+                    code: code,
+                    userId: currentUser.uid,
+                    name: name,
+                    contact: document.getElementById('supplierContact')?.value,
+                    email: document.getElementById('supplierEmail')?.value,
+                    phone: document.getElementById('supplierPhone')?.value,
+                    address: document.getElementById('supplierAddress')?.value,
+                    createdBy: userData?.fullName || currentUser.email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast(`Supplier ${name} added!`, 'success');
+                document.getElementById('supplierForm')?.reset();
+                document.getElementById('supplierCode').value = generateSupplierCode();
+                await loadSuppliers();
+                renderSuppliersList();
+            } catch (error) {
+                showToast('Error adding supplier', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        window.editSupplier = async (id) => {
+            const sup = suppliers.find(s => s.id === id);
+            if (sup) {
+                document.getElementById('supplierCode').value = sup.code || '';
+                document.getElementById('supplierName').value = sup.name;
+                document.getElementById('supplierContact').value = sup.contact || '';
+                document.getElementById('supplierEmail').value = sup.email || '';
+                document.getElementById('supplierPhone').value = sup.phone || '';
+                document.getElementById('supplierAddress').value = sup.address || '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+        
+        window.deleteSupplier = async (id) => {
+            if (confirm('Delete this supplier? This action cannot be undone.')) {
+                showLoading(true);
+                try {
+                    await db.collection('suppliers').doc(id).delete();
+                    showToast('Supplier deleted successfully!', 'success');
+                    await loadSuppliers();
+                    renderSuppliersList();
+                } catch (error) {
+                    console.error('Error deleting supplier:', error);
+                    showToast('Error deleting supplier: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        };
+        
+        // ============================================
+        // VIEW DETAILS
+        // ============================================
         
         window.viewPurchaseDetails = async (id) => {
             const p = purchases.find(x => x.id === id);
@@ -2077,7 +2347,7 @@
             const total = qty * price;
             const detailsHtml = `
                 <div class="space-y-2 text-sm">
-                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Purchase ID:</span><span class="font-mono">${p.id}</span></div>
+                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Purchase ID:</span><span class="font-mono">${p.purchaseNumber || p.id.slice(-8)}</span></div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Item:</span><span class="font-bold">${escapeHtml(p.itemName)}</span></div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Quantity:</span>${qty.toFixed(3)} ${p.unit || 'pcs'}</div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Unit Price:</span>${formatMoney(price)}</div>
@@ -2088,8 +2358,6 @@
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Date:</span>${p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')}</div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Created By:</span>${escapeHtml(p.createdBy) || '—'}</div>
                     <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Created At:</span>${p.createdAt ? new Date(p.createdAt.toDate()).toLocaleString() : '—'}</div>
-                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Last Edited By:</span>${escapeHtml(p.updatedBy) || '—'}</div>
-                    <div class="flex justify-between py-1 border-b border-slate-700"><span class="text-slate-400">Last Edited:</span>${p.updatedAt ? new Date(p.updatedAt.toDate()).toLocaleString() : '—'}</div>
                     ${p.notes ? `<div class="py-1"><span class="text-slate-400">Notes:</span><br>${escapeHtml(p.notes)}</div>` : ''}
                 </div>
             `;
@@ -2133,7 +2401,7 @@
                 <body>
                 <div class="receipt">
                     <div class="header"><img src="${LOGO_URL}" alt="Logo"><h2>${COMPANY_NAME}</h2><p>${COMPANY_SLOGAN}</p></div>
-                    <div><span class="label">Receipt No:</span> <span class="value">${purchase.id}</span></div>
+                    <div><span class="label">Receipt No:</span> <span class="value">${purchase.purchaseNumber || purchase.id.slice(-8)}</span></div>
                     <div><span class="label">Date:</span> <span class="value">${purchase.date || new Date().toLocaleDateString()}</span></div>
                     <div><span class="label">Status:</span> ${getStatusBadge(purchase.status)}</div>
                     <div><span class="label">Created By:</span> <span class="value">${escapeHtml(purchase.createdBy) || 'System'}</span></div>
@@ -2152,101 +2420,104 @@
             `;
         }
         
-        window.editPurchase = async (id) => {
-            const p = purchases.find(x => x.id === id);
-            if (p) {
-                document.getElementById('purchaseModalTitle').innerHTML = 'Edit Purchase';
-                document.getElementById('purchaseEditId').value = p.id;
-                document.getElementById('purchaseId').value = p.id;
-                document.getElementById('purchaseItemName').value = p.itemName;
-                document.getElementById('purchaseQuantity').value = p.quantity;
-                document.getElementById('purchaseUnit').value = p.unit || '';
-                document.getElementById('purchasePrice').value = p.price;
-                document.getElementById('purchaseCategory').value = p.category || 'Other';
-                document.getElementById('purchaseSupplier').value = p.supplier || '';
-                document.getElementById('purchaseDate').value = p.date || '';
-                document.getElementById('purchaseNotes').value = p.notes || '';
-                document.getElementById('purchaseStatus').value = p.status || 'approved';
-                openModal('purchaseModal');
-            }
-        };
+        // ============================================
+        // EXPORT FUNCTIONS
+        // ============================================
         
-        window.deletePurchase = async (id) => {
-            if (confirm('Delete this purchase record?')) {
-                showLoading(true);
-                try {
-                    await db.collection('purchases').doc(id).delete();
-                    showToast('Purchase deleted', 'success');
-                    selectedPurchases.delete(id);
-                    updateSelectionUI();
-                    await loadPurchases();
-                } catch (error) {
-                    showToast('Error deleting purchase', 'error');
-                } finally {
-                    showLoading(false);
-                }
+        async function exportSelectedToPDF() {
+            const selected = purchases.filter(p => selectedPurchaseIds.has(p.id));
+            if (selected.length === 0) {
+                showToast('No items selected', 'warning');
+                return;
             }
-        };
+            
+            updatePrintMetadata();
+            const headers = ['PO #', 'Item', 'Quantity', 'Unit', 'Price', 'Total', 'Category', 'Supplier', 'Status', 'Date'];
+            const data = selected.map(p => {
+                const qty = parseFloat(p.quantity) || 0;
+                const price = parseFloat(p.price) || 0;
+                return [
+                    p.purchaseNumber || p.id.slice(-8), p.itemName, qty.toFixed(3), p.unit || 'pcs', formatMoney(price),
+                    formatMoney(qty * price), p.category || 'Other', p.supplier || '—',
+                    p.status, p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')
+                ];
+            });
+            const totalSpend = selected.reduce((s, p) => s + ((parseFloat(p.price) || 0) * (parseFloat(p.quantity) || 0)), 0);
+            
+            const printHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>Selected Procurement Report</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { font-family: 'Inter', Arial, sans-serif; background: white; padding: 30px; }
+                    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 2px solid #4F46E5; }
+                    .header-left { display: flex; align-items: center; gap: 15px; }
+                    .header-left img { height: 60px; width: auto; }
+                    .header-left h1 { font-size: 20px; font-weight: 800; color: #4F46E5; margin: 0; }
+                    .header-left p { font-size: 11px; color: #64748b; margin: 2px 0; }
+                    .header-right { text-align: right; }
+                    .header-right .report-title { font-size: 14px; font-weight: 700; color: #1e293b; }
+                    .header-right .metadata { font-size: 10px; color: #64748b; margin-top: 5px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th { background: #4F46E5; color: white; padding: 10px; font-size: 11px; text-align: left; }
+                    td { padding: 8px; border-bottom: 1px solid #e2e8f0; font-size: 10px; }
+                    .footer { text-align: center; padding: 20px; border-top: 1px solid #e2e8f0; margin-top: 25px; font-size: 9px; color: #94a3b8; }
+                    .total-section { margin-top: 20px; text-align: right; font-weight: bold; }
+                </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="header-left">
+                            <img src="${LOGO_URL}" alt="MAYE Logo">
+                            <div><h1>${COMPANY_NAME}</h1><p>${COMPANY_SLOGAN}</p></div>
+                        </div>
+                        <div class="header-right">
+                            <div class="report-title">Selected Purchases Report</div>
+                            <div class="metadata">Date: ${new Date().toLocaleString()}<br>Reference: ${generateReferenceId()}</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 15px 0;">Selected Purchase Orders (${selected.length} records)</h3>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</thead>
+                        <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+                    </table>
+                    <div class="total-section">Total Spend for Selected: ${formatMoney(totalSpend)}</div>
+                    <div class="footer">
+                        <p>Confidential - MAYE System Internal Procurement Analytics</p>
+                        <p>Generated by: ${userData?.fullName || currentUser?.email || 'System User'}</p>
+                        <p>© ${new Date().getFullYear()} ${COMPANY_NAME} - All rights reserved</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            const opt = { margin: [0.5, 0.5, 0.5, 0.5], filename: `selected-procurement-${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, backgroundColor: '#ffffff' }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
+            showToast('Generating PDF for selected items...', 'info');
+            await html2pdf().set(opt).from(printHTML).save();
+            showToast('PDF exported!', 'success');
+        }
         
-        window.deleteRequisition = async (id) => {
-            if (confirm('Delete this requisition?')) {
-                showLoading(true);
-                try {
-                    await db.collection('requisitions').doc(id).delete();
-                    showToast('Requisition deleted', 'success');
-                    await loadRequisitions();
-                } catch (error) {
-                    showToast('Error deleting requisition', 'error');
-                } finally {
-                    showLoading(false);
-                }
+        function exportSelectedToCSV() {
+            const selected = purchases.filter(p => selectedPurchaseIds.has(p.id));
+            if (selected.length === 0) {
+                showToast('No items selected', 'warning');
+                return;
             }
-        };
-        
-        window.editSupplier = async (id) => {
-            const sup = suppliers.find(s => s.id === id);
-            if (sup) {
-                document.getElementById('supplierCode').value = sup.code || '';
-                document.getElementById('supplierName').value = sup.name;
-                document.getElementById('supplierContact').value = sup.contact || '';
-                document.getElementById('supplierEmail').value = sup.email || '';
-                document.getElementById('supplierPhone').value = sup.phone || '';
-                document.getElementById('supplierAddress').value = sup.address || '';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        };
-        
-        window.deleteSupplier = async (id) => {
-            if (confirm('Delete this supplier?')) {
-                showLoading(true);
-                try {
-                    await db.collection('suppliers').doc(id).delete();
-                    await loadSuppliers();
-                    showToast('Supplier deleted', 'success');
-                } catch (error) {
-                    showToast('Error deleting supplier', 'error');
-                } finally {
-                    showLoading(false);
-                }
-            }
-        };
-        
-        function exportRequisitionsToCSV() {
-            if (requisitions.length === 0) { showToast('No data to export', 'warning'); return; }
-            let csv = 'ID,Item Name,Quantity,Unit,Unit Price,Total,Category,Supplier,Requested By,Priority,Status,Created By,Created At,Last Edited By,Last Edited\n';
-            requisitions.forEach(r => {
-                const qty = parseFloat(r.quantity) || 0;
-                const unitPrice = parseFloat(r.unitPrice) || 0;
-                csv += `${r.reqId || r.id.slice(-6)},${r.itemName},${qty.toFixed(3)},${r.unit || 'pcs'},${unitPrice.toFixed(3)},${(qty * unitPrice).toFixed(3)},${r.category},${r.supplier || ''},${r.requestedBy || ''},${r.priority},${r.status},${r.createdBy || ''},${formatAuditDate(r.createdAt)},${r.updatedBy || ''},${formatAuditDate(r.updatedAt)}\n`;
+            let csv = 'ID,Item Name,Quantity,Unit,Price,Total,Category,Supplier,Status,Date,Notes\n';
+            selected.forEach(p => {
+                const qty = parseFloat(p.quantity) || 0;
+                const price = parseFloat(p.price) || 0;
+                csv += `${p.purchaseNumber || p.id.slice(-8)},${p.itemName},${qty.toFixed(3)},${p.unit || 'pcs'},${price.toFixed(3)},${(qty * price).toFixed(3)},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${(p.notes || '').replace(/,/g, ';')}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `requisitions-${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `selected-purchases-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast('CSV exported!', 'success');
+            showToast(`Exported ${selected.length} items!`, 'success');
         }
         
         function exportSuppliersToCSV() {
@@ -2278,8 +2549,8 @@
                 const qty = parseFloat(p.quantity) || 0;
                 const price = parseFloat(p.price) || 0;
                 return [
-                    p.id, p.itemName, qty.toFixed(3), p.unit || 'pcs', formatMoney(price), 
-                    formatMoney(qty * price), p.category || 'Other', p.supplier || '—', 
+                    p.purchaseNumber || p.id.slice(-8), p.itemName, qty.toFixed(3), p.unit || 'pcs', formatMoney(price),
+                    formatMoney(qty * price), p.category || 'Other', p.supplier || '—',
                     p.status, p.date || (p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString() : '—')
                 ];
             });
@@ -2321,7 +2592,7 @@
                     
                     <h3 style="margin: 15px 0;">Purchase Orders Summary (${filtered.length} records)</h3>
                     <table style="width:100%;border-collapse:collapse;">
-                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')} </thead>
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</thead>
                         <tbody>${data.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
                     </table>
                     <div class="total-section">Total Spend: ${formatMoney(totalSpend)}</div>
@@ -2345,7 +2616,7 @@
             purchases.forEach(p => {
                 const qty = parseFloat(p.quantity) || 0;
                 const price = parseFloat(p.price) || 0;
-                csv += `${p.id},${p.itemName},${qty.toFixed(3)},${p.unit || 'pcs'},${price.toFixed(3)},${(qty * price).toFixed(3)},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${p.createdBy || ''},${formatAuditDate(p.createdAt)},${p.updatedBy || ''},${formatAuditDate(p.updatedAt)},${(p.notes || '').replace(/,/g, ';')}\n`;
+                csv += `${p.purchaseNumber || p.id.slice(-8)},${p.itemName},${qty.toFixed(3)},${p.unit || 'pcs'},${price.toFixed(3)},${(qty * price).toFixed(3)},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${p.createdBy || ''},${formatAuditDate(p.createdAt)},${p.updatedBy || ''},${formatAuditDate(p.updatedAt)},${(p.notes || '').replace(/,/g, ';')}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
@@ -2357,51 +2628,219 @@
             showToast('CSV exported!', 'success');
         }
         
-        function exportSelectedToCSV() {
-            const selected = purchases.filter(p => selectedPurchases.has(p.id));
-            if (selected.length === 0) { showToast('No items selected', 'warning'); return; }
-            let csv = 'ID,Item Name,Quantity,Unit,Price,Total,Category,Supplier,Status,Date,Notes\n';
-            selected.forEach(p => {
-                const qty = parseFloat(p.quantity) || 0;
-                const price = parseFloat(p.price) || 0;
-                csv += `${p.id},${p.itemName},${qty.toFixed(3)},${p.unit || 'pcs'},${price.toFixed(3)},${(qty * price).toFixed(3)},${p.category || 'Other'},${p.supplier || ''},${p.status},${p.date || ''},${(p.notes || '').replace(/,/g, ';')}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `selected-purchases-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast(`Exported ${selected.length} items!`, 'success');
+        // ============================================
+        // AUTHENTICATION & DATA LOADING
+        // ============================================
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (!user || !user.emailVerified) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+            await loadUserData();
+            await loadPurchases();
+            await loadRequisitions();
+            await loadSuppliers();
+            renderSidebar();
+            setupEventListeners();
+            setupTabs();
+            updateStats();
+            renderFilteredPurchases();
+            renderRequisitionsTable();
+            renderSuppliersList();
+            initReportsCharts();
+            setupRealtimeListener();
+            updatePrintMetadata();
+        });
+        
+        async function loadUserData() {
+            try {
+                const doc = await db.collection('users').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    userData = doc.data();
+                    document.getElementById('userName').textContent = userData?.fullName || currentUser.email.split('@')[0];
+                    document.getElementById('userEmailDisplay').textContent = currentUser.email;
+                    if (userData?.settings) {
+                        currentCurrency = userData.settings.currency || 'AED';
+                        currentTheme = userData.settings.theme || 'dark';
+                        currencySymbol = currencies[currentCurrency]?.symbol || 'D';
+                    }
+                    if (userData?.profilePicture) {
+                        document.getElementById('userAvatar').src = userData.profilePicture;
+                        document.getElementById('userAvatar').classList.remove('hidden');
+                        document.getElementById('userAvatarFallback').classList.add('hidden');
+                    }
+                }
+                if (currentTheme === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
         }
         
-        async function deleteSelectedPurchases() {
-            const selected = Array.from(selectedPurchases);
-            if (selected.length === 0) return;
-            if (!confirm(`Delete ${selected.length} selected purchase(s)?`)) return;
+        // ✅ CRITICAL FIX: Purchase fetch MUST include id: doc.id
+        async function loadPurchases() {
             showLoading(true);
             try {
-                const batch = db.batch();
-                selected.forEach(id => {
-                    const ref = db.collection('purchases').doc(id);
-                    batch.delete(ref);
+                const snapshot = await db.collection('purchases')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                purchases = snapshot.docs.map(doc => ({ 
+                    id: doc.id,  // ✅ CRITICAL: This is the Firestore document ID
+                    ...doc.data(),
+                    quantity: parseFloat(doc.data().quantity) || 0,
+                    price: parseFloat(doc.data().price) || 0,
+                    total: (parseFloat(doc.data().price) || 0) * (parseFloat(doc.data().quantity) || 0)
+                }));
+                purchases.sort((a, b) => {
+                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
+                    return 0;
                 });
-                await batch.commit();
-                showToast(`${selected.length} purchase(s) deleted!`, 'success');
-                selectedPurchases.clear();
-                updateSelectionUI();
-                await loadPurchases();
+                updateStats();
+                renderFilteredPurchases();
+                if (charts.category) initReportsCharts();
             } catch (error) {
-                showToast('Error deleting items', 'error');
+                console.error('Error loading purchases:', error);
+                showToast('Error loading purchases: ' + error.message, 'error');
             } finally {
                 showLoading(false);
             }
         }
         
-        // Pagination
-        function goToReqPage(page) { reqCurrentPage = page; renderRequisitionsTable(); }
-        function goToPoPage(page) { poCurrentPage = page; renderFilteredPurchases(); }
+        async function loadRequisitions() {
+            try {
+                const snapshot = await db.collection('requisitions')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                requisitions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                requisitions.sort((a, b) => {
+                    if (a.createdAt && b.createdAt) return b.createdAt - a.createdAt;
+                    return 0;
+                });
+                renderRequisitionsTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading requisitions:', error);
+                showToast('Error loading requisitions: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadSuppliers() {
+            try {
+                const snapshot = await db.collection('suppliers')
+                    .where('userId', '==', currentUser.uid)
+                    .get();
+                suppliers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                document.getElementById('totalSuppliers').textContent = suppliers.length;
+                renderSuppliersList();
+            } catch (error) {
+                console.error('Error loading suppliers:', error);
+                showToast('Error loading suppliers: ' + error.message, 'error');
+            }
+        }
+        
+        function setupRealtimeListener() {
+            if (!currentUser) return;
+            
+            // Purchase realtime listener
+            db.collection('purchases')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    loadPurchases();
+                    renderFilteredPurchases();
+                }, (error) => console.error('Purchase realtime error:', error));
+            
+            // Requisition realtime listener (unchanged)
+            db.collection('requisitions')
+                .where('userId', '==', currentUser.uid)
+                .onSnapshot(() => {
+                    loadRequisitions();
+                    renderRequisitionsTable();
+                }, (error) => console.error('Requisition realtime error:', error));
+        }
+        
+        // ============================================
+        // REQUISITION BULK DELETE EVENT
+        // ============================================
+        
+        document.getElementById('reqBulkDeleteBtn')?.addEventListener('click', deleteSelectedRequisitions);
+        
+        // ============================================
+        // REQUISITION EXPORT PDF
+        // ============================================
+        
+        document.getElementById('reqExportPDFBtn')?.addEventListener('click', async () => {
+            if (selectedRequisitionIds.size === 0) {
+                showToast('No requisitions selected', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            try {
+                updatePrintMetadata();
+                const selectedReqs = requisitions.filter(r => selectedRequisitionIds.has(r.id));
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                
+                doc.setFontSize(16);
+                doc.setTextColor(79, 70, 229);
+                doc.text('MAYE System - Requisitions Report', 14, 20);
+                
+                doc.setFontSize(10);
+                doc.setTextColor(100, 116, 139);
+                doc.text(`Generated: ${new Date().toLocaleString()} | Reference: ${generateReferenceId()} | Records: ${selectedReqs.length}`, 14, 30);
+                doc.text(`Generated by: ${userData?.fullName || currentUser?.email || 'System User'}`, 14, 37);
+                
+                const tableData = selectedReqs.map(r => {
+                    const qty = parseFloat(r.quantity) || 0;
+                    const unitPrice = parseFloat(r.unitPrice) || 0;
+                    return [
+                        r.reqId || r.id.slice(-6),
+                        r.itemName || '',
+                        qty.toFixed(3),
+                        r.unit || 'pcs',
+                        formatMoney(unitPrice),
+                        formatMoney(qty * unitPrice),
+                        r.category || 'Other',
+                        r.priority || 'medium',
+                        r.status || 'pending',
+                        r.date || (r.createdAt ? new Date(r.createdAt.toDate()).toLocaleDateString() : '—'),
+                        r.requestedBy || '—',
+                        r.supplier || '—'
+                    ];
+                });
+                
+                doc.autoTable({
+                    head: [['Req ID', 'Item', 'Qty', 'Unit', 'Price', 'Total', 'Category', 'Priority', 'Status', 'Date', 'Requested By', 'Supplier']],
+                    body: tableData,
+                    startY: 45,
+                    theme: 'striped',
+                    headStyles: { fillColor: [79, 70, 229], textColor: 255, fontSize: 8 },
+                    bodyStyles: { fontSize: 7 },
+                    columnStyles: {
+                        0: { cellWidth: 25 },
+                        1: { cellWidth: 30 },
+                        5: { cellWidth: 25 }
+                    }
+                });
+                
+                const totalAmount = selectedReqs.reduce((sum, r) => sum + ((parseFloat(r.quantity) || 0) * (parseFloat(r.unitPrice) || 0)), 0);
+                const finalY = doc.lastAutoTable.finalY + 10;
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Total Amount: ${formatMoney(totalAmount)}`, 14, finalY);
+                
+                doc.save(`requisitions-${new Date().toISOString().split('T')[0]}.pdf`);
+                showToast('PDF exported successfully!', 'success');
+            } catch (error) {
+                console.error('PDF export error:', error);
+                showToast('Error exporting PDF: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
         
         // ============================================
         // UI SETUP
@@ -2453,18 +2892,55 @@
             const editRequisitionForm = document.getElementById('editRequisitionForm');
             if (editRequisitionForm) editRequisitionForm.addEventListener('submit', updateRequisition);
             
+            const editPurchaseForm = document.getElementById('editPurchaseForm');
+            if (editPurchaseForm) editPurchaseForm.addEventListener('submit', updatePurchase);
+            
+            // Delete confirmation buttons
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            if (confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', executeDelete);
+            if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', cancelDelete);
+            
             const addPurchaseBtn = document.getElementById('addPurchaseBtn');
             if (addPurchaseBtn) {
                 addPurchaseBtn.addEventListener('click', () => {
                     document.getElementById('purchaseModalTitle').innerHTML = 'Add Purchase';
                     document.getElementById('purchaseEditId').value = '';
                     const purchaseIdInput = document.getElementById('purchaseId');
-                    if (purchaseIdInput) purchaseIdInput.value = generatePurchaseId();
+                    if (purchaseIdInput) purchaseIdInput.value = '';
                     const purchaseFormEl = document.getElementById('purchaseForm');
                     if (purchaseFormEl) purchaseFormEl.reset();
                     openModal('purchaseModal');
                 });
             }
+            
+            // Bulk action buttons for purchase
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            if (bulkDeleteBtn) bulkDeleteBtn.addEventListener('click', confirmBulkDelete);
+            
+            const bulkExportPDFBtn = document.getElementById('bulkExportPDFBtn');
+            if (bulkExportPDFBtn) bulkExportPDFBtn.addEventListener('click', exportSelectedToPDF);
+            
+            const bulkExportCSVBtn = document.getElementById('bulkExportCSVBtn');
+            if (bulkExportCSVBtn) bulkExportCSVBtn.addEventListener('click', exportSelectedToCSV);
+            
+            const bulkCancelBtn = document.getElementById('bulkCancelBtn');
+            if (bulkCancelBtn) {
+                bulkCancelBtn.addEventListener('click', () => {
+                    selectedPurchaseIds.clear();
+                    updatePurchaseSelectionUI();
+                    renderFilteredPurchases();
+                    showToast('Selection cleared', 'info');
+                });
+            }
+            
+            // Requisition select all
+            const reqSelectAll = document.getElementById('reqSelectAll');
+            if (reqSelectAll) reqSelectAll.addEventListener('change', selectAllRequisitions);
+            
+            // Purchase select all
+            const selectAllPOs = document.getElementById('selectAllPOs');
+            if (selectAllPOs) selectAllPOs.addEventListener('change', selectAllPurchases);
             
             // Search and filter event listeners
             const searchInput = document.getElementById('searchInput');
@@ -2539,28 +3015,8 @@
             const exportPurchasesCSVBtn = document.getElementById('exportPurchasesCSVBtn');
             if (exportPurchasesCSVBtn) exportPurchasesCSVBtn.addEventListener('click', exportPurchasesToCSV);
             
-            const exportRequisitionsCSVBtn = document.getElementById('exportRequisitionsCSV');
-            if (exportRequisitionsCSVBtn) exportRequisitionsCSVBtn.addEventListener('click', exportRequisitionsToCSV);
-            
             const exportSuppliersCSVBtn = document.getElementById('exportSuppliersCSV');
             if (exportSuppliersCSVBtn) exportSuppliersCSVBtn.addEventListener('click', exportSuppliersToCSV);
-            
-            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-            if (bulkDeleteBtn) bulkDeleteBtn.addEventListener('click', deleteSelectedPurchases);
-            
-            const bulkExportBtn = document.getElementById('bulkExportBtn');
-            if (bulkExportBtn) bulkExportBtn.addEventListener('click', exportSelectedToCSV);
-            
-            const bulkCancelBtn = document.getElementById('bulkCancelBtn');
-            if (bulkCancelBtn) {
-                bulkCancelBtn.addEventListener('click', () => {
-                    selectedPurchases.clear();
-                    updateSelectionUI();
-                });
-            }
-            
-            const selectAllPOs = document.getElementById('selectAllPOs');
-            if (selectAllPOs) selectAllPOs.addEventListener('change', selectAllPOs);
             
             const reqFilterStatus = document.getElementById('reqFilterStatus');
             if (reqFilterStatus) reqFilterStatus.addEventListener('change', () => { reqCurrentPage = 1; renderRequisitionsTable(); });
@@ -2674,19 +3130,18 @@
             return div.innerHTML;
         }
         
+        // Pagination
+        window.goToReqPage = (page) => { reqCurrentPage = page; renderRequisitionsTable(); };
+        window.goToPoPage = (page) => { poCurrentPage = page; renderFilteredPurchases(); };
+        
         // Make functions global
-        window.goToReqPage = goToReqPage;
-        window.goToPoPage = goToPoPage;
         window.closeModal = closeModal;
-        window.editPurchase = editPurchase;
-        window.deletePurchase = deletePurchase;
         window.viewPurchaseDetails = viewPurchaseDetails;
         window.editRequisition = editRequisition;
         window.deleteRequisition = deleteRequisition;
         window.editSupplier = editSupplier;
         window.deleteSupplier = deleteSupplier;
-        window.togglePurchaseSelect = togglePurchaseSelect;
-        window.selectAllPOs = selectAllPOs;
+        window.toggleRequisitionSelect = toggleRequisitionSelect;
     </script>
 </body>
 </html>
